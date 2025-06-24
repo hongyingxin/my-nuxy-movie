@@ -38,16 +38,18 @@ export const fetch = <T>(
   }
   return useFetch<ResOptions<T>>(url, {
     onRequest({ options }) {
-      console.log('onRequest-----', options)
+      // console.log('onRequest-----', options)
     },
-    onResponse(_context) {
-      console.log('onResponse-----', _context)
+    onResponse({ response }) {
+      console.clear()
+      console.log('onResponse-----', response)
+      console.log('onResponse-----', response._data)
     },
     onRequestError({ error }) {
-      console.warn('[onRequestError]', error)
+      // console.warn('[onRequestError]', error)
     },
     onResponseError({ response, options: { method } }) {
-      console.error(`[useHttp] Error in ${method} request:`, response)
+      // console.error(`[useHttp] Error in ${method} request:`, response)
     },
     ...options,
   }) as AsyncData<T, FetchError<ResOptions<T>> | null>

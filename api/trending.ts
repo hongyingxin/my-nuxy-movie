@@ -1,11 +1,11 @@
 import { fetch } from '~/composables/useHttp'
 
 // 获取所有趋势内容
-export const getAllTrending = (page = 1) => {
+export const getAllTrending = (params) => {
   return fetch({
     url: '/trending/all/day',
     method: 'GET',
-    params: { page }
+    params
   })
 }
 
