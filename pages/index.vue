@@ -6,7 +6,7 @@
       <div 
         v-if="heroContent.data.value?.results?.length" 
         class="relative h-full bg-cover bg-center transition-all duration-1000"
-        :style="{ backgroundImage: `url(https://image.tmdb.org/t/p/w1920_and_h800_multi_faces${currentHeroItem.backdrop_path})` }"
+        :style="{ backgroundImage: `url(${getBackdropUrl(currentHeroItem.backdrop_path, 'large')})` }"
       >
         <div class="absolute inset-0 z-20 flex items-center">
           <div class="container mx-auto px-6">
@@ -107,20 +107,6 @@
     </section>
 
     <div class="container mx-auto px-6 py-8">
-      <!-- 电影分类导航 -->
-      <section class="mb-12">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">电影分类</h2>
-        <div v-if="genres.data.value?.genres" class="flex flex-wrap gap-3">
-          <button
-            v-for="genre in genres.data.value.genres.slice(0, 10)"
-            :key="genre.id"
-            class="bg-white hover:bg-gray-100 text-gray-700 px-4 py-2 rounded-full border border-gray-200 transition-colors"
-          >
-            {{ genre.name }}
-          </button>
-        </div>
-      </section>
-
       <!-- 热门电影 -->
       <section class="mb-12">
         <div class="flex items-center justify-between mb-6">
@@ -137,25 +123,14 @@
         </div>
         
         <div v-else-if="popularMovies.data.value" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          <div
+          <MediaCard
             v-for="movie in popularMovies.data.value.results.slice(0, 12)"
             :key="movie.id"
-            class="group cursor-pointer"
-          >
-            <div class="relative overflow-hidden rounded-lg mb-3 aspect-[2/3] bg-gray-200">
-              <img
-                v-if="movie.poster_path"
-                :src="`https://image.tmdb.org/t/p/w342${movie.poster_path}`"
-                :alt="movie.title"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div class="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-sm">
-                ★ {{ movie.vote_average?.toFixed(1) }}
-              </div>
-            </div>
-            <h3 class="font-semibold text-gray-800 line-clamp-2 mb-1">{{ movie.title }}</h3>
-            <p class="text-sm text-gray-600">{{ movie.release_date?.split('-')[0] || '未知' }}</p>
-          </div>
+            :item="movie"
+            :is-movie="true"
+            :movie-genres="movieGenres.data.value?.genres || []"
+            :tv-genres="tvGenres.data.value?.genres || []"
+          />
         </div>
       </section>
 
@@ -175,228 +150,46 @@
         </div>
         
         <div v-else-if="popularTvShows.data.value" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          <div
+          <MediaCard
             v-for="tvShow in popularTvShows.data.value.results.slice(0, 12)"
             :key="tvShow.id"
-            class="group cursor-pointer"
-          >
-            <div class="relative overflow-hidden rounded-lg mb-3 aspect-[2/3] bg-gray-200">
-              <img
-                v-if="tvShow.poster_path"
-                :src="`https://image.tmdb.org/t/p/w342${tvShow.poster_path}`"
-                :alt="tvShow.name"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div class="absolute top-2 left-2 bg-blue-600 text-white px-2 py-1 rounded text-xs font-medium">
-                电视剧
-              </div>
-              <div class="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-sm">
-                ★ {{ tvShow.vote_average?.toFixed(1) }}
-              </div>
-            </div>
-            <h3 class="font-semibold text-gray-800 line-clamp-2 mb-1">{{ tvShow.name }}</h3>
-            <p class="text-sm text-gray-600">{{ tvShow.first_air_date?.split('-')[0] || '未知' }}</p>
-          </div>
+            :item="tvShow"
+            :is-movie="false"
+            :movie-genres="movieGenres.data.value?.genres || []"
+            :tv-genres="tvGenres.data.value?.genres || []"
+          />
         </div>
       </section>
 
-      <!-- 正在播出 -->
+      <!-- 最新动态 -->
       <section class="mb-12">
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold text-gray-800">正在播出</h2>
-          <div class="flex items-center gap-2">
-            <span class="text-green-500 animate-pulse">🔴</span>
-            <span class="text-sm text-gray-600">实时更新</span>
-            <button class="text-red-600 hover:text-red-700 font-semibold ml-4">查看更多 →</button>
-          </div>
-        </div>
-        
-        <div v-if="onTheAirTvShows.data.value" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div
-            v-for="show in onTheAirTvShows.data.value.results.slice(0, 4)"
-            :key="show.id"
-            class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow group cursor-pointer"
-          >
-            <div class="flex">
-              <div class="w-1/4 aspect-[2/3] bg-gray-200">
-                <img
-                  v-if="show.poster_path"
-                  :src="`https://image.tmdb.org/t/p/w185${show.poster_path}`"
-                  :alt="show.name"
-                  class="w-full h-full object-cover"
-                />
-              </div>
-              <div class="flex-1 p-4">
-                <div class="flex items-center gap-2 mb-2">
-                  <span class="bg-green-500 text-white px-2 py-1 rounded text-xs font-medium">
-                    正在播出
-                  </span>
-                  <span class="text-xs text-gray-500">{{ show.origin_country?.join(', ') || '未知' }}</span>
-                </div>
-                <h3 class="font-semibold text-gray-800 mb-2 line-clamp-2">{{ show.name }}</h3>
-                <p class="text-sm text-gray-600 mb-3 line-clamp-2">{{ show.overview }}</p>
-                <div class="flex items-center justify-between text-sm">
-                  <span class="text-gray-500">首播: {{ show.first_air_date }}</span>
-                  <div class="flex items-center">
-                    <span class="text-yellow-500 mr-1">★</span>
-                    <span>{{ show.vote_average?.toFixed(1) }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 即将上映 -->
-      <section class="mb-12">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold text-gray-800">即将上映</h2>
+          <h2 class="text-2xl font-bold text-gray-800">最新动态</h2>
           <button class="text-red-600 hover:text-red-700 font-semibold">查看更多 →</button>
         </div>
         
-        <div v-if="upcomingMovies.data.value" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div
-            v-for="movie in upcomingMovies.data.value.results.slice(0, 6)"
-            :key="movie.id"
-            class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow group cursor-pointer"
-          >
-            <div class="flex">
-              <div class="w-1/3 aspect-[2/3] bg-gray-200">
-                <img
-                  v-if="movie.poster_path"
-                  :src="`https://image.tmdb.org/t/p/w185${movie.poster_path}`"
-                  :alt="movie.title"
-                  class="w-full h-full object-cover"
-                />
-              </div>
-              <div class="flex-1 p-4">
-                <h3 class="font-semibold text-gray-800 mb-2 line-clamp-2">{{ movie.title }}</h3>
-                <p class="text-sm text-gray-600 mb-3 line-clamp-3">{{ movie.overview }}</p>
-                <div class="flex items-center justify-between text-sm">
-                  <span class="text-red-600 font-semibold">{{ movie.release_date }}</span>
-                  <div class="flex items-center">
-                    <span class="text-yellow-500 mr-1">★</span>
-                    <span>{{ movie.vote_average?.toFixed(1) }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 趋势内容 -->
-      <section class="mb-12">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold text-gray-800">今日趋势</h2>
-          <div class="flex gap-2">
-            <button
-              @click="trendingType = 'all'"
-              :class="trendingType === 'all' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-700'"
-              class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            >
-              全部
-            </button>
-            <button
-              @click="trendingType = 'movie'"
-              :class="trendingType === 'movie' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-700'"
-              class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            >
-              电影
-            </button>
-            <button
-              @click="trendingType = 'tv'"
-              :class="trendingType === 'tv' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-700'"
-              class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            >
-              电视剧
-            </button>
-          </div>
-        </div>
-        
-        <div v-if="currentTrending.data.value" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          <div
-            v-for="item in currentTrending.data.value.results.slice(0, 12)"
-            :key="item.id"
-            class="group cursor-pointer"
-          >
-            <div class="relative overflow-hidden rounded-lg mb-3 aspect-[2/3] bg-gray-200">
-              <img
-                v-if="item.poster_path"
-                :src="`https://image.tmdb.org/t/p/w342${item.poster_path}`"
-                :alt="item.title || item.name"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div class="absolute top-2 left-2 bg-red-600 text-white px-2 py-1 rounded text-xs font-medium">
-                {{ item.media_type === 'movie' ? '电影' : '电视剧' }}
-              </div>
-              <div class="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-sm">
-                ★ {{ item.vote_average?.toFixed(1) }}
-              </div>
-            </div>
-            <h3 class="font-semibold text-gray-800 line-clamp-2 mb-1">{{ item.title || item.name }}</h3>
-            <p class="text-sm text-gray-600">{{ (item.release_date || item.first_air_date)?.split('-')[0] || '未知' }}</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- 今日推荐 -->
-      <section class="mb-12">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold text-gray-800">今日推荐</h2>
-          <div class="flex gap-2">
-            <button
-              @click="recommendationType = 'top_rated_movies'"
-              :class="recommendationType === 'top_rated_movies' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-700'"
-              class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            >
-              高分电影
-            </button>
-            <button
-              @click="recommendationType = 'top_rated_tv'"
-              :class="recommendationType === 'top_rated_tv' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-700'"
-              class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            >
-              高分剧集
-            </button>
-            <button
-              @click="recommendationType = 'now_playing'"
-              :class="recommendationType === 'now_playing' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-700'"
-              class="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            >
-              正在上映
-            </button>
-          </div>
-        </div>
-        
-        <div v-if="currentRecommendation.data.value" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          <div
-            v-for="item in currentRecommendation.data.value.results.slice(0, 12)"
-            :key="item.id"
-            class="group cursor-pointer"
-          >
-            <div class="relative overflow-hidden rounded-lg mb-3 aspect-[2/3] bg-gray-200">
-              <img
-                v-if="item.poster_path"
-                :src="`https://image.tmdb.org/t/p/w342${item.poster_path}`"
-                :alt="item.title || item.name"
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div class="absolute top-2 left-2 text-white px-2 py-1 rounded text-xs font-medium"
-                :class="getRecommendationBadge(recommendationType).class"
-              >
-                {{ getRecommendationBadge(recommendationType).text }}
-              </div>
-              <div class="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-sm">
-                ★ {{ item.vote_average?.toFixed(1) }}
-              </div>
-            </div>
-            <h3 class="font-semibold text-gray-800 line-clamp-2 mb-1">{{ item.title || item.name }}</h3>
-            <p class="text-sm text-gray-600">
-              {{ (item.release_date || item.first_air_date)?.split('-')[0] || '未知' }}
-            </p>
-          </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <!-- 即将上映电影 -->
+          <MediaCard
+            v-for="movie in upcomingMovies.data.value?.results?.slice(0, 6)"
+            :key="`movie-${movie.id}`"
+            :item="movie"
+            status="upcoming"
+            :is-movie="true"
+            :movie-genres="movieGenres.data.value?.genres || []"
+            :tv-genres="tvGenres.data.value?.genres || []"
+          />
+          
+          <!-- 正在播出电视剧 -->
+          <MediaCard
+            v-for="show in onTheAirTvShows.data.value?.results?.slice(0, 6)"
+            :key="`tv-${show.id}`"
+            :item="show"
+            status="on-air"
+            :is-movie="false"
+            :movie-genres="movieGenres.data.value?.genres || []"
+            :tv-genres="tvGenres.data.value?.genres || []"
+          />
         </div>
       </section>
     </div>
@@ -404,10 +197,11 @@
 </template>
 
 <script setup>
-import { getPopularMovies, getUpcomingMovies, getNowPlayingMovies, getTopRatedMovies } from '~/api/movie'
-import { getPopularTvShows, getOnTheAirTvShows, getTopRatedTvShows } from '~/api/tv'
-import { getMovieGenres } from '~/api/genre'
-import { getAllTrending, getMovieTrending, getTvTrending } from '~/api/trending'
+import { getPopularMovies, getUpcomingMovies } from '~/api/movie'
+import { getPopularTvShows, getOnTheAirTvShows } from '~/api/tv'
+import { getAllTrending } from '~/api/trending'
+import { getMovieGenres, getTvGenres } from '~/api/genre'
+import { getBackdropUrl } from '~/utils/image'
 
 // SEO
 useHead({
@@ -419,10 +213,12 @@ useHead({
 
 // 数据获取
 const popularMovies = getPopularMovies(1)
+console.log('popularMovies', popularMovies)
 const upcomingMovies = getUpcomingMovies(1)
 const popularTvShows = getPopularTvShows(1)
 const onTheAirTvShows = getOnTheAirTvShows(1)
-const genres = getMovieGenres()
+const movieGenres = getMovieGenres()
+const tvGenres = getTvGenres()
 
 // Hero 轮播 - 使用趋势内容（包含电影和电视剧）
 const heroContent = getAllTrending()
@@ -475,66 +271,9 @@ onUnmounted(() => {
     clearInterval(heroInterval)
   }
 })
-
-// 趋势内容
-const trendingType = ref('all')
-const allTrending = getAllTrending(1)
-const movieTrending = getMovieTrending(1)
-const tvTrending = getTvTrending(1)
-
-const currentTrending = computed(() => {
-  switch (trendingType.value) {
-    case 'movie':
-      return movieTrending
-    case 'tv':
-      return tvTrending
-    default:
-      return allTrending
-  }
-})
-
-// 今日推荐
-const recommendationType = ref('top_rated_movies')
-const topRatedMovies = getTopRatedMovies(1)
-const topRatedTvShows = getTopRatedTvShows(1)
-const nowPlayingMovies = getNowPlayingMovies(1)
-
-const currentRecommendation = computed(() => {
-  switch (recommendationType.value) {
-    case 'top_rated_movies':
-      return topRatedMovies
-    case 'top_rated_tv':
-      return topRatedTvShows
-    case 'now_playing':
-      return nowPlayingMovies
-    default:
-      return topRatedMovies
-  }
-})
-
-// 今日推荐徽章
-const getRecommendationBadge = (type) => {
-  switch (type) {
-    case 'top_rated_movies':
-      return { class: 'bg-purple-600', text: '高分电影' }
-    case 'top_rated_tv':
-      return { class: 'bg-blue-600', text: '高分剧集' }
-    case 'now_playing':
-      return { class: 'bg-green-600', text: '正在上映' }
-    default:
-      return { class: 'bg-purple-600', text: '高分电影' }
-  }
-}
 </script>
 
 <style scoped>
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
