@@ -24,143 +24,42 @@
 
           <!-- 主导航菜单 -->
           <nav class="hidden md:flex items-center space-x-8">
-            <!-- 首页 -->
-            <NuxtLink 
-              to="/" 
-              class="text-gray-700 hover:text-red-600 font-medium transition-colors relative group"
-              active-class="text-red-600"
-            >
-              首页
-              <div class="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 transition-all group-hover:w-full"></div>
-            </NuxtLink>
-
-            <!-- 电影下拉菜单 -->
-            <div class="relative group">
-              <button class="text-gray-700 hover:text-red-600 font-medium transition-colors flex items-center space-x-1">
-                <span>电影</span>
-                <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                </svg>
-              </button>
-              <!-- 电影下拉内容 -->
-              <div class="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999]">
-                <div class="p-4">
-                  <div class="grid grid-cols-1 gap-2">
-                    <NuxtLink to="/movies/popular" class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors">
-                      <div>
-                        <div class="font-medium text-gray-900">热门电影</div>
-                        <div class="text-sm text-gray-500">最受欢迎的电影</div>
-                      </div>
-                    </NuxtLink>
-                    
-                    <NuxtLink to="/movies/upcoming" class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors">
-                      <div>
-                        <div class="font-medium text-gray-900">即将上映</div>
-                        <div class="text-sm text-gray-500">即将上映的新片</div>
-                      </div>
-                    </NuxtLink>
-                    
-                    <NuxtLink to="/movies/top-rated" class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors">
-                      <div>
-                        <div class="font-medium text-gray-900">高分电影</div>
-                        <div class="text-sm text-gray-500">评分最高的电影</div>
-                      </div>
-                    </NuxtLink>
-                    
-                    <NuxtLink to="/movies/now-playing" class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors">
-                      <div>
-                        <div class="font-medium text-gray-900">正在上映</div>
-                        <div class="text-sm text-gray-500">影院正在放映</div>
-                      </div>
-                    </NuxtLink>
+            <template v-for="(menu, idx) in navMenus" :key="menu.label">
+              <NuxtLink
+                v-if="!menu.dropdown"
+                :to="menu.to"
+                class="text-gray-700 hover:text-red-600 font-medium transition-colors relative group"
+                active-class="text-red-600"
+              >
+                {{ menu.label }}
+                <div class="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 transition-all group-hover:w-full"></div>
+              </NuxtLink>
+              <div v-else class="relative group">
+                <button class="text-gray-700 hover:text-red-600 font-medium transition-colors flex items-center space-x-1">
+                  <span>{{ menu.label }}</span>
+                  <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                  </svg>
+                </button>
+                <div class="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999]">
+                  <div class="p-4">
+                    <div class="grid grid-cols-1 gap-2">
+                      <NuxtLink
+                        v-for="item in menu.dropdown"
+                        :key="item.to"
+                        :to="item.to"
+                        class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors"
+                      >
+                        <div>
+                          <div class="font-medium text-gray-900">{{ item.label }}</div>
+                          <div class="text-sm text-gray-500">{{ item.desc }}</div>
+                        </div>
+                      </NuxtLink>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-
-            <!-- 电影列表页面链接 -->
-            <NuxtLink 
-              to="/movies" 
-              class="text-gray-700 hover:text-red-600 font-medium transition-colors relative group"
-              active-class="text-red-600"
-            >
-              电影列表
-              <div class="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 transition-all group-hover:w-full"></div>
-            </NuxtLink>
-
-            <!-- 电视剧下拉菜单 -->
-            <div class="relative group">
-              <button class="text-gray-700 hover:text-red-600 font-medium transition-colors flex items-center space-x-1">
-                <span>电视剧</span>
-                <svg class="w-4 h-4 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                </svg>
-              </button>
-              <!-- 电视剧下拉内容 -->
-              <div class="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999]">
-                <div class="p-4">
-                  <div class="grid grid-cols-1 gap-2">
-                    <NuxtLink to="/tv/popular" class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors">
-                      <div>
-                        <div class="font-medium text-gray-900">热门剧集</div>
-                        <div class="text-sm text-gray-500">最受欢迎的电视剧</div>
-                      </div>
-                    </NuxtLink>
-                    
-                    <NuxtLink to="/tv/on-the-air" class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors">
-                      <div>
-                        <div class="font-medium text-gray-900">正在播出</div>
-                        <div class="text-sm text-gray-500">正在播出的剧集</div>
-                      </div>
-                    </NuxtLink>
-                    
-                    <NuxtLink to="/tv/top-rated" class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors">
-                      <div>
-                        <div class="font-medium text-gray-900">高分剧集</div>
-                        <div class="text-sm text-gray-500">评分最高的电视剧</div>
-                      </div>
-                    </NuxtLink>
-                    
-                    <NuxtLink to="/tv/airing-today" class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors">
-                      <div>
-                        <div class="font-medium text-gray-900">今日播出</div>
-                        <div class="text-sm text-gray-500">今天播出的剧集</div>
-                      </div>
-                    </NuxtLink>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- 电视剧列表页面链接 -->
-            <NuxtLink 
-              to="/tv" 
-              class="text-gray-700 hover:text-red-600 font-medium transition-colors relative group"
-              active-class="text-red-600"
-            >
-              电视剧列表
-              <div class="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 transition-all group-hover:w-full"></div>
-            </NuxtLink>
-
-            <!-- 演员 -->
-            <NuxtLink 
-              to="/people" 
-              class="text-gray-700 hover:text-red-600 font-medium transition-colors relative group"
-              active-class="text-red-600"
-            >
-              演员
-              <div class="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 transition-all group-hover:w-full"></div>
-            </NuxtLink>
-
-            <!-- 搜索 -->
-            <NuxtLink 
-              to="/search" 
-              class="text-gray-700 hover:text-red-600 font-medium transition-colors relative group"
-              active-class="text-red-600"
-            >
-              搜索
-              <div class="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 transition-all group-hover:w-full"></div>
-            </NuxtLink>
+            </template>
           </nav>
         </div>
 
@@ -262,27 +161,52 @@
 </template>
 
 <script setup>
-// 移动端菜单状态
+// 菜单数据结构
+const navMenus = [
+  {
+    label: '首页',
+    to: '/',
+  },
+  {
+    label: '电影',
+    dropdown: [
+      { label: '全部电影', to: '/movies', desc: '浏览所有电影' },
+      { label: '热门电影', to: '/movies/popular', desc: '最受欢迎的电影' },
+      { label: '即将上映', to: '/movies/upcoming', desc: '即将上映的新片' },
+      { label: '高分电影', to: '/movies/top-rated', desc: '评分最高的电影' },
+      { label: '正在上映', to: '/movies/now-playing', desc: '影院正在放映' },
+    ],
+  },
+  {
+    label: '电视剧',
+    dropdown: [
+      { label: '全部电视剧', to: '/tv', desc: '浏览所有电视剧' },
+      { label: '热门剧集', to: '/tv/popular', desc: '最受欢迎的电视剧' },
+      { label: '正在播出', to: '/tv/on-the-air', desc: '正在播出的剧集' },
+      { label: '高分剧集', to: '/tv/top-rated', desc: '评分最高的电视剧' },
+      { label: '今日播出', to: '/tv/airing-today', desc: '今天播出的剧集' },
+    ],
+  },
+  {
+    label: '演员',
+    to: '/people',
+  },
+  {
+    label: '搜索',
+    to: '/search',
+  },
+]
+
 const isMobileMenuOpen = ref(false)
-
-// 滚动状态
 const isScrolled = ref(false)
-
-// 切换移动端菜单
 const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
 }
-
-// 监听滚动事件
 onMounted(() => {
   const handleScroll = () => {
-    // 当滚动超过一定距离时才吸顶，使用更小的阈值让响应更及时
     isScrolled.value = window.scrollY > 20
   }
-  
   window.addEventListener('scroll', handleScroll, { passive: true })
-  
-  // 清理事件监听器
   onUnmounted(() => {
     window.removeEventListener('scroll', handleScroll)
   })
