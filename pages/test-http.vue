@@ -20,9 +20,8 @@
           <button 
             @click="loadPopularMovies" 
             class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors duration-200 font-medium shadow-sm"
-            :disabled="popularMovies.pending.value"
           >
-            <span v-if="popularMovies.pending.value" class="flex items-center">
+            <span v-if="popularMovies.pending?.value" class="flex items-center">
               <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -33,7 +32,7 @@
           </button>
         </div>
         
-        <div v-if="popularMovies.data.value" class="mt-6">
+        <!-- <div v-if="popularMovies.data.value" class="mt-6">
           <h3 class="font-medium mb-4 text-gray-600">热门电影 (共 {{ popularMovies.data.value.total_results }} 部, 第 {{ popularMovies.data.value.page }} 页):</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div 
@@ -58,11 +57,11 @@
             </svg>
             <span class="text-red-700 font-medium">错误: {{ popularMovies.error.value.message }}</span>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <!-- 测试搜索电影 -->
-      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <!-- <div class="bg-white rounded-lg shadow-md p-6 mb-8">
         <h2 class="text-2xl font-semibold mb-4 text-gray-700 flex items-center">
           <span class="w-2 h-6 bg-green-500 rounded mr-3"></span>
           测试搜索电影
@@ -122,10 +121,10 @@
             <span class="text-red-700 font-medium">错误: {{ searchResults.error.value.message }}</span>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <!-- 测试获取电影分类 -->
-      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <!-- <div class="bg-white rounded-lg shadow-md p-6 mb-8">
         <h2 class="text-2xl font-semibold mb-4 text-gray-700 flex items-center">
           <span class="w-2 h-6 bg-indigo-500 rounded mr-3"></span>
           测试获取电影分类
@@ -166,10 +165,10 @@
             <span class="text-red-700 font-medium">错误: {{ genres.error.value.message }}</span>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <!-- 测试获取趋势 -->
-      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <!-- <div class="bg-white rounded-lg shadow-md p-6 mb-8">
         <h2 class="text-2xl font-semibold mb-4 text-gray-700 flex items-center">
           <span class="w-2 h-6 bg-pink-500 rounded mr-3"></span>
           测试获取趋势
@@ -233,10 +232,10 @@
             <span class="text-red-700 font-medium">错误: {{ trending.error.value.message }}</span>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <!-- 测试获取电影详情 -->
-      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <!-- <div class="bg-white rounded-lg shadow-md p-6 mb-8">
         <h2 class="text-2xl font-semibold mb-4 text-gray-700 flex items-center">
           <span class="w-2 h-6 bg-purple-500 rounded mr-3"></span>
           测试获取电影详情
@@ -295,11 +294,11 @@
             <span class="text-red-700 font-medium">错误: {{ movieDetail.error.value.message }}</span>
           </div>
         </div>
-      </div>
+      </div> -->
 
       <!-- 测试 POST 请求 -->
       <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 class="text-2xl font-semibold mb-4 text-gray-700 flex items-center">
+        <!-- <h2 class="text-2xl font-semibold mb-4 text-gray-700 flex items-center">
           <span class="w-2 h-6 bg-orange-500 rounded mr-3"></span>
           测试 POST 请求
         </h2>
@@ -358,10 +357,10 @@
             <span class="text-red-700 font-medium">POST 请求失败: {{ postResult.error.value.message }}</span>
           </div>
           <pre class="mt-2 text-sm text-red-600 bg-red-100 p-2 rounded overflow-auto">{{ JSON.stringify(postResult.error.value, null, 2) }}</pre>
-        </div>
+        </div> -->
 
         <!-- 请求详情调试信息 -->
-        <div class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+        <!-- <div class="mt-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
           <h4 class="font-medium text-gray-700 mb-2">请求详情:</h4>
           <div class="text-sm text-gray-600 space-y-1">
             <p><strong>URL:</strong> /movie/{{ postMovieId }}/rating?language=zh-CN</p>
@@ -370,7 +369,7 @@
             <p><strong>Headers:</strong> Authorization: Bearer ***, Content-Type: application/json</p>
             <p><strong>URL Params:</strong> language=zh-CN</p>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -388,6 +387,7 @@ import {
 import { getMovieGenres } from '~/api/genre'
 import { getAllTrending, getMovieTrending, getTvTrending } from '~/api/trending'
 
+
 // 响应式数据
 const searchQuery = ref('')
 const searchPage = ref(1)
@@ -400,67 +400,71 @@ const trendingPage = ref(1)
 
 // 获取热门电影 - 手动触发
 const popularMovies = getPopularMovies(popularPage.value)
+console.log('popularMovies------------', popularMovies)
 
-const loadPopularMovies = () => {
-  popularMovies.refresh()
+
+const loadPopularMovies = async() => {
+  const { data: { value } } = await getPopularMovies(popularPage.value)
+  console.log('res------------', value)
+  // popularMovies()
 }
 
-// 搜索电影 - 手动触发
-const searchResults = searchMovies('', 1)
+// // 搜索电影 - 手动触发
+// const searchResults = searchMovies('', 1)
 
-const handleSearchMovies = () => {
-  if (searchQuery.value.trim()) {
-    searchResults.refresh()
-  }
-}
+// const handleSearchMovies = () => {
+//   if (searchQuery.value.trim()) {
+//     searchResults.refresh()
+//   }
+// }
 
-// 获取电影分类 - 手动触发
-const genres = getMovieGenres()
+// // 获取电影分类 - 手动触发
+// const genres = getMovieGenres()
 
-const loadGenres = () => {
-  genres.refresh()
-}
+// const loadGenres = () => {
+//   genres.refresh()
+// }
 
-// 获取趋势 - 手动触发
-const trending = computed(() => {
-  switch (trendingType.value) {
-    case 'movie':
-      return getMovieTrending(trendingPage.value)
-    case 'tv':
-      return getTvTrending(trendingPage.value)
-    default:
-      return getAllTrending(trendingPage.value)
-  }
-})
+// // 获取趋势 - 手动触发
+// const trending = computed(() => {
+//   switch (trendingType.value) {
+//     case 'movie':
+//       return getMovieTrending(trendingPage.value)
+//     case 'tv':
+//       return getTvTrending(trendingPage.value)
+//     default:
+//       return getAllTrending(trendingPage.value)
+//   }
+// })
 
-const loadTrending = () => {
-  trending.value.refresh()
-}
+// const loadTrending = () => {
+//   trending.value.refresh()
+// }
 
-// 获取电影详情 - 手动触发
-const movieDetail = getMovieDetail(0)
+// // 获取电影详情 - 手动触发
+// const movieDetail = getMovieDetail(0)
 
-const loadMovieDetail = () => {
-  if (movieId.value) {
-    movieDetail.refresh()
-  }
-}
+// const loadMovieDetail = () => {
+//   if (movieId.value) {
+//     movieDetail.refresh()
+//   }
+// }
 
-// 测试 POST 请求 - 手动触发
-const postResult = rateMovie(parseInt(postMovieId.value), parseFloat(postRating.value))
+// // 测试 POST 请求 - 手动触发
+// const postResult = rateMovie(parseInt(postMovieId.value), parseFloat(postRating.value))
 
-const testPostRequest = () => {
-  if (postMovieId.value && postRating.value) {
-    const rating = parseFloat(postRating.value)
-    if (rating >= 1 && rating <= 10) {
-      postResult.refresh()
-    } else {
-      alert('评分必须在 1-10 之间')
-    }
-  } else {
-    alert('请填写电影ID和评分')
-  }
-}
+// const testPostRequest = () => {
+//   if (postMovieId.value && postRating.value) {
+//     const rating = parseFloat(postRating.value)
+//     if (rating >= 1 && rating <= 10) {
+//       postResult.refresh()
+//     } else {
+//       alert('评分必须在 1-10 之间')
+//     }
+//   } else {
+//     alert('请填写电影ID和评分')
+//   }
+// }
 </script>
 
 <style scoped>
