@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Hero 轮播区 - 展示热门内容的动态轮播 -->
-    <section class="relative h-96 md:h-[500px] overflow-hidden">
+    <section class="relative h-96 md:h-[500px] overflow-hidden z-10">
       <!-- 渐变遮罩层 - 确保文字在背景图片上清晰可见 -->
       <div class="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent z-10"></div>
       
