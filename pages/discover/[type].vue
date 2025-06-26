@@ -291,7 +291,7 @@ useHead({
 })
 
 // ==================== 响应式数据 ====================
-const showFilters = ref(false)
+const showFilters = ref(true)
 const viewMode = ref('grid')
 const currentPage = ref(1)
 const pending = ref(false)
