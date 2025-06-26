@@ -39,6 +39,7 @@
           <!-- 应用筛选按钮 - 移到顶部 -->
           <div v-if="hasFilterChanges" class="mb-4">
             <button 
+              ref="applyFilterBtn"
               @click="applyFilters"
               class="w-full px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
             >
@@ -264,6 +265,22 @@
         </div>
       </div>
     </div>
+
+    <!-- 吸顶应用筛选按钮 -->
+    <div 
+      v-if="hasFilterChanges && !isApplyButtonVisible"
+      class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg"
+    >
+      <div class="container mx-auto px-6 py-4">
+        <button 
+          @click="applyFilters"
+          class="w-full px-6 py-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-lg font-medium"
+        >
+          应用筛选
+        </button>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -296,6 +313,8 @@ const viewMode = ref('grid')
 const currentPage = ref(1)
 const pending = ref(false)
 const data = ref(null)
+const isApplyButtonVisible = ref(true)
+const applyFilterBtn = ref(null)
 
 // 筛选条件
 const filters = ref({
@@ -403,6 +422,8 @@ const fetchData = async () => {
     pending.value = false
   }
 }
+// 获取数据，不应该在 onMounted 中获取
+fetchData()
 
 const getPosterUrl = (path) => {
   return getTmdbImageUrl(path, 'poster', 'medium')
@@ -418,32 +439,64 @@ const handleImageError = (event) => {
   img.style.display = 'none'
 }
 
-// ==================== 生命周期 ====================
-// onMounted(() => {
-  // setTimeout(() => {
-    fetchData()
-  // }, 1000)
-// })
-
-// 监听路由变化
-watch(() => route.params.type, (newType) => {
-  if (newType !== type) {
-    // 路由类型改变时重置数据
-    data.value = null
-    currentPage.value = 1
-    resetFilters()
-    // 重置初始筛选状态
-    initialFilters.value = {
-      sort_by: 'popularity.desc',
-      with_genres: [],
-      'vote_average.gte': 0,
-      year: null,
-      'air_date.gte': null,
-      with_original_language: ''
-    }
-    fetchData()
+// 监听筛选条件变化，设置观察器
+watch(hasFilterChanges, (newValue) => {
+  if (newValue) {
+    nextTick(() => {
+      console.log('Filter changes detected, setting up observer...')
+      if (applyFilterBtn.value) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              console.log('Intersection observed:', entry.isIntersecting)
+              isApplyButtonVisible.value = entry.isIntersecting
+            })
+          },
+          {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+          }
+        )
+        
+        observer.observe(applyFilterBtn.value)
+        console.log('Observer attached to button')
+        
+        // 清理函数 - 当筛选条件应用后清理
+        watch(hasFilterChanges, (hasChanges) => {
+          if (!hasChanges) {
+            observer.disconnect()
+            console.log('Observer disconnected')
+          }
+        })
+      } else {
+        console.log('Button element not found')
+      }
+    })
+  } else {
+    // 当没有筛选变化时，重置可见性状态
+    isApplyButtonVisible.value = true
   }
 })
+
+// 监听路由变化
+// watch(() => route.params.type, (newType) => {
+//   if (newType !== type) {
+//     // 路由类型改变时重置数据
+//     data.value = null
+//     currentPage.value = 1
+//     resetFilters()
+//     // 重置初始筛选状态
+//     initialFilters.value = {
+//       sort_by: 'popularity.desc',
+//       with_genres: [],
+//       'vote_average.gte': 0,
+//       year: null,
+//       'air_date.gte': null,
+//       with_original_language: ''
+//     }
+//     fetchData()
+//   }
+// })
 </script>
 
 <style scoped>
