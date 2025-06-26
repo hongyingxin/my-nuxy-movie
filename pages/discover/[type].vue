@@ -32,113 +32,122 @@
         <!-- 筛选侧边栏 -->
         <div 
           v-if="showFilters"
-          class="lg:w-80 bg-white rounded-lg shadow-sm border p-6 h-fit lg:sticky lg:top-24"
+          class="lg:w-80 bg-white rounded-lg shadow-sm border p-6"
         >
           <h3 class="text-lg font-semibold text-gray-900 mb-4">筛选条件</h3>
           
-          <!-- 排序 -->
-          <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">排序方式</label>
-            <select 
-              v-model="filters.sort_by"
-              @change="applyFilters"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+          <!-- 应用筛选按钮 - 移到顶部 -->
+          <div v-if="hasFilterChanges" class="mb-4">
+            <button 
+              @click="applyFilters"
+              class="w-full px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
             >
-              <option 
-                v-for="option in sortOptions" 
-                :key="option.value" 
-                :value="option.value"
-              >
-                {{ option.label }}
-              </option>
-            </select>
+              应用筛选
+            </button>
           </div>
 
-          <!-- 分类筛选 -->
-          <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">分类</label>
-            <div class="space-y-2 max-h-40 overflow-y-auto">
-              <label 
-                v-for="genre in genres" 
-                :key="genre.id"
-                class="flex items-center space-x-2 cursor-pointer"
+          <!-- 筛选条件内容区域 -->
+          <div class="space-y-6">
+            <!-- 排序 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">排序方式</label>
+              <select 
+                v-model="filters.sort_by"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
               >
-                <input 
-                  type="checkbox" 
-                  :value="genre.id"
-                  v-model="filters.with_genres"
-                  @change="applyFilters"
-                  class="rounded border-gray-300 text-red-600 focus:ring-red-500"
+                <option 
+                  v-for="option in sortOptions" 
+                  :key="option.value" 
+                  :value="option.value"
                 >
-                <span class="text-sm text-gray-700">{{ genre.name }}</span>
-              </label>
+                  {{ option.label }}
+                </option>
+              </select>
+            </div>
+
+            <!-- 分类筛选 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">分类</label>
+              <div class="space-y-2 border border-gray-200 rounded-md p-3">
+                <label 
+                  v-for="genre in genres" 
+                  :key="genre.id"
+                  class="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-1 rounded"
+                >
+                  <input 
+                    type="checkbox" 
+                    :value="genre.id"
+                    v-model="filters.with_genres"
+                    class="rounded border-gray-300 text-red-600 focus:ring-red-500"
+                  >
+                  <span class="text-sm text-gray-700">{{ genre.name }}</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- 评分筛选 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">最低评分</label>
+              <div class="flex items-center space-x-2">
+                <input 
+                  type="range" 
+                  v-model="filters['vote_average.gte']"
+                  min="0" 
+                  max="10" 
+                  step="0.5"
+                  class="flex-1"
+                >
+                <span class="text-sm text-gray-600 w-12">{{ filters['vote_average.gte'] || 0 }}</span>
+              </div>
+            </div>
+
+            <!-- 年份筛选 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">年份范围</label>
+              <div class="grid grid-cols-2 gap-2">
+                <input 
+                  type="number" 
+                  v-model="filters.year"
+                  placeholder="开始年份"
+                  class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+                <input 
+                  type="number" 
+                  v-model="filters['air_date.gte']"
+                  placeholder="结束年份"
+                  class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                >
+              </div>
+            </div>
+
+            <!-- 语言筛选 -->
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">语言</label>
+              <select 
+                v-model="filters.with_original_language"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+              >
+                <option value="">所有语言</option>
+                <option value="zh">中文</option>
+                <option value="en">英语</option>
+                <option value="ja">日语</option>
+                <option value="ko">韩语</option>
+                <option value="fr">法语</option>
+                <option value="de">德语</option>
+                <option value="es">西班牙语</option>
+              </select>
             </div>
           </div>
 
-          <!-- 评分筛选 -->
-          <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">最低评分</label>
-            <div class="flex items-center space-x-2">
-              <input 
-                type="range" 
-                v-model="filters['vote_average.gte']"
-                min="0" 
-                max="10" 
-                step="0.5"
-                @input="applyFilters"
-                class="flex-1"
-              >
-              <span class="text-sm text-gray-600 w-12">{{ filters['vote_average.gte'] || 0 }}</span>
-            </div>
-          </div>
-
-          <!-- 年份筛选 -->
-          <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">年份范围</label>
-            <div class="grid grid-cols-2 gap-2">
-              <input 
-                type="number" 
-                v-model="filters.year"
-                placeholder="开始年份"
-                @input="applyFilters"
-                class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-              >
-              <input 
-                type="number" 
-                v-model="filters['air_date.gte']"
-                placeholder="结束年份"
-                @input="applyFilters"
-                class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-              >
-            </div>
-          </div>
-
-          <!-- 语言筛选 -->
-          <div class="mb-6">
-            <label class="block text-sm font-medium text-gray-700 mb-2">语言</label>
-            <select 
-              v-model="filters.with_original_language"
-              @change="applyFilters"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+          <!-- 重置按钮 - 固定在底部 -->
+          <div class="mt-6 pt-4 border-t border-gray-200">
+            <button 
+              @click="resetFilters"
+              class="w-full px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
             >
-              <option value="">所有语言</option>
-              <option value="zh">中文</option>
-              <option value="en">英语</option>
-              <option value="ja">日语</option>
-              <option value="ko">韩语</option>
-              <option value="fr">法语</option>
-              <option value="de">德语</option>
-              <option value="es">西班牙语</option>
-            </select>
+              重置筛选
+            </button>
           </div>
-
-          <!-- 重置按钮 -->
-          <button 
-            @click="resetFilters"
-            class="w-full px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
-          >
-            重置筛选
-          </button>
         </div>
 
         <!-- 主要内容区域 -->
@@ -298,6 +307,16 @@ const filters = ref({
   with_original_language: ''
 })
 
+// 保存初始筛选条件状态，用于检测变化
+const initialFilters = ref({
+  sort_by: 'popularity.desc',
+  with_genres: [],
+  'vote_average.gte': 0,
+  year: null,
+  'air_date.gte': null,
+  with_original_language: ''
+})
+
 // ==================== 计算属性 ====================
 const sortOptions = computed(() => {
   return type === 'movie' ? MOVIE_SORT_OPTIONS : TV_SORT_OPTIONS
@@ -305,6 +324,11 @@ const sortOptions = computed(() => {
 
 const totalResults = computed(() => {
   return data.value?.total_results || 0
+})
+
+// 检测筛选条件是否有变化
+const hasFilterChanges = computed(() => {
+  return JSON.stringify(filters.value) !== JSON.stringify(initialFilters.value)
 })
 
 // 获取分类数据
@@ -324,6 +348,8 @@ const toggleFilters = () => {
 
 const applyFilters = async () => {
   currentPage.value = 1
+  // 更新初始状态
+  initialFilters.value = JSON.parse(JSON.stringify(filters.value))
   await fetchData()
 }
 
@@ -336,6 +362,8 @@ const resetFilters = () => {
     'air_date.gte': null,
     with_original_language: ''
   }
+  // 重置初始状态
+  initialFilters.value = JSON.parse(JSON.stringify(filters.value))
   applyFilters()
 }
 
@@ -404,6 +432,15 @@ watch(() => route.params.type, (newType) => {
     data.value = null
     currentPage.value = 1
     resetFilters()
+    // 重置初始筛选状态
+    initialFilters.value = {
+      sort_by: 'popularity.desc',
+      with_genres: [],
+      'vote_average.gte': 0,
+      year: null,
+      'air_date.gte': null,
+      with_original_language: ''
+    }
     fetchData()
   }
 })
