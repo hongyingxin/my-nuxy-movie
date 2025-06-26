@@ -21,7 +21,7 @@
       
       <!-- 评分 -->
       <div class="absolute top-2 right-2">
-        <UiMovieRating 
+        <MediaRating 
           :score="item.vote_average || 0" 
           :total-score="10"
         />

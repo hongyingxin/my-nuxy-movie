@@ -51,6 +51,13 @@ Shared components that don't fit into other categories.
 - **Media components**: `Media[ComponentName]` (e.g., `MediaCard`)
 - **Common components**: `Common[ComponentName]` (e.g., `CommonIcon`)
 
+**Nuxt 3 Auto-Import Rules:**
+- Components in subdirectories are automatically imported with the directory name as prefix
+- `components/layout/AppHeader.vue` → `<LayoutAppHeader />`
+- `components/ui/MovieRating.vue` → `<UiMovieRating />`
+- `components/media/MediaCard.vue` → `<MediaCard />` (no prefix for media directory)
+- `components/common/Icon.vue` → `<CommonIcon />`
+
 ## Usage Examples
 
 ```vue
