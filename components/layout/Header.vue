@@ -78,14 +78,14 @@
           </div>
 
           <!-- 主题切换按钮 -->
-          <button class="p-2 text-gray-600 hover:text-red-600 transition-colors">
+          <button class="hidden md:block p-2 text-gray-600 hover:text-red-600 transition-colors">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
             </svg>
           </button>
 
           <!-- 用户菜单 -->
-          <div class="relative group">
+          <div class="relative group hidden md:block">
             <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors">
               <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center">
                 <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
@@ -114,17 +114,17 @@
                 </button>
               </div>
             </div>
-
-            <!-- 移动端菜单按钮 -->
-            <button 
-              @click="toggleMobileMenu"
-              class="md:hidden p-2 text-gray-600 hover:text-red-600 transition-colors"
-            >
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-              </svg>
-            </button>
           </div>
+
+          <!-- 移动端菜单按钮 -->
+          <button 
+            @click="toggleMobileMenu"
+            class="md:hidden p-2 text-gray-600 hover:text-red-600 transition-colors"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -150,6 +150,25 @@
             <NuxtLink to="/tv" class="block py-2 text-gray-700 hover:text-red-600 transition-colors">电视剧</NuxtLink>
             <NuxtLink to="/people" class="block py-2 text-gray-700 hover:text-red-600 transition-colors">演员</NuxtLink>
             <NuxtLink to="/search" class="block py-2 text-gray-700 hover:text-red-600 transition-colors">搜索</NuxtLink>
+          </div>
+
+          <!-- 移动端用户菜单 -->
+          <div class="border-t border-gray-200 pt-4">
+            <div class="space-y-2">
+              <NuxtLink to="/profile" class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors">
+                <span class="text-sm text-gray-700">个人资料</span>
+              </NuxtLink>
+              <NuxtLink to="/favorites" class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors">
+                <span class="text-sm text-gray-700">我的收藏</span>
+              </NuxtLink>
+              <NuxtLink to="/watchlist" class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors">
+                <span class="text-sm text-gray-700">观看清单</span>
+              </NuxtLink>
+              <hr class="my-2">
+              <button class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors w-full text-left">
+                <span class="text-sm text-gray-700">退出登录</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
