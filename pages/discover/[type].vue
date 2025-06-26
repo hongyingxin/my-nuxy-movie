@@ -69,20 +69,20 @@
             <!-- 分类筛选 -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">分类</label>
-              <div class="space-y-2 border border-gray-200 rounded-md p-3">
-                <label 
+              <div class="flex flex-wrap gap-2">
+                <button 
                   v-for="genre in genres" 
                   :key="genre.id"
-                  class="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-1 rounded"
+                  @click="toggleGenre(genre.id)"
+                  :class="[
+                    'px-3 py-2 text-sm rounded-md transition-colors border',
+                    filters.with_genres.includes(genre.id)
+                      ? 'bg-red-600 text-white border-red-600 hover:bg-red-700'
+                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400'
+                  ]"
                 >
-                  <input 
-                    type="checkbox" 
-                    :value="genre.id"
-                    v-model="filters.with_genres"
-                    class="rounded border-gray-300 text-red-600 focus:ring-red-500"
-                  >
-                  <span class="text-sm text-gray-700">{{ genre.name }}</span>
-                </label>
+                  {{ genre.name }}
+                </button>
               </div>
             </div>
 
@@ -208,35 +208,11 @@
           </div>
 
           <!-- 列表视图 -->
-          <div v-else-if="viewMode === 'list' && data" class="space-y-4">
-            <div 
-              v-for="item in data.results"
-              :key="item.id"
-              class="bg-white rounded-lg shadow-sm border p-4 hover:shadow-md transition-shadow cursor-pointer"
-            >
-              <div class="flex space-x-4">
-                <img 
-                  :src="getPosterUrl(item.poster_path)" 
-                  :alt="item.title || item.name"
-                  class="w-16 h-24 object-cover rounded-lg"
-                  @error="handleImageError"
-                >
-                <div class="flex-1">
-                  <h3 class="text-lg font-semibold text-gray-900 mb-1">
-                    {{ item.title || item.name }}
-                  </h3>
-                  <p class="text-sm text-gray-600 mb-2 line-clamp-2">
-                    {{ item.overview || '暂无简介' }}
-                  </p>
-                  <div class="flex items-center space-x-4 text-sm text-gray-500">
-                    <span>{{ formatDate(item.release_date || item.first_air_date) }}</span>
-                    <span v-if="item.vote_average">★ {{ item.vote_average.toFixed(1) }}</span>
-                    <span v-if="type === 'movie' && item.runtime">{{ item.runtime }}分钟</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <MediaList
+            v-else-if="viewMode === 'list' && data"
+            :items="data.results"
+            :is-movie="type === 'movie'"
+          />
 
           <!-- 分页 -->
           <div v-if="data && data.total_pages > 1" class="mt-8 flex justify-center">
@@ -292,7 +268,6 @@ const type = route.params.type // 'movie' 或 'tv'
 // API 导入
 import { discoverMedia, MOVIE_SORT_OPTIONS, TV_SORT_OPTIONS } from '~/api/discover'
 import { getMovieGenres, getTvGenres } from '~/api/genre'
-import { getTmdbImageUrl } from '~/utils/image'
 
 // SEO 配置
 useHead({
@@ -389,6 +364,14 @@ const resetFilters = () => {
 const changePage = async (page) => {
   currentPage.value = page
   await fetchData()
+  
+  // 滚动到页面顶部
+  nextTick(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    })
+  })
 }
 
 const fetchData = async () => {
@@ -425,18 +408,12 @@ const fetchData = async () => {
 // 获取数据，不应该在 onMounted 中获取
 fetchData()
 
-const getPosterUrl = (path) => {
-  return getTmdbImageUrl(path, 'poster', 'medium')
-}
-
-const formatDate = (dateString) => {
-  if (!dateString) return '未知'
-  return new Date(dateString).getFullYear()
-}
-
-const handleImageError = (event) => {
-  const img = event.target
-  img.style.display = 'none'
+const toggleGenre = (genreId) => {
+  if (filters.value.with_genres.includes(genreId)) {
+    filters.value.with_genres = filters.value.with_genres.filter((id) => id !== genreId)
+  } else {
+    filters.value.with_genres.push(genreId)
+  }
 }
 
 // 监听筛选条件变化，设置观察器
@@ -478,32 +455,7 @@ watch(hasFilterChanges, (newValue) => {
   }
 })
 
-// 监听路由变化
-// watch(() => route.params.type, (newType) => {
-//   if (newType !== type) {
-//     // 路由类型改变时重置数据
-//     data.value = null
-//     currentPage.value = 1
-//     resetFilters()
-//     // 重置初始筛选状态
-//     initialFilters.value = {
-//       sort_by: 'popularity.desc',
-//       with_genres: [],
-//       'vote_average.gte': 0,
-//       year: null,
-//       'air_date.gte': null,
-//       with_original_language: ''
-//     }
-//     fetchData()
-//   }
-// })
 </script>
 
 <style scoped>
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
 </style> 
