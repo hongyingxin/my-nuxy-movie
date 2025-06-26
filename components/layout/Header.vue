@@ -189,6 +189,7 @@ const navMenus = [
   {
     label: '电影',
     dropdown: [
+      { label: '发现电影', to: '/discover/movie', desc: '高级筛选发现电影' },
       { label: '全部电影', to: '/movies', desc: '浏览所有电影' },
       { label: '热门电影', to: '/movies/popular', desc: '最受欢迎的电影' },
       { label: '即将上映', to: '/movies/upcoming', desc: '即将上映的新片' },
@@ -199,6 +200,7 @@ const navMenus = [
   {
     label: '电视剧',
     dropdown: [
+      { label: '发现电视剧', to: '/discover/tv', desc: '高级筛选发现电视剧' },
       { label: '全部电视剧', to: '/tv', desc: '浏览所有电视剧' },
       { label: '热门剧集', to: '/tv/popular', desc: '最受欢迎的电视剧' },
       { label: '正在播出', to: '/tv/on-the-air', desc: '正在播出的剧集' },
