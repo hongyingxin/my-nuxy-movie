@@ -1,0 +1,404 @@
+<template>
+  <div class="min-h-screen bg-gray-50">
+    <!-- 加载状态 -->
+    <div v-if="detail.pending.value" class="min-h-screen flex items-center justify-center">
+      <div class="text-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+        <p class="text-gray-600">加载{{ mediaTypeText }}详情中...</p>
+      </div>
+    </div>
+
+    <!-- 详情内容 -->
+    <div v-else-if="detail.data.value" class="relative">
+      <!-- Hero 区域 - 背景图片和基本信息 -->
+      <section class="relative h-96 md:h-[500px] overflow-hidden">
+        <!-- 背景图片 -->
+        <div 
+          class="absolute inset-0 bg-cover bg-center"
+          :style="{ backgroundImage: `url(${getBackdropUrl(detail.data.value.backdrop_path, 'large')})` }"
+        >
+          <!-- 渐变遮罩 -->
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+        </div>
+        
+        <!-- 内容区域 -->
+        <div class="absolute inset-0 flex items-end">
+          <div class="container mx-auto px-6 pb-8">
+            <div class="flex flex-col md:flex-row gap-8 items-end">
+              <!-- 海报 -->
+              <div class="flex-shrink-0">
+                <img 
+                  :src="getPosterUrl(detail.data.value.poster_path, 'medium')"
+                  :alt="detail.data.value.title || detail.data.value.name"
+                  class="w-48 md:w-64 rounded-lg shadow-2xl"
+                />
+              </div>
+              
+              <!-- 基本信息 -->
+              <div class="flex-1 text-white">
+                <!-- 标题和年份 -->
+                <div class="mb-4">
+                  <h1 class="text-3xl md:text-5xl font-bold mb-2">
+                    {{ detail.data.value.title || detail.data.value.name }}
+                  </h1>
+                  <p class="text-xl text-gray-300">
+                    {{ getYear() }}
+                  </p>
+                </div>
+                
+                <!-- 标签信息 -->
+                <div class="flex flex-wrap gap-2 mb-4">
+                  <span class="bg-red-600 text-white px-3 py-1 rounded-full text-sm">
+                    {{ detail.data.value.adult ? 'R' : 'PG' }}
+                  </span>
+                  <span class="bg-gray-600 text-white px-3 py-1 rounded-full text-sm">
+                    {{ getRuntimeOrSeasons() }}
+                  </span>
+                  <span 
+                    v-for="genre in detail.data.value.genres" 
+                    :key="genre.id"
+                    class="bg-white/20 text-white px-3 py-1 rounded-full text-sm backdrop-blur-sm"
+                  >
+                    {{ genre.name }}
+                  </span>
+                </div>
+                
+                <!-- 评分 -->
+                <div class="flex items-center gap-4 mb-6">
+                  <div class="flex items-center bg-white/20 px-4 py-2 rounded-lg backdrop-blur-sm">
+                    <span class="text-yellow-400 mr-2">★</span>
+                    <span class="font-bold text-lg">{{ detail.data.value.vote_average?.toFixed(1) }}</span>
+                    <span class="text-gray-300 ml-1">/10</span>
+                  </div>
+                  <div class="text-gray-300">
+                    {{ detail.data.value.vote_count }} 人评分
+                  </div>
+                </div>
+                
+                <!-- 状态信息 (电视剧特有) -->
+                <div v-if="isTv" class="mb-6">
+                  <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm mr-2">
+                    {{ detail.data.value.status }}
+                  </span>
+                  <span class="text-gray-300">
+                    {{ detail.data.value.number_of_episodes }} 集
+                  </span>
+                </div>
+                
+                <!-- 操作按钮 -->
+                <div class="flex gap-3">
+                  <button class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                    </svg>
+                    观看预告片
+                  </button>
+                  <button class="bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-lg font-semibold transition-colors backdrop-blur-sm flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                    </svg>
+                    收藏
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 主要内容区域 -->
+      <div class="container mx-auto px-6 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- 左侧内容 -->
+          <div class="lg:col-span-2">
+            <!-- 简介 -->
+            <section class="mb-8">
+              <h2 class="text-2xl font-bold text-gray-800 mb-4">简介</h2>
+              <p class="text-gray-700 leading-relaxed">
+                {{ detail.data.value.overview || '暂无简介' }}
+              </p>
+            </section>
+
+            <!-- 演职员 -->
+            <section class="mb-8" v-if="credits.data.value">
+              <h2 class="text-2xl font-bold text-gray-800 mb-4">演职员</h2>
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div 
+                  v-for="cast in credits.data.value.cast?.slice(0, 8)" 
+                  :key="cast.id"
+                  class="text-center"
+                >
+                  <img 
+                    :src="getProfileUrl(cast.profile_path, 'small')"
+                    :alt="cast.name"
+                    class="w-16 h-16 rounded-full mx-auto mb-2 object-cover"
+                  />
+                  <p class="text-sm font-medium text-gray-800">{{ cast.name }}</p>
+                  <p class="text-xs text-gray-600">{{ cast.character }}</p>
+                </div>
+              </div>
+            </section>
+
+            <!-- 视频 -->
+            <section class="mb-8" v-if="videos.data.value?.results?.length">
+              <h2 class="text-2xl font-bold text-gray-800 mb-4">视频</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div 
+                  v-for="video in videos.data.value.results.slice(0, 4)" 
+                  :key="video.id"
+                  class="bg-gray-200 rounded-lg overflow-hidden"
+                >
+                  <iframe 
+                    :src="`https://www.youtube.com/embed/${video.key}`"
+                    class="w-full h-48"
+                    frameborder="0"
+                    allowfullscreen
+                  ></iframe>
+                  <div class="p-3">
+                    <p class="font-medium text-gray-800">{{ video.name }}</p>
+                    <p class="text-sm text-gray-600">{{ video.type }}</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- 相似内容 -->
+            <section class="mb-8" v-if="similar.data.value?.results?.length">
+              <h2 class="text-2xl font-bold text-gray-800 mb-4">相似{{ mediaTypeText }}</h2>
+              <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <MediaCard
+                  v-for="item in similar.data.value.results.slice(0, 6)"
+                  :key="item.id"
+                  :item="item"
+                  :is-movie="!isTv"
+                  :movie-genres="movieGenres.data.value?.genres || []"
+                  :tv-genres="tvGenres.data.value?.genres || []"
+                />
+              </div>
+            </section>
+          </div>
+
+          <!-- 右侧边栏 -->
+          <div class="lg:col-span-1">
+            <!-- 详细信息 -->
+            <section class="bg-white rounded-lg shadow-md p-6 mb-6">
+              <h3 class="text-lg font-bold text-gray-800 mb-4">详细信息</h3>
+              <div class="space-y-3">
+                <div>
+                  <span class="text-gray-600 text-sm">状态：</span>
+                  <span class="text-gray-800">{{ detail.data.value.status }}</span>
+                </div>
+                <div>
+                  <span class="text-gray-600 text-sm">原始语言：</span>
+                  <span class="text-gray-800">{{ detail.data.value.original_language?.toUpperCase() }}</span>
+                </div>
+                
+                <!-- 电影特有信息 -->
+                <template v-if="!isTv">
+                  <div>
+                    <span class="text-gray-600 text-sm">预算：</span>
+                    <span class="text-gray-800">{{ formatBudget(detail.data.value.budget) }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-600 text-sm">票房：</span>
+                    <span class="text-gray-800">{{ formatBudget(detail.data.value.revenue) }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-600 text-sm">发行日期：</span>
+                    <span class="text-gray-800">{{ formatDate(detail.data.value.release_date) }}</span>
+                  </div>
+                </template>
+                
+                <!-- 电视剧特有信息 -->
+                <template v-else>
+                  <div>
+                    <span class="text-gray-600 text-sm">季数：</span>
+                    <span class="text-gray-800">{{ detail.data.value.number_of_seasons }} 季</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-600 text-sm">集数：</span>
+                    <span class="text-gray-800">{{ detail.data.value.number_of_episodes }} 集</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-600 text-sm">首播日期：</span>
+                    <span class="text-gray-800">{{ formatDate(detail.data.value.first_air_date) }}</span>
+                  </div>
+                  <div v-if="detail.data.value.last_air_date">
+                    <span class="text-gray-600 text-sm">最后播出：</span>
+                    <span class="text-gray-800">{{ formatDate(detail.data.value.last_air_date) }}</span>
+                  </div>
+                </template>
+                
+                <div>
+                  <span class="text-gray-600 text-sm">制作公司：</span>
+                  <div class="mt-1">
+                    <span 
+                      v-for="company in detail.data.value.production_companies" 
+                      :key="company.id"
+                      class="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded text-sm mr-2 mb-1"
+                    >
+                      {{ company.name }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- 评分 -->
+            <section class="bg-white rounded-lg shadow-md p-6 mb-6">
+              <h3 class="text-lg font-bold text-gray-800 mb-4">评分</h3>
+              <div class="text-center">
+                <div class="text-4xl font-bold text-red-600 mb-2">
+                  {{ detail.data.value.vote_average?.toFixed(1) }}
+                </div>
+                <div class="flex justify-center mb-4">
+                  <div class="flex">
+                    <span 
+                      v-for="i in 10" 
+                      :key="i"
+                      class="text-2xl"
+                      :class="i <= Math.round(detail.data.value.vote_average) ? 'text-yellow-400' : 'text-gray-300'"
+                    >
+                      ★
+                    </span>
+                  </div>
+                </div>
+                <p class="text-gray-600 text-sm">
+                  基于 {{ detail.data.value.vote_count }} 个评分
+                </p>
+              </div>
+            </section>
+
+            <!-- 关键词 (电影特有) -->
+            <section class="bg-white rounded-lg shadow-md p-6" v-if="!isTv && detail.data.value.keywords?.keywords?.length">
+              <h3 class="text-lg font-bold text-gray-800 mb-4">关键词</h3>
+              <div class="flex flex-wrap gap-2">
+                <span 
+                  v-for="keyword in detail.data.value.keywords.keywords.slice(0, 10)" 
+                  :key="keyword.id"
+                  class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
+                >
+                  {{ keyword.name }}
+                </span>
+              </div>
+            </section>
+
+            <!-- 季数信息 (电视剧特有) -->
+            <section class="bg-white rounded-lg shadow-md p-6" v-if="isTv && detail.data.value.seasons?.length">
+              <h3 class="text-lg font-bold text-gray-800 mb-4">季数</h3>
+              <div class="space-y-3">
+                <div 
+                  v-for="season in detail.data.value.seasons.slice(0, 5)" 
+                  :key="season.id"
+                  class="flex items-center gap-3 p-2 rounded hover:bg-gray-50"
+                >
+                  <img 
+                    :src="getPosterUrl(season.poster_path, 'small')"
+                    :alt="season.name"
+                    class="w-12 h-16 rounded object-cover"
+                  />
+                  <div class="flex-1">
+                    <p class="font-medium text-gray-800">{{ season.name }}</p>
+                    <p class="text-sm text-gray-600">{{ season.episode_count }} 集</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 错误状态 -->
+    <div v-else-if="detail.error.value" class="min-h-screen flex items-center justify-center">
+      <div class="text-center">
+        <div class="text-red-600 text-6xl mb-4">😞</div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">加载失败</h2>
+        <p class="text-gray-600 mb-4">无法获取{{ mediaTypeText }}详情，请稍后重试</p>
+        <button 
+          @click="refresh"
+          class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+        >
+          重新加载
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+// 路由参数
+const route = useRoute()
+const mediaType = route.params.type // 'movie' 或 'tv'
+const mediaId = parseInt(route.params.id)
+
+// 计算属性
+const isTv = computed(() => mediaType === 'tv')
+const mediaTypeText = computed(() => isTv.value ? '电视剧' : '电影')
+
+// API 导入
+import { getDetail, getCredits, getVideos, getSimilar } from '~/api/detail'
+import { getMovieGenres, getTvGenres } from '~/api/genre'
+import { getPosterUrl, getBackdropUrl, getProfileUrl } from '~/utils/image'
+
+// 数据获取 - 使用通用接口
+const detail = getDetail(mediaType, mediaId)
+const credits = getCredits(mediaType, mediaId)
+const videos = getVideos(mediaType, mediaId)
+const similar = getSimilar(mediaType, mediaId)
+const movieGenres = getMovieGenres()
+const tvGenres = getTvGenres()
+
+// SEO 配置
+useHead(() => ({
+  title: detail.data.value ? `${detail.data.value.title || detail.data.value.name} - Nuxt Movie` : `${mediaTypeText.value}详情 - Nuxt Movie`,
+  meta: [
+    { 
+      name: 'description', 
+      content: detail.data.value?.overview || `发现精彩${mediaTypeText.value}详情` 
+    }
+  ]
+}))
+
+// 工具函数
+const getYear = () => {
+  const date = detail.data.value.release_date || detail.data.value.first_air_date
+  return date ? new Date(date).getFullYear() : '未知'
+}
+
+const getRuntimeOrSeasons = () => {
+  if (isTv.value) {
+    return `${detail.data.value.number_of_seasons} 季`
+  } else {
+    const minutes = detail.data.value.runtime
+    if (!minutes) return '未知'
+    const hours = Math.floor(minutes / 60)
+    const mins = minutes % 60
+    return `${hours}h ${mins}m`
+  }
+}
+
+const formatBudget = (amount) => {
+  if (!amount) return '未知'
+  if (amount >= 1000000) {
+    return `$${(amount / 1000000).toFixed(1)}M`
+  }
+  if (amount >= 1000) {
+    return `$${(amount / 1000).toFixed(1)}K`
+  }
+  return `$${amount}`
+}
+
+const formatDate = (dateString) => {
+  if (!dateString) return '未知'
+  return new Date(dateString).toLocaleDateString('zh-CN')
+}
+
+// 刷新功能
+const refresh = () => {
+  detail.refresh()
+  credits.refresh()
+  videos.refresh()
+  similar.refresh()
+}
+</script> 
