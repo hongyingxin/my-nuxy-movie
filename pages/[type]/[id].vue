@@ -1,3 +1,9 @@
+
+<!-- 
+  这个页面是用来展示电影和电视剧的详情页的。
+  url: /movie/1234567890
+  url: /tv/1234567890
+-->
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- 加载状态 -->

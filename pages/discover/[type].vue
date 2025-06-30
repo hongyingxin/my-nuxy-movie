@@ -1,3 +1,8 @@
+<!-- 
+  这个页面是用来展示电影和电视剧的列表页的。
+  url: /discover/movie
+  url: /discover/tv
+-->
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- 页面头部 -->
