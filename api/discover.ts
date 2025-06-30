@@ -2,6 +2,9 @@
 
 /**
  * 通用 Discover 接口 - 支持电影和电视剧
+ * discover是一个功能非常强大的接口，可以用来获取电影和电视剧的列表，支持多种筛选条件，如分类、评分、日期、语言、地区、关键词、公司、网络、人员、时长、状态、类型、认证等。
+ * 基本上可以覆盖掉特定的/movie/popular、/movie/now_playing、/movie/upcoming、/movie/top_rated、/tv/popular、/tv/on_the_air、/tv/airing_today、/tv/top_rated等接口。
+ * 你可以看作 discover 是这些接口的集合。
  * @param type - 内容类型: 'movie' | 'tv'
  * @param params - 筛选参数
  */
@@ -15,9 +18,6 @@ export const discoverMedia = (type: 'movie' | 'tv', params: DiscoverParams = {})
       page: 1,
       // 用户传入的参数会覆盖默认值
       ...params
-    },
-    opts: {
-      lazy: false
     }
   })
 }
