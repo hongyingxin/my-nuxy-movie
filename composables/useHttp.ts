@@ -13,7 +13,7 @@ interface ResOptions<T> {
   detail?: string
 }
 
-export const fetch = <T>(
+export const useHttp = <T>(
   {url, method, opts, params}: {
     url: UrlType, 
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',

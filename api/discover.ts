@@ -1,5 +1,3 @@
-import { fetch } from '~/composables/useHttp'
-
 // ==================== 通用 Discover 接口 ====================
 
 /**

@@ -1,5 +1,3 @@
-import { fetch } from '~/composables/useHttp'
-
 // 通用详情接口 - 支持电影和电视剧
 export const getDetail = (mediaType: 'movie' | 'tv', id: number) => {
   return fetch({

@@ -1,5 +1,3 @@
-import { fetch } from '~/composables/useHttp'
-
 // 获取热门电视剧
 export const getPopularTvShows = (page = 1) => {
   return fetch({

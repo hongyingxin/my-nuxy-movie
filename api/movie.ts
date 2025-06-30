@@ -1,5 +1,3 @@
-import { fetch } from '~/composables/useHttp'
-
 // 获取热门电影
 export const getPopularMovies = (page = 1) => {
   return fetch({

@@ -1,5 +1,3 @@
-import { fetch } from '~/composables/useHttp'
-
 // 获取所有趋势内容
 export const getAllTrending = (params) => {
   return fetch({

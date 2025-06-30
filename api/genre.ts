@@ -1,5 +1,3 @@
-import { fetch } from '~/composables/useHttp'
-
 // 获取电影分类
 export const getMovieGenres = () => {
   return fetch({
