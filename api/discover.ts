@@ -6,7 +6,7 @@
  * @param params - 筛选参数
  */
 export const discoverMedia = (type: 'movie' | 'tv', params: DiscoverParams = {}) => {
-  return fetch({
+  return useHttp({
     url: `/discover/${type}`,
     method: 'GET',
     params: {

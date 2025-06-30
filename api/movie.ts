@@ -1,6 +1,6 @@
 // 获取热门电影
 export const getPopularMovies = (page = 1) => {
-  return fetch({
+  return useHttp({
     url: '/movie/popular',
     method: 'GET',
     params: { page }
@@ -9,7 +9,7 @@ export const getPopularMovies = (page = 1) => {
 
 // 获取正在上映的电影
 export const getNowPlayingMovies = (page = 1) => {
-  return fetch({
+  return useHttp({
     url: '/movie/now_playing',
     method: 'GET',
     params: { page }
@@ -18,7 +18,7 @@ export const getNowPlayingMovies = (page = 1) => {
 
 // 获取即将上映的电影
 export const getUpcomingMovies = (page = 1) => {
-  return fetch({
+  return useHttp({
     url: '/movie/upcoming',
     method: 'GET',
     params: { page }
@@ -27,7 +27,7 @@ export const getUpcomingMovies = (page = 1) => {
 
 // 获取高分电影
 export const getTopRatedMovies = (page = 1) => {
-  return fetch({
+  return useHttp({
     url: '/movie/top_rated',
     method: 'GET',
     params: { page }
@@ -36,7 +36,7 @@ export const getTopRatedMovies = (page = 1) => {
 
 // 获取电影详情
 export const getMovieDetail = (id: number) => {
-  return fetch({
+  return useHttp({
     url: `/movie/${id}`,
     method: 'GET'
   })
@@ -44,7 +44,7 @@ export const getMovieDetail = (id: number) => {
 
 // 搜索电影
 export const searchMovies = (query: string, page = 1) => {
-  return fetch({
+  return useHttp({
     url: '/search/movie',
     method: 'GET',
     params: { query, page }
@@ -53,7 +53,7 @@ export const searchMovies = (query: string, page = 1) => {
 
 // 获取相似电影
 export const getSimilarMovies = (id: number, page = 1) => {
-  return fetch({
+  return useHttp({
     url: `/movie/${id}/similar`,
     method: 'GET',
     params: { page }
@@ -62,7 +62,7 @@ export const getSimilarMovies = (id: number, page = 1) => {
 
 // 获取推荐电影
 export const getMovieRecommendations = (id: number, page = 1) => {
-  return fetch({
+  return useHttp({
     url: `/movie/${id}/recommendations`,
     method: 'GET',
     params: { page }
@@ -71,7 +71,7 @@ export const getMovieRecommendations = (id: number, page = 1) => {
 
 // 获取电影演职员
 export const getMovieCredits = (id: number) => {
-  return fetch({
+  return useHttp({
     url: `/movie/${id}/credits`,
     method: 'GET'
   })
@@ -79,7 +79,7 @@ export const getMovieCredits = (id: number) => {
 
 // 获取电影视频
 export const getMovieVideos = (id: number) => {
-  return fetch({
+  return useHttp({
     url: `/movie/${id}/videos`,
     method: 'GET'
   })
@@ -87,7 +87,7 @@ export const getMovieVideos = (id: number) => {
 
 // 获取电影图片
 export const getMovieImages = (id: number) => {
-  return fetch({
+  return useHttp({
     url: `/movie/${id}/images`,
     method: 'GET'
   })
@@ -95,7 +95,7 @@ export const getMovieImages = (id: number) => {
 
 // 评分电影 (POST 请求)
 export const rateMovie = (id: number, rating: number) => {
-  return fetch({
+  return useHttp({
     url: `/movie/${id}/rating`,
     method: 'POST',
     params: { value: rating }
