@@ -342,7 +342,6 @@ const mediaTypeText = computed(() => isTv.value ? '电视剧' : '电影')
 
 // API 导入
 import { getDetail, getCredits, getVideos, getSimilar } from '~/api/detail'
-// import { getMovieGenres, getTvGenres } from '~/api/genre'
 import { getPosterUrl, getBackdropUrl, getProfileUrl } from '~/utils/image'
 
 // 数据获取 - 使用通用接口
@@ -350,8 +349,10 @@ const detail = getDetail(mediaType, mediaId)
 const credits = getCredits(mediaType, mediaId)
 const videos = getVideos(mediaType, mediaId)
 const similar = getSimilar(mediaType, mediaId)
-// const movieGenres = getMovieGenres()
-// const tvGenres = getTvGenres()
+console.log('detail', detail)
+console.log('credits', credits)
+console.log('videos', videos)
+console.log('similar', similar)
 
 // SEO 配置
 useHead(() => ({

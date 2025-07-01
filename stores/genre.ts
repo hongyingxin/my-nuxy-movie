@@ -1,4 +1,3 @@
-import type { Genre, GenreResponse } from '~/types/tmdb'
 import { getMovieGenres, getTvGenres } from '~/api/genre'
 
 export const useGenreStore = defineStore('genre',{
@@ -9,12 +8,6 @@ export const useGenreStore = defineStore('genre',{
   }),
 
   getters: {
-    getMovieGenreById: (state) => (id: number) => {
-      return state.movieGenres.find((genre: Genre) => genre.id === id)
-    },
-    getTvGenreById: (state) => (id: number) => {
-      return state.tvGenres.find((genre: Genre) => genre.id === id)
-    }
   },
 
   actions: {

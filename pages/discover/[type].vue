@@ -192,7 +192,7 @@
           </div>
 
           <!-- 加载状态 -->
-          <div v-if="pending" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div v-if="list.pending.value" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             <div v-for="n in 12" :key="n" class="animate-pulse">
               <div class="bg-gray-300 aspect-[2/3] rounded-lg mb-2"></div>
               <div class="bg-gray-300 h-4 rounded mb-1"></div>
@@ -201,9 +201,9 @@
           </div>
 
           <!-- 网格视图 -->
-          <div v-else-if="viewMode === 'grid' && data" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <div v-else-if="viewMode === 'grid' && list.data.value" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             <MediaCard
-              v-for="item in data.results"
+              v-for="item in list.data.value.results"
               :key="item.id"
               :item="item"
               :is-movie="type === 'movie'"
@@ -212,13 +212,13 @@
 
           <!-- 列表视图 -->
           <MediaList
-            v-else-if="viewMode === 'list' && data"
-            :items="data.results"
+            v-else-if="viewMode === 'list' && list.data.value"
+            :items="list.data.value.results"
             :is-movie="type === 'movie'"
           />
 
           <!-- 分页 -->
-          <div v-if="data && data.total_pages > 1" class="mt-8 flex justify-center">
+          <div v-if="list.data.value && list.data.value.total_pages > 1" class="mt-8 flex justify-center">
             <div class="flex items-center space-x-2">
               <button 
                 @click="changePage(currentPage - 1)"
@@ -229,12 +229,12 @@
               </button>
               
               <span class="px-3 py-2 text-gray-600">
-                {{ currentPage }} / {{ data.total_pages }}
+                {{ currentPage }} / {{ list.data.value.total_pages }}
               </span>
               
               <button 
                 @click="changePage(currentPage + 1)"
-                :disabled="currentPage >= data.total_pages"
+                :disabled="currentPage >= list.data.value.total_pages"
                 class="px-3 py-2 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
               >
                 下一页
@@ -293,6 +293,7 @@ const pending = ref(false)
 const data = ref(null)
 const isApplyButtonVisible = ref(true)
 const applyFilterBtn = ref(null)
+const list = ref()
 
 // 筛选条件
 const filters = ref({
@@ -320,7 +321,7 @@ const sortOptions = computed(() => {
 })
 
 const totalResults = computed(() => {
-  return data.value?.total_results || 0
+  return list.value.data.value?.total_results || 0
 })
 
 // 检测筛选条件是否有变化
@@ -397,8 +398,9 @@ const fetchData = async () => {
         with_original_language: filters.value.with_original_language 
       })
     }
-    const result = await discoverMedia(type, params)
-    data.value = result.data.value
+    // const result = await discoverMedia(type, params)
+    // data.value = result.data.value
+    list.value = discoverMedia(type, params)
   } catch (error) {
   } finally {
     pending.value = false
