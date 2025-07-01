@@ -1,4 +1,3 @@
-
 <!-- 
   这个页面是用来展示电影和电视剧的详情页的。
   url: /movie/1234567890
@@ -145,18 +144,81 @@
               </div>
             </section>
 
-            <!-- 视频 -->
-            <section class="mb-8" v-if="videos.data.value?.results?.length">
-              <h2 class="text-2xl font-bold text-gray-800 mb-4">视频</h2>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- 媒体 -->
+            <section class="mb-8" v-if="images.data.value">
+              <h2 class="text-2xl font-bold text-gray-800 mb-4">媒体</h2>
+              
+              <!-- 标签页 -->
+              <div class="border-b border-gray-200 mb-6">
+                <nav class="flex space-x-8" aria-label="Tabs">
+                  <button
+                    v-for="tab in mediaTabs"
+                    :key="tab.id"
+                    @click="activeMediaTab = tab.id"
+                    :class="[
+                      'py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap',
+                      activeMediaTab === tab.id
+                        ? 'border-red-600 text-red-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ]"
+                  >
+                    {{ tab.name }}
+                    <span 
+                      :class="[
+                        'ml-2 rounded-full text-xs px-2 py-0.5',
+                        activeMediaTab === tab.id
+                          ? 'bg-red-100 text-red-600'
+                          : 'bg-gray-100 text-gray-600'
+                      ]"
+                    >
+                      {{ getMediaCount(tab.id) }}
+                    </span>
+                  </button>
+                </nav>
+              </div>
+              
+              <!-- 图片网格 -->
+              <div v-if="activeMediaTab === 'backdrops'" class="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div 
-                  v-for="video in videos.data.value.results.slice(0, 4)" 
+                  v-for="(image, index) in images.data.value.backdrops?.slice(0, 6)" 
+                  :key="index"
+                  class="relative aspect-video rounded-lg overflow-hidden cursor-pointer group"
+                  @click="openLightbox('backdrops', index)"
+                >
+                  <img 
+                    :src="getBackdropUrl(image.file_path, 'medium')"
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"></div>
+                </div>
+              </div>
+              
+              <div v-if="activeMediaTab === 'posters'" class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div 
+                  v-for="(image, index) in images.data.value.posters?.slice(0, 12)" 
+                  :key="index"
+                  class="relative aspect-[2/3] rounded-lg overflow-hidden cursor-pointer group"
+                  @click="openLightbox('posters', index)"
+                >
+                  <img 
+                    :src="getPosterUrl(image.file_path, 'medium')"
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"></div>
+                </div>
+              </div>
+              
+              <div v-if="activeMediaTab === 'videos'" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div 
+                  v-for="video in videos.data.value?.results?.slice(0, 4)" 
                   :key="video.id"
                   class="bg-gray-200 rounded-lg overflow-hidden"
                 >
                   <iframe 
                     :src="`https://www.youtube.com/embed/${video.key}`"
-                    class="w-full h-48"
+                    class="w-full aspect-video"
                     frameborder="0"
                     allowfullscreen
                   ></iframe>
@@ -165,6 +227,18 @@
                     <p class="text-sm text-gray-600">{{ video.type }}</p>
                   </div>
                 </div>
+              </div>
+              
+              <!-- 查看更多按钮 -->
+              <div class="text-center mt-6" v-if="hasMoreMedia">
+                <button 
+                  class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                >
+                  查看更多
+                  <svg class="ml-2 -mr-1 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </button>
               </div>
             </section>
 
@@ -341,18 +415,20 @@ const isTv = computed(() => mediaType === 'tv')
 const mediaTypeText = computed(() => isTv.value ? '电视剧' : '电影')
 
 // API 导入
-import { getDetail, getCredits, getVideos, getSimilar } from '~/api/detail'
+import { getDetail, getCredits, getVideos, getSimilar, getImages } from '~/api/detail'
 import { getPosterUrl, getBackdropUrl, getProfileUrl } from '~/utils/image'
 
-// 数据获取 - 使用通用接口
+// 数据获取
 const detail = getDetail(mediaType, mediaId)
 const credits = getCredits(mediaType, mediaId)
 const videos = getVideos(mediaType, mediaId)
 const similar = getSimilar(mediaType, mediaId)
+const images = getImages(mediaType, mediaId)
 console.log('detail', detail)
 console.log('credits', credits)
 console.log('videos', videos)
 console.log('similar', similar)
+console.log('images', images)
 
 // SEO 配置
 useHead(() => ({
@@ -364,6 +440,48 @@ useHead(() => ({
     }
   ]
 }))
+
+// 媒体标签页状态
+const activeMediaTab = ref('backdrops')
+const mediaTabs = [
+  { id: 'backdrops', name: '剧照' },
+  { id: 'posters', name: '海报' },
+  { id: 'videos', name: '视频' }
+]
+
+// 获取媒体数量
+const getMediaCount = (type) => {
+  switch (type) {
+    case 'backdrops':
+      return images.data.value?.backdrops?.length || 0
+    case 'posters':
+      return images.data.value?.posters?.length || 0
+    case 'videos':
+      return videos.data.value?.results?.length || 0
+    default:
+      return 0
+  }
+}
+
+// 是否有更多媒体内容
+const hasMoreMedia = computed(() => {
+  switch (activeMediaTab.value) {
+    case 'backdrops':
+      return (images.data.value?.backdrops?.length || 0) > 6
+    case 'posters':
+      return (images.data.value?.posters?.length || 0) > 12
+    case 'videos':
+      return (videos.data.value?.results?.length || 0) > 4
+    default:
+      return false
+  }
+})
+
+// 打开灯箱
+const openLightbox = (type, index) => {
+  // TODO: 实现灯箱功能
+  console.log('Open lightbox', type, index)
+}
 
 // 工具函数
 const getYear = () => {
@@ -405,5 +523,6 @@ const refresh = () => {
   credits.refresh()
   videos.refresh()
   similar.refresh()
+  images.refresh()
 }
 </script> 

@@ -26,7 +26,11 @@ export const getVideos = (mediaType: 'movie' | 'tv', id: number) => {
 export const getImages = (mediaType: 'movie' | 'tv', id: number) => {
   return useHttp({
     url: `/${mediaType}/${id}/images`,
-    method: 'GET'
+    method: 'GET',
+    params: {
+      // include_image_language: 'en,null',
+      language: ''
+    }
   })
 }
 
