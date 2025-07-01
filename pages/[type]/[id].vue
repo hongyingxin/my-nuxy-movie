@@ -20,11 +20,11 @@
       <section class="relative h-96 md:h-[500px] overflow-hidden">
         <!-- 背景图片 -->
         <div 
-          class="absolute inset-0 bg-cover bg-center"
-          :style="{ backgroundImage: `url(${getBackdropUrl(detail.data.value.backdrop_path, 'large')})` }"
+          class="absolute inset-0 bg-cover bg-center "
+          :style="{ backgroundImage: `url(${getBackdropUrl(detail.data.value.backdrop_path, 'original')})` }"
         >
           <!-- 渐变遮罩 -->
-          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
+          <div class="absolute inset-0 bg-black/60"></div>
         </div>
         
         <!-- 内容区域 -->
