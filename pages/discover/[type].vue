@@ -207,8 +207,6 @@
               :key="item.id"
               :item="item"
               :is-movie="type === 'movie'"
-              :movie-genres="movieGenres?.genres || []"
-              :tv-genres="tvGenres?.genres || []"
             />
           </div>
 
@@ -330,14 +328,14 @@ const hasFilterChanges = computed(() => {
   return JSON.stringify(filters.value) !== JSON.stringify(initialFilters.value)
 })
 
-// 获取分类数据
-const movieGenres = getMovieGenres()
-const tvGenres = getTvGenres()
+// 从 store 中获取分类数据
+const genreStore = useGenreStore()
+
 
 const genres = computed(() => {
   return type === 'movie' 
-    ? movieGenres.data.value?.genres || []
-    : tvGenres.data.value?.genres || []
+    ? genreStore.movieGenres || []
+    : genreStore.tvGenres || []
 })
 
 // ==================== 方法 ====================
@@ -399,13 +397,9 @@ const fetchData = async () => {
         with_original_language: filters.value.with_original_language 
       })
     }
-    console.log('type----------------', type)
-    console.log('params----------------', params)
     const result = await discoverMedia(type, params)
-    console.log('result.data.value----------------', result)
     data.value = result.data.value
   } catch (error) {
-    console.error('获取数据失败:', error)
   } finally {
     pending.value = false
   }

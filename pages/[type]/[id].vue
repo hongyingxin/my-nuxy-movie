@@ -177,8 +177,6 @@
                   :key="item.id"
                   :item="item"
                   :is-movie="!isTv"
-                  :movie-genres="movieGenres.data.value?.genres || []"
-                  :tv-genres="tvGenres.data.value?.genres || []"
                 />
               </div>
             </section>
@@ -344,7 +342,7 @@ const mediaTypeText = computed(() => isTv.value ? '电视剧' : '电影')
 
 // API 导入
 import { getDetail, getCredits, getVideos, getSimilar } from '~/api/detail'
-import { getMovieGenres, getTvGenres } from '~/api/genre'
+// import { getMovieGenres, getTvGenres } from '~/api/genre'
 import { getPosterUrl, getBackdropUrl, getProfileUrl } from '~/utils/image'
 
 // 数据获取 - 使用通用接口
@@ -352,8 +350,8 @@ const detail = getDetail(mediaType, mediaId)
 const credits = getCredits(mediaType, mediaId)
 const videos = getVideos(mediaType, mediaId)
 const similar = getSimilar(mediaType, mediaId)
-const movieGenres = getMovieGenres()
-const tvGenres = getTvGenres()
+// const movieGenres = getMovieGenres()
+// const tvGenres = getTvGenres()
 
 // SEO 配置
 useHead(() => ({

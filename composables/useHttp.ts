@@ -21,7 +21,6 @@ export const useHttp = <T>(
     opts?: HttpOption<T>,
   }
 ) => {
-  console.log('fetch-----', url)
   const { tmdbApiUrl, tmdbApiToken } = useRuntimeConfig().public
   const options = opts as UseFetchOptions<ResOptions<T>> || {}
   // 需要检查key、params 和 watch 几个参数，如果没有手动设置 key，但 params 或 watch 中有 ref 对象时，要进行错误提示
@@ -39,7 +38,6 @@ export const useHttp = <T>(
     'Content-Type': 'application/json'
 
   }
-  console.log('options----------------', options)
   // return 
   const result = useFetch<ResOptions<T>>(url, {
     // 请求前处理

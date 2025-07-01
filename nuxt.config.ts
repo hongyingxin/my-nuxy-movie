@@ -17,7 +17,9 @@ export default defineNuxtConfig({
   // 模块
   modules: [
     '@nuxtjs/tailwindcss',
-    '@nuxt/image'
+    '@nuxt/image',
+    '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt'
   ],
   
   // CSS

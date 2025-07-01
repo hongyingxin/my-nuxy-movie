@@ -149,8 +149,6 @@
             :key="movie.id"
             :item="movie"
             :is-movie="true"
-            :movie-genres="movieGenres.data.value?.genres || []"
-            :tv-genres="tvGenres.data.value?.genres || []"
           />
         </div>
       </section>
@@ -179,8 +177,6 @@
             :key="tvShow.id"
             :item="tvShow"
             :is-movie="false"
-            :movie-genres="movieGenres.data.value?.genres || []"
-            :tv-genres="tvGenres.data.value?.genres || []"
           />
         </div>
       </section>
@@ -211,8 +207,6 @@
             :item="movie"
             status="upcoming"
             :is-movie="true"
-            :movie-genres="movieGenres.data.value?.genres || []"
-            :tv-genres="tvGenres.data.value?.genres || []"
           />
           
           <!-- 正在播出电视剧 -->
@@ -222,8 +216,6 @@
             :item="show"
             status="on-air"
             :is-movie="false"
-            :movie-genres="movieGenres.data.value?.genres || []"
-            :tv-genres="tvGenres.data.value?.genres || []"
           />
         </div>
       </section>
@@ -261,9 +253,9 @@ const popularTvShows = getPopularTvShows(1)
 // 获取正在播出电视剧数据
 const onTheAirTvShows = getOnTheAirTvShows(1)
 // 获取电影分类数据
-const movieGenres = getMovieGenres()
+// const movieGenres = getMovieGenres()
 // 获取电视剧分类数据
-const tvGenres = getTvGenres()
+// const tvGenres = getTvGenres()
 
 // ==================== Hero 轮播相关 ====================
 // 获取趋势内容数据（用于 Hero 轮播）

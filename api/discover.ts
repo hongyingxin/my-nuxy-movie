@@ -18,6 +18,9 @@ export const discoverMedia = (type: 'movie' | 'tv', params: DiscoverParams = {})
       page: 1,
       // 用户传入的参数会覆盖默认值
       ...params
+    },
+    opts: {
+      lazy: false
     }
   })
 }

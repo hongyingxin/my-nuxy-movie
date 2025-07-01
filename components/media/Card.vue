@@ -77,23 +77,17 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
-  // 电影分类
-  movieGenres: {
-    type: Array,
-    default: () => []
-  },
-  // 电视剧分类
-  tvGenres: {
-    type: Array,
-    default: () => []
-  }
 })
+
+// 从 store 中获取分类数据
+const genreStore = useGenreStore()
 
 // 获取分类名称
 const genreNames = computed(() => {
   if (!props.item.genre_ids || !props.item.genre_ids.length) return []
   
-  const genres = props.isMovie ? props.movieGenres : props.tvGenres
+  const genres = props.isMovie ? genreStore.movieGenres : genreStore.tvGenres
+
   if (!genres || !genres.length) return []
   
   return props.item.genre_ids
