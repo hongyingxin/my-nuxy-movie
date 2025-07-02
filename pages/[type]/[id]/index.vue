@@ -1,7 +1,8 @@
 <!-- 
-  这个页面是用来展示电影和电视剧的详情页的。
-  url: /movie/1234567890
-  url: /tv/1234567890
+  电影和电视剧的详情页
+  type: movie, tv
+  id: 电影或者电视剧的id
+  url: /movie/1234567890、/tv/1234567890
 -->
 <template>
   <div class="min-h-screen bg-gray-50">
@@ -126,7 +127,18 @@
 
             <!-- 演职员 -->
             <section class="mb-8" v-if="credits.data.value">
-              <h2 class="text-2xl font-bold text-gray-800 mb-4">演职员</h2>
+              <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-bold text-gray-800">演职员</h2>
+                <NuxtLink 
+                  :to="`/${mediaType}/${mediaId}/credits`"
+                  class="text-red-600 hover:text-red-700 flex items-center"
+                >
+                  查看全部
+                  <svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </NuxtLink>
+              </div>
               <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div 
                   v-for="cast in credits.data.value.cast?.slice(0, 8)" 

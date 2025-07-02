@@ -1,0 +1,147 @@
+<!-- 
+  演职员页面
+  type: movie, tv
+  id: 电影或者电视剧的id
+  url: /movie/1234567890、/tv/1234567890
+-->
+<template>
+  <div class="min-h-screen bg-gray-50 py-8">
+    <div class="container mx-auto px-4">
+      <!-- 返回按钮 -->
+      <NuxtLink 
+        :to="`/${route.params.type}/${route.params.id}`"
+        class="inline-flex items-center text-gray-600 hover:text-gray-800 mb-6"
+      >
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        返回详情
+      </NuxtLink>
+
+      <!-- 标题 -->
+      <h1 class="text-3xl font-bold text-gray-800 mb-8">
+        {{ detail.data.value?.title || detail.data.value?.name }} 的演职员
+      </h1>
+
+      <div v-if="credits.pending.value" class="text-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+        <p class="text-gray-600">加载演职员信息中...</p>
+      </div>
+
+      <div v-else-if="credits.data.value" class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <!-- 左侧：演员列表 -->
+        <div class="lg:col-span-3">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">演员 ({{ credits.data.value.cast?.length || 0 }})</h2>
+          <div class="bg-white rounded-lg shadow-sm">
+            <div v-for="(actor, index) in credits.data.value.cast" :key="actor.id" 
+              class="flex items-center p-4"
+              :class="{'border-b': index !== credits.data.value.cast.length - 1}"
+            >
+              <div class="flex-shrink-0">
+                <img 
+                  :src="getProfileUrl(actor.profile_path, 'medium')"
+                  :alt="actor.name"
+                  class="w-16 h-16 rounded-lg object-cover"
+                  @error="handleImageError"
+                />
+              </div>
+              <div class="ml-4 flex-1">
+                <h3 class="font-medium text-gray-900">{{ actor.name }}</h3>
+                <p class="text-gray-600">{{ actor.character }}</p>
+              </div>
+              <div class="text-sm text-gray-500">
+                {{ actor.known_for_department }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右侧：剧组成员 -->
+        <div class="lg:col-span-1">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">剧组 ({{ credits.data.value.crew?.length || 0 }})</h2>
+          
+          <!-- 按部门分组显示 -->
+          <div v-for="(group, department) in groupedCrew" :key="department" class="mb-6">
+            <h3 class="font-semibold text-gray-700 mb-3">{{ department }}</h3>
+            <div class="bg-white rounded-lg shadow-sm">
+              <div v-for="(member, index) in group" :key="member.credit_id"
+                class="p-3"
+                :class="{'border-b': index !== group.length - 1}"
+              >
+                <div class="font-medium text-gray-900">{{ member.name }}</div>
+                <div class="text-sm text-gray-600">{{ member.job }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-else-if="credits.error.value" class="text-center py-12">
+        <div class="text-red-600 text-6xl mb-4">😞</div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">加载失败</h2>
+        <p class="text-gray-600 mb-4">无法获取演职员信息，请稍后重试</p>
+        <button 
+          @click="credits.refresh"
+          class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+        >
+          重新加载
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+const route = useRoute()
+// 从路由参数中提取 type 和 id
+const [mediaType, mediaId] = [route.params.type, parseInt(route.params.id)]
+
+// Debug logs
+console.log('Route params:', route.params)
+console.log('Media type:', mediaType)
+console.log('Media ID:', mediaId)
+
+// API 导入
+import { getDetail, getCredits } from '~/api/detail'
+import { getProfileUrl } from '~/utils/image'
+
+// 获取数据
+const detail = getDetail(mediaType, mediaId)
+const credits = getCredits(mediaType, mediaId)
+console.log('credits---------------', credits)
+
+// SEO 配置
+useHead(() => ({
+  title: detail.data.value 
+    ? `${detail.data.value.title || detail.data.value.name} 的演职员 - Nuxt Movie` 
+    : '演职员 - Nuxt Movie',
+  meta: [
+    { 
+      name: 'description', 
+      content: detail.data.value 
+        ? `${detail.data.value.title || detail.data.value.name} 的完整演职员名单` 
+        : '查看完整的演职员名单'
+    }
+  ]
+}))
+
+// 处理图片加载错误
+const handleImageError = (event) => {
+  const img = event.target
+  img.src = '/images/profile-placeholder.png' // 需要添加一个默认的占位图
+}
+
+// 按部门对剧组成员进行分组
+const groupedCrew = computed(() => {
+  if (!credits.data.value?.crew) return {}
+  
+  return credits.data.value.crew.reduce((acc, member) => {
+    const department = member.department
+    if (!acc[department]) {
+      acc[department] = []
+    }
+    acc[department].push(member)
+    return acc
+  }, {})
+})
+</script> 

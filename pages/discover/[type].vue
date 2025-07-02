@@ -1,5 +1,5 @@
 <!-- 
-  这个页面是用来展示电影和电视剧的列表页的。
+  电影和电视剧的列表页
   url: /discover/movie
   url: /discover/tv
 -->
