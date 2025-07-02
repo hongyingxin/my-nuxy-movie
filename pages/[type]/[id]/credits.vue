@@ -7,21 +7,12 @@
 <template>
   <div class="min-h-screen bg-gray-50 py-8">
     <div class="container mx-auto px-4">
-      <!-- 返回按钮 -->
-      <NuxtLink 
-        :to="`/${route.params.type}/${route.params.id}`"
-        class="inline-flex items-center text-gray-600 hover:text-gray-800 mb-6"
-      >
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-        </svg>
-        返回详情
-      </NuxtLink>
-
-      <!-- 标题 -->
-      <h1 class="text-3xl font-bold text-gray-800 mb-8">
-        {{ detail.data.value?.title || detail.data.value?.name }}
-      </h1>
+      <!-- 页面标题 -->
+      <MediaPageHeader 
+        :backdrop_path="detail.data.value?.backdrop_path" 
+        :title="`${detail.data.value?.title || detail.data.value?.name} 的演职员`"
+        :back-to="`/${mediaType}/${mediaId}`"
+      />
 
       <div v-if="credits.pending.value" class="text-center py-12">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
@@ -108,6 +99,7 @@ import { getProfileUrl } from '~/utils/image'
 // 获取数据
 // 这里获取电影详情是为了电影/电视名字
 const detail = getDetail(mediaType, mediaId)
+console.log('detail---------------', detail)
 const credits = getCredits(mediaType, mediaId)
 console.log('credits---------------', credits)
 
