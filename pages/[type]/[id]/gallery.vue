@@ -1,0 +1,263 @@
+<!-- 
+  图片集页面
+  type: movie, tv
+  id: 电影或者电视剧的id
+  url: /movie/1234567890/gallery、/tv/1234567890/gallery
+-->
+<template>
+  <div class="min-h-screen bg-gray-50 py-8">
+    <div class="container mx-auto px-4">
+      <!-- 页面标题 -->
+      <MediaPageHeader 
+        :backdrop_path="detail.data.value?.backdrop_path" 
+        :title="`${detail.data.value?.title || detail.data.value?.name} 的图片集`"
+        :back-to="`/${mediaType}/${mediaId}`"
+      />
+
+      <!-- 加载状态 -->
+      <div v-if="images.pending.value" class="text-center py-12">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+        <p class="text-gray-600">加载图片中...</p>
+      </div>
+
+      <div v-else-if="images.data.value" class="space-y-8">
+        <!-- 分类标签页 -->
+        <div class="border-b border-gray-200">
+          <nav class="flex space-x-8" aria-label="Tabs">
+            <button
+              v-for="tab in imageTabs"
+              :key="tab.id"
+              @click="activeTab = tab.id"
+              :class="[
+                'py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap',
+                activeTab === tab.id
+                  ? 'border-red-600 text-red-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              ]"
+            >
+              {{ tab.name }}
+              <span 
+                :class="[
+                  'ml-2 rounded-full text-xs px-2 py-0.5',
+                  activeTab === tab.id
+                    ? 'bg-red-100 text-red-600'
+                    : 'bg-gray-100 text-gray-600'
+                ]"
+              >
+                {{ getImageCount(tab.id) }}
+              </span>
+            </button>
+          </nav>
+        </div>
+
+        <!-- 瀑布流图片展示 -->
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <a 
+            v-for="(image, index) in currentImages" 
+            :key="index"
+            class="relative group cursor-zoom-in"
+            :href="getFullImageUrl(image.file_path, 'original', activeTab)"
+            :data-pswp-width="activeTab === 'posters' ? 2000 : 1920"
+            :data-pswp-height="activeTab === 'posters' ? 3000 : 1080"
+            target="_blank"
+          >
+            <!-- 图片 -->
+            <div :class="[
+              'overflow-hidden bg-gray-100 rounded-lg',
+              activeTab === 'posters' ? 'aspect-[2/3]' : 'aspect-[16/9]'
+            ]">
+              <img 
+                :src="getFullImageUrl(image.file_path, activeTab === 'posters' ? 'medium' : 'large', activeTab)"
+                :alt="detail.data.value?.title || detail.data.value?.name"
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                loading="lazy"
+              />
+            </div>
+            
+            <!-- 悬停遮罩 -->
+            <div class="absolute inset-0 bg-black/60 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+              <div class="text-white">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                </svg>
+              </div>
+            </div>
+          </a>
+        </div>
+
+        <!-- 加载更多按钮 -->
+        <div class="text-center" v-if="hasMoreImages">
+          <button 
+            @click="loadMore"
+            class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+          >
+            加载更多
+          </button>
+        </div>
+      </div>
+
+      <!-- 错误状态 -->
+      <div v-else-if="images.error.value" class="text-center py-12">
+        <div class="text-red-600 text-6xl mb-4">😞</div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">加载失败</h2>
+        <p class="text-gray-600 mb-4">无法获取图片信息，请稍后重试</p>
+        <button 
+          @click="images.refresh"
+          class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+        >
+          重新加载
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import PhotoSwipeLightbox from 'photoswipe/lightbox'
+import 'photoswipe/style.css'
+
+const route = useRoute()
+const [mediaType, mediaId] = [route.params.type, parseInt(route.params.id)]
+
+// API 导入
+import { getDetail, getImages } from '~/api/detail'
+import { getPosterUrl, getBackdropUrl } from '~/utils/image'
+
+// 获取数据
+const detail = getDetail(mediaType, mediaId)
+const images = getImages(mediaType, mediaId)
+
+// 图片分类标签
+const imageTabs = [
+  { id: 'posters', name: '海报' },
+  { id: 'backdrops', name: '剧照' },
+]
+
+// 当前激活的标签
+const activeTab = ref('posters')
+
+// 每页显示数量
+const PAGE_SIZE = 20
+const currentPage = ref(1)
+
+// 计算当前显示的图片
+const currentImages = computed(() => {
+  const allImages = images.data.value?.[activeTab.value] || []
+  return allImages.slice(0, currentPage.value * PAGE_SIZE)
+})
+
+// 是否还有更多图片
+const hasMoreImages = computed(() => {
+  const allImages = images.data.value?.[activeTab.value] || []
+  return currentPage.value * PAGE_SIZE < allImages.length
+})
+
+// 获取图片数量
+const getImageCount = (type) => {
+  return images.data.value?.[type]?.length || 0
+}
+
+// 加载更多
+const loadMore = () => {
+  currentPage.value++
+}
+
+// 图片链接生成
+const getFullImageUrl = (path, size, type) => {
+  return type === 'posters' ? getPosterUrl(path, size) : getBackdropUrl(path, size)
+}
+
+// PhotoSwipe 初始化
+let lightbox = null
+
+onMounted(() => {
+  initPhotoSwipe()
+})
+
+watch(activeTab, () => {
+  nextTick(() => {
+    if (lightbox) {
+      lightbox.destroy()
+      lightbox = null
+    }
+    initPhotoSwipe()
+  })
+})
+
+const initPhotoSwipe = () => {
+  // 确保先清理之前的实例
+  if (lightbox) {
+    lightbox.destroy()
+    lightbox = null
+  }
+
+  lightbox = new PhotoSwipeLightbox({
+    gallery: 'div',
+    children: 'a',
+    pswpModule: () => import('photoswipe'),
+    showHideAnimationType: 'fade',
+    showAnimationDuration: 300,
+    hideAnimationDuration: 300,
+    bgOpacity: 0.9,
+    paddingFn: () => {
+      return {
+        top: 30,
+        bottom: 30,
+        left: 30,
+        right: 30
+      }
+    }
+  })
+
+  lightbox.on('beforeOpen', () => {
+    document.body.style.overflow = 'hidden'
+  })
+
+  lightbox.on('close', () => {
+    document.body.style.overflow = ''
+  })
+
+  lightbox.init()
+}
+
+// 页面卸载时清理
+onBeforeUnmount(() => {
+  if (lightbox) {
+    lightbox.destroy()
+    lightbox = null
+  }
+})
+
+// 路由变化时清理
+onBeforeRouteLeave(() => {
+  if (lightbox) {
+    lightbox.destroy()
+    lightbox = null
+  }
+  
+  // 额外的清理：移除可能残留的 PhotoSwipe 元素
+  const pswpElements = document.querySelectorAll('.pswp')
+  pswpElements.forEach(el => el.remove())
+  
+  // 恢复 body 样式
+  document.body.style.overflow = ''
+  
+  // 移除可能残留的事件监听器
+  document.removeEventListener('keydown', null)
+})
+
+// SEO 配置
+useHead(() => ({
+  title: detail.data.value 
+    ? `${detail.data.value.title || detail.data.value.name} 的图片集 - Nuxt Movie` 
+    : '图片集 - Nuxt Movie',
+  meta: [
+    { 
+      name: 'description', 
+      content: detail.data.value 
+        ? `查看 ${detail.data.value.title || detail.data.value.name} 的海报和剧照` 
+        : '浏览电影和电视剧的海报和剧照'
+    }
+  ]
+}))
+</script>
