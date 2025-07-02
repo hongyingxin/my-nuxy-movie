@@ -20,7 +20,7 @@
 
       <!-- 标题 -->
       <h1 class="text-3xl font-bold text-gray-800 mb-8">
-        {{ detail.data.value?.title || detail.data.value?.name }} 的演职员
+        {{ detail.data.value?.title || detail.data.value?.name }}
       </h1>
 
       <div v-if="credits.pending.value" class="text-center py-12">
@@ -62,7 +62,7 @@
           
           <!-- 按部门分组显示 -->
           <div v-for="(group, department) in groupedCrew" :key="department" class="mb-6">
-            <h3 class="font-semibold text-gray-700 mb-3">{{ department }}</h3>
+            <h3 class="font-semibold text-gray-700 mb-3">{{ translateDepartment(department) }}</h3>
             <div class="bg-white rounded-lg shadow-sm">
               <div v-for="(member, index) in group" :key="member.credit_id"
                 class="p-3"
@@ -106,6 +106,7 @@ import { getDetail, getCredits } from '~/api/detail'
 import { getProfileUrl } from '~/utils/image'
 
 // 获取数据
+// 这里获取电影详情是为了电影/电视名字
 const detail = getDetail(mediaType, mediaId)
 const credits = getCredits(mediaType, mediaId)
 console.log('credits---------------', credits)
