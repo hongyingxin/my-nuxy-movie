@@ -87,7 +87,7 @@
 
         <!-- 无限滚动加载指示器 -->
         <div 
-          v-if="hasMoreImages" 
+          v-if="hasMore" 
           ref="observerTarget"
           class="text-center py-8"
         >
@@ -148,24 +148,54 @@ const imageTabs = [
 // 当前激活的标签
 const activeTab = ref('posters')
 
-// 每页显示数量
-const PAGE_SIZE = 20
-const currentPage = ref(1)
-
-// 无限滚动相关
-const isLoading = ref(false)
-const observerTarget = ref(null)
+// 使用无限滚动组合式函数
+const {
+  currentPage,
+  isLoading,
+  hasMore,
+  observerTarget,
+  loadMore,
+  reset,
+  setHasMore
+} = useInfiniteScroll(
+  async (page) => {
+    // 模拟加载延迟，让用户看到加载状态
+    await new Promise(resolve => setTimeout(resolve, 300))
+    
+    // 重新初始化 PhotoSwipe 以包含新加载的图片
+    nextTick(() => {
+      if (lightbox) {
+        lightbox.destroy()
+        lightbox = null
+      }
+      initPhotoSwipe()
+    })
+  },
+  computed(() => images.data.value?.[activeTab.value]?.length || 0),
+  {
+    pageSize: 20,
+    rootMargin: () => {
+      // 根据设备类型和网络状况动态调整 rootMargin
+      const isMobile = window.innerWidth <= 768
+      
+      // 检测网络状况（如果支持）
+      const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection
+      const isSlowNetwork = connection && (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g')
+      
+      if (isMobile) {
+        return isSlowNetwork ? '100px' : '50px'
+      } else {
+        return isSlowNetwork ? '200px' : '100px'
+      }
+    },
+    loadDelay: 0 // 已经在回调中处理延迟
+  }
+)
 
 // 计算当前显示的图片
 const currentImages = computed(() => {
   const allImages = images.data.value?.[activeTab.value] || []
-  return allImages.slice(0, currentPage.value * PAGE_SIZE)
-})
-
-// 是否还有更多图片
-const hasMoreImages = computed(() => {
-  const allImages = images.data.value?.[activeTab.value] || []
-  return currentPage.value * PAGE_SIZE < allImages.length
+  return allImages.slice(0, currentPage.value * 20)
 })
 
 // 获取图片数量
@@ -173,80 +203,15 @@ const getImageCount = (type) => {
   return images.data.value?.[type]?.length || 0
 }
 
-// 加载更多
-const loadMore = async () => {
-  if (isLoading.value || !hasMoreImages.value) return
-  
-  isLoading.value = true
-  
-  // 模拟加载延迟，让用户看到加载状态
-  await new Promise(resolve => setTimeout(resolve, 300))
-  
-  currentPage.value++
-  isLoading.value = false
-  
-  // 重新初始化 PhotoSwipe 以包含新加载的图片
-  nextTick(() => {
-    if (lightbox) {
-      lightbox.destroy()
-      lightbox = null
-    }
-    initPhotoSwipe()
-  })
-}
-
-// 无限滚动观察器 通过监听“加载更多指示器”和“距离底部”的相交情况，来加载更多图片
-const setupInfiniteScroll = () => {
-  if (!observerTarget.value) return
-  
-  // 根据设备类型和网络状况动态调整 rootMargin
-  const getRootMargin = () => {
-    // 检测是否为移动设备
-    const isMobile = window.innerWidth <= 768
-    
-    // 检测网络状况（如果支持）
-    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection
-    const isSlowNetwork = connection && (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g')
-    
-    if (isMobile) {
-      return isSlowNetwork ? '100px' : '50px'
-    } else {
-      return isSlowNetwork ? '200px' : '100px'
-    }
-  }
-  
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && hasMoreImages.value && !isLoading.value) {
-          loadMore()
-        }
-      })
-    },
-    {
-      rootMargin: getRootMargin(), // 动态调整提前加载距离
-      threshold: 0.1
-    }
-  )
-  
-  observer.observe(observerTarget.value)
-  
-  // 清理观察器
-  onBeforeUnmount(() => {
-    observer.disconnect()
-  })
-}
-
 // 监听标签切换，重置分页
 watch(activeTab, () => {
-  currentPage.value = 1
+  reset() // 重置无限滚动
   nextTick(() => {
     if (lightbox) {
       lightbox.destroy()
       lightbox = null
     }
     initPhotoSwipe()
-    setupInfiniteScroll()
   })
 })
 
@@ -260,17 +225,6 @@ let lightbox = null
 
 onMounted(() => {
   initPhotoSwipe()
-  setupInfiniteScroll()
-})
-
-watch(activeTab, () => {
-  nextTick(() => {
-    if (lightbox) {
-      lightbox.destroy()
-      lightbox = null
-    }
-    initPhotoSwipe()
-  })
 })
 
 const initPhotoSwipe = () => {
