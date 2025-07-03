@@ -188,7 +188,11 @@ const {
         return isSlowNetwork ? '200px' : '100px'
       }
     },
-    loadDelay: 0 // 已经在回调中处理延迟
+    loadDelay: 0, // 已经在回调中处理延迟
+    debounceDelay: 50, // 快速响应的防抖延迟
+    enableScrollListener: true, // 启用滚动监听作为备用
+    scrollThreshold: 150, // 距离底部 150px 时触发
+    threshold: [0, 0.1, 0.3, 0.5, 1.0] // 更敏感的阈值设置
   }
 )
 
