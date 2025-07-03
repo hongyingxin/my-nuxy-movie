@@ -17,7 +17,7 @@
     <!-- 详情内容 -->
     <div v-else-if="detail.data.value" class="relative">
       <!-- Hero 区域 - 背景图片和基本信息 -->
-      <section class="relative h-96 md:h-[500px] overflow-hidden">
+      <section class="relative h-auto min-h-[500px] md:h-[500px] overflow-hidden">
         <!-- 背景图片 -->
         <div 
           class="absolute inset-0 bg-cover bg-center "
@@ -28,9 +28,9 @@
         </div>
         
         <!-- 内容区域 -->
-        <div class="absolute inset-0 flex items-end">
-          <div class="container mx-auto px-6 pb-8">
-            <div class="flex flex-col md:flex-row gap-8 items-end">
+        <div class="relative z-10 pt-16 pb-8">
+          <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row gap-8 items-center md:items-end">
               <!-- 海报 -->
               <div class="flex-shrink-0">
                 <img 
@@ -41,7 +41,7 @@
               </div>
               
               <!-- 基本信息 -->
-              <div class="flex-1 text-white">
+              <div class="flex-1 text-white text-center md:text-left">
                 <!-- 标题和年份 -->
                 <div class="mb-4">
                   <h1 class="text-3xl md:text-5xl font-bold mb-2">
@@ -53,7 +53,7 @@
                 </div>
                 
                 <!-- 标签信息 -->
-                <div class="flex flex-wrap gap-2 mb-4">
+                <div class="flex flex-wrap gap-2 mb-4 justify-center md:justify-start">
                   <span class="bg-red-600 text-white px-3 py-1 rounded-full text-sm">
                     {{ detail.data.value.adult ? 'R' : 'PG' }}
                   </span>
@@ -70,7 +70,7 @@
                 </div>
                 
                 <!-- 评分 -->
-                <div class="flex items-center gap-4 mb-6">
+                <div class="flex items-center gap-4 mb-6 justify-center md:justify-start">
                   <div class="flex items-center bg-white/20 px-4 py-2 rounded-lg backdrop-blur-sm">
                     <span class="text-yellow-400 mr-2">★</span>
                     <span class="font-bold text-lg">{{ detail.data.value.vote_average?.toFixed(1) }}</span>
@@ -82,7 +82,7 @@
                 </div>
                 
                 <!-- 状态信息 (电视剧特有) -->
-                <div v-if="isTv" class="mb-6">
+                <div v-if="isTv" class="mb-6 text-center md:text-left">
                   <span class="bg-green-600 text-white px-3 py-1 rounded-full text-sm mr-2">
                     {{ detail.data.value.status }}
                   </span>
@@ -92,7 +92,7 @@
                 </div>
                 
                 <!-- 操作按钮 -->
-                <div class="flex gap-3">
+                <div class="flex gap-3 justify-center md:justify-start">
                   <button class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
