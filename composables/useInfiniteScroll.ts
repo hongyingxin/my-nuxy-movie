@@ -1,10 +1,10 @@
-import { ref, onMounted, onBeforeUnmount, nextTick, type Ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount, nextTick, type Ref, watch } from 'vue'
 
 export interface InfiniteScrollOptions {
   // 每页加载数量
   pageSize?: number
-  // 提前加载距离（px）
-  rootMargin?: string
+  // 提前加载距离（px）或动态计算函数
+  rootMargin?: string | (() => string)
   // 触发阈值
   threshold?: number
   // 是否启用
@@ -36,7 +36,7 @@ export interface InfiniteScrollReturn {
 
 export function useInfiniteScroll(
   loadCallback: (page: number) => Promise<void> | void,
-  totalItems: number,
+  totalItems: number | Ref<number>,
   options: InfiniteScrollOptions = {}
 ): InfiniteScrollReturn {
   const {
@@ -54,10 +54,13 @@ export function useInfiniteScroll(
   const observerTarget = ref<HTMLElement | null>(null)
   let observer: IntersectionObserver | null = null
 
+  // 将 totalItems 转换为响应式引用
+  const totalItemsRef = typeof totalItems === 'number' ? ref(totalItems) : totalItems
+
   // 计算是否还有更多数据
   const checkHasMore = () => {
     const loadedItems = currentPage.value * pageSize
-    hasMore.value = loadedItems < totalItems
+    hasMore.value = loadedItems < totalItemsRef.value
   }
 
   // 加载更多数据
@@ -102,6 +105,19 @@ export function useInfiniteScroll(
     checkHasMore()
   }
 
+  // 动态调整 rootMargin 的辅助函数
+  const getDynamicRootMargin = () => {
+    if (typeof rootMargin === 'function') {
+      return rootMargin()
+    }
+    return rootMargin
+  }
+
+  // 监听 totalItems 变化
+  const watchTotalItems = () => {
+    checkHasMore()
+  }
+
   // 设置无限滚动观察器
   const setupObserver = () => {
     if (!observerTarget.value || !enabled) return
@@ -121,7 +137,7 @@ export function useInfiniteScroll(
       },
       {
         root: root ? (typeof root === 'string' ? document.querySelector(root) : root) : null,
-        rootMargin,
+        rootMargin: getDynamicRootMargin(), // 使用动态 rootMargin
         threshold
       }
     )
@@ -129,18 +145,8 @@ export function useInfiniteScroll(
     observer.observe(observerTarget.value)
   }
 
-  // 动态调整 rootMargin 的辅助函数
-  const getDynamicRootMargin = () => {
-    if (typeof rootMargin === 'function') {
-      return rootMargin()
-    }
-    return rootMargin
-  }
-
   // 监听 totalItems 变化
-  const watchTotalItems = () => {
-    checkHasMore()
-  }
+  watch(totalItemsRef, watchTotalItems)
 
   // 组件挂载时设置观察器
   onMounted(() => {

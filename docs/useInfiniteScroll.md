@@ -36,10 +36,10 @@ const {
     // 加载数据的逻辑
     await fetchData(page)
   },
-  totalItems, // 总数据量
+  totalItems, // 总数据量（支持数字或响应式引用）
   {
     pageSize: 20,
-    rootMargin: '100px'
+    rootMargin: '100px' // 或使用函数动态计算
   }
 )
 
@@ -57,20 +57,20 @@ const currentItems = computed(() => {
 #### loadCallback: (page: number) => Promise<void> | void
 加载数据的回调函数，接收页码参数。
 
-#### totalItems: number
-总数据量，用于计算是否还有更多数据。
+#### totalItems: number | Ref<number>
+总数据量，用于计算是否还有更多数据。支持数字或响应式引用，当使用响应式引用时，会自动监听变化并重新计算。
 
 #### options: InfiniteScrollOptions
 配置选项：
 
 ```typescript
 interface InfiniteScrollOptions {
-  pageSize?: number        // 每页加载数量，默认 20
-  rootMargin?: string      // 提前加载距离，默认 '100px'
-  threshold?: number       // 触发阈值，默认 0.1
-  enabled?: boolean        // 是否启用，默认 true
-  loadDelay?: number       // 加载延迟（ms），默认 300
-  root?: string | Element | null // 自定义根元素
+  pageSize?: number                    // 每页加载数量，默认 20
+  rootMargin?: string | (() => string) // 提前加载距离，默认 '100px'，支持函数动态计算
+  threshold?: number                   // 触发阈值，默认 0.1
+  enabled?: boolean                    // 是否启用，默认 true
+  loadDelay?: number                   // 加载延迟（ms），默认 300
+  root?: string | Element | null       // 自定义根元素
 }
 ```
 
@@ -91,7 +91,47 @@ interface InfiniteScrollReturn {
 
 ## 高级用法
 
-### 1. 自定义配置
+### 1. 动态 rootMargin
+
+```javascript
+const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
+  loadData,
+  totalCount,
+  {
+    rootMargin: () => {
+      // 根据设备类型和网络状况动态调整
+      const isMobile = window.innerWidth <= 768
+      const connection = navigator.connection
+      const isSlowNetwork = connection && connection.effectiveType === '2g'
+      
+      if (isMobile) {
+        return isSlowNetwork ? '100px' : '50px'
+      } else {
+        return isSlowNetwork ? '200px' : '100px'
+      }
+    }
+  }
+)
+```
+
+### 2. 响应式 totalItems
+
+```javascript
+const totalItems = ref(0)
+
+const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
+  loadData,
+  totalItems, // 传入响应式引用
+  { pageSize: 20 }
+)
+
+// 当 totalItems 变化时，会自动重新计算 hasMore
+watch(searchResults, (results) => {
+  totalItems.value = results.total
+})
+```
+
+### 3. 自定义配置
 
 ```javascript
 const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
@@ -107,7 +147,7 @@ const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
 )
 ```
 
-### 2. 动态启用/禁用
+### 4. 动态启用/禁用
 
 ```javascript
 const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
@@ -119,7 +159,7 @@ const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
 )
 ```
 
-### 3. 手动控制
+### 5. 手动控制
 
 ```javascript
 const { loadMore, reset, setHasMore, setCurrentPage } = useInfiniteScroll(
@@ -138,7 +178,7 @@ setHasMore(false)
 setCurrentPage(5)
 ```
 
-### 4. 在容器内滚动
+### 6. 在容器内滚动
 
 ```javascript
 const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
@@ -152,7 +192,7 @@ const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
 
 ## 实际应用场景
 
-### 1. 图片画廊
+### 1. 图片画廊（动态 rootMargin）
 ```javascript
 // 在 gallery.vue 中的使用
 const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
@@ -161,11 +201,40 @@ const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
     // 重新初始化 PhotoSwipe
     initPhotoSwipe()
   },
-  computed(() => images.value?.length || 0)
+  computed(() => images.value?.length || 0),
+  {
+    rootMargin: () => {
+      // 根据设备类型动态调整
+      const isMobile = window.innerWidth <= 768
+      return isMobile ? '50px' : '100px'
+    }
+  }
 )
 ```
 
-### 2. 商品列表
+### 2. 搜索结果（响应式 totalItems）
+```javascript
+const searchResults = ref([])
+const totalResults = ref(0)
+
+const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
+  async (page) => {
+    const results = await searchAPI(query.value, page)
+    searchResults.value.push(...results.items)
+  },
+  totalResults, // 响应式引用
+  { pageSize: 15 }
+)
+
+// 搜索时更新总数
+watch(searchQuery, async (query) => {
+  const results = await searchAPI(query, 1)
+  totalResults.value = results.total
+  searchResults.value = results.items
+})
+```
+
+### 3. 商品列表
 ```javascript
 // 在商品列表中的使用
 const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
@@ -177,7 +246,7 @@ const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
 )
 ```
 
-### 3. 评论列表
+### 4. 评论列表
 ```javascript
 // 在评论列表中的使用
 const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
@@ -200,6 +269,8 @@ const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
 3. **处理加载错误**：在 `loadCallback` 中处理可能的错误
 4. **清理资源**：组件卸载时会自动清理观察器
 5. **性能优化**：避免在 `loadCallback` 中执行过重的操作
+6. **动态 rootMargin**：函数会在每次观察器创建时调用，注意性能
+7. **响应式 totalItems**：当使用响应式引用时，变化会自动触发重新计算
 
 ## 性能优化建议
 
@@ -207,4 +278,5 @@ const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
 2. **图片懒加载**：配合图片懒加载使用
 3. **防抖处理**：避免频繁触发加载
 4. **缓存数据**：缓存已加载的数据
-5. **预加载**：根据用户行为预加载数据 
+5. **预加载**：根据用户行为预加载数据
+6. **动态 rootMargin**：根据设备性能和网络状况调整 
