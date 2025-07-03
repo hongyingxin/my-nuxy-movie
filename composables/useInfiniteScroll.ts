@@ -1,4 +1,5 @@
 import { ref, onMounted, onBeforeUnmount, nextTick, type Ref, watch } from 'vue'
+import { debounce } from '~/utils/common'
 
 /**
  * 无限滚动配置选项接口
@@ -80,7 +81,6 @@ export function useInfiniteScroll(
 
   // 内部状态和实例
   let observer: IntersectionObserver | null = null        // Intersection Observer 实例
-  let debounceTimer: NodeJS.Timeout | null = null         // 防抖定时器
   let scrollListener: (() => void) | null = null          // 滚动事件监听器
 
   // 将 totalItems 转换为响应式引用，支持数字和响应式引用两种类型
@@ -93,24 +93,6 @@ export function useInfiniteScroll(
   const checkHasMore = () => {
     const loadedItems = currentPage.value * pageSize
     hasMore.value = loadedItems < totalItemsRef.value
-  }
-
-  /**
-   * 防抖的加载函数
-   * 防止快速滚动时重复触发加载，确保性能
-   */
-  const debouncedLoadMore = () => {
-    // 清除之前的定时器
-    if (debounceTimer) {
-      clearTimeout(debounceTimer)
-    }
-    
-    // 设置新的定时器
-    debounceTimer = setTimeout(() => {
-      if (hasMore.value && !isLoading.value && enabled) {
-        loadMore()
-      }
-    }, debounceDelay)
   }
 
   /**
@@ -141,6 +123,13 @@ export function useInfiniteScroll(
       isLoading.value = false
     }
   }
+
+  // 创建防抖的加载函数
+  const debouncedLoadMore = debounce(() => {
+    if (hasMore.value && !isLoading.value && enabled) {
+      loadMore()
+    }
+  }, debounceDelay)
 
   /**
    * 重置分页
@@ -297,12 +286,6 @@ export function useInfiniteScroll(
     if (observer) {
       observer.disconnect()
       observer = null
-    }
-    
-    // 清理防抖定时器
-    if (debounceTimer) {
-      clearTimeout(debounceTimer)
-      debounceTimer = null
     }
     
     // 清理滚动监听器

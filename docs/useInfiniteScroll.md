@@ -130,6 +130,17 @@ Intersection Observer 和滚动事件监听器是**互补关系**，不是互斥
 2. **状态检查**：`isLoading.value` 确保加载过程中不会重复触发
 3. **条件判断**：`hasMore.value && !isLoading.value && enabled` 多重条件保护
 
+**注意**：防抖函数已提取到 `utils/common.ts` 中，可以在其他组件中复用：
+
+```javascript
+import { debounce } from '~/utils/common'
+
+// 使用防抖函数
+const debouncedFunction = debounce(() => {
+  // 你的逻辑
+}, 100)
+```
+
 #### ⚡ **工作流程**
 
 ```
@@ -404,4 +415,46 @@ const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
 - **响应式设计**：充分利用 Vue 3 的响应式系统
 - **性能优化**：使用 `passive: true` 和防抖机制
 - **兼容性**：支持多种浏览器和设备
-- **可扩展性**：易于添加新功能和配置选项 
+- **可扩展性**：易于添加新功能和配置选项
+
+## 相关工具函数
+
+### utils/common.ts
+
+无限滚动组合式函数使用了 `utils/common.ts` 中的工具函数：
+
+#### debounce<T>(fn: T, delay: number)
+防抖函数，用于防止快速滚动时重复触发加载。
+
+```javascript
+import { debounce } from '~/utils/common'
+
+// 创建防抖函数
+const debouncedLoad = debounce(() => {
+  // 加载逻辑
+}, 100)
+```
+
+#### throttle<T>(fn: T, delay: number)
+节流函数，限制函数在一定时间内只能执行一次。
+
+```javascript
+import { throttle } from '~/utils/common'
+
+// 创建节流函数
+const throttledScroll = throttle(() => {
+  // 滚动处理逻辑
+}, 200)
+```
+
+#### delay(ms: number)
+延迟执行函数，创建一个延迟执行的 Promise。
+
+```javascript
+import { delay } from '~/utils/common'
+
+// 延迟执行
+await delay(1000) // 延迟 1 秒
+```
+
+这些工具函数可以在项目的其他部分复用，提高代码的可维护性和复用性。 
