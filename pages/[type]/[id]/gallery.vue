@@ -3,6 +3,7 @@
   type: movie, tv
   id: 电影或者电视剧的id
   url: /movie/1234567890/gallery、/tv/1234567890/gallery
+  使用到的插件 https://photoswipe.com/
 -->
 <template>
   <div class="min-h-screen bg-gray-50 py-8">
@@ -51,7 +52,7 @@
         </div>
 
         <!-- 瀑布流图片展示 -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pswp-gallery">
           <a 
             v-for="(image, index) in currentImages" 
             :key="index"
@@ -59,7 +60,6 @@
             :href="getFullImageUrl(image.file_path, 'original', activeTab)"
             :data-pswp-width="activeTab === 'posters' ? 2000 : 1920"
             :data-pswp-height="activeTab === 'posters' ? 3000 : 1080"
-            target="_blank"
           >
             <!-- 图片 -->
             <div :class="[
@@ -192,8 +192,8 @@ const initPhotoSwipe = () => {
   }
 
   lightbox = new PhotoSwipeLightbox({
-    gallery: 'div',
-    children: 'a',
+    gallery: '.pswp-gallery',
+    children: 'a[href]', // 只选择有 href 属性的 a 标签
     pswpModule: () => import('photoswipe'),
     showHideAnimationType: 'fade',
     showAnimationDuration: 300,
