@@ -126,7 +126,6 @@
 
 <script setup>
 import PhotoSwipeLightbox from 'photoswipe/lightbox'
-import 'photoswipe/style.css'
 
 const route = useRoute()
 const [mediaType, mediaId] = [route.params.type, parseInt(route.params.id)]

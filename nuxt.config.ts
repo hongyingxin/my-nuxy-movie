@@ -24,7 +24,9 @@ export default defineNuxtConfig({
   
   // CSS
   css: [
-    '~/assets/css/tailwind.css'
+    '~/assets/css/tailwind.css',
+    'photoswipe/style.css',
+    // 'photoswipe/dist/photoswipe.css'
   ],
   
   devtools: { enabled: true },

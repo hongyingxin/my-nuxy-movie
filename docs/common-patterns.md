@@ -5,6 +5,55 @@
 
 ---
 
+## ⚙️ **项目配置**
+
+### **1. 包管理器**
+```bash
+# 本项目使用 pnpm 作为包管理器
+# 安装依赖
+pnpm install
+
+# 添加新依赖
+pnpm add package-name
+
+# 添加开发依赖
+pnpm add -D package-name
+
+# 升级依赖
+pnpm update package-name@latest
+
+# 启动开发服务器
+pnpm run dev
+```
+
+### **2. PhotoSwipe 样式导入最佳实践**
+```javascript
+// ✅ 推荐：在 nuxt.config.ts 中全局导入
+// nuxt.config.ts
+export default defineNuxtConfig({
+  css: [
+    '~/assets/css/tailwind.css',
+    'photoswipe/style.css'  // 使用官方映射路径
+  ]
+})
+
+// ✅ 页面中只需要导入 JS 模块
+// pages/[type]/[id]/gallery.vue
+import PhotoSwipeLightbox from 'photoswipe/lightbox'
+// 不需要在页面中导入 CSS，因为已经在 Nuxt 配置中全局导入了
+
+// ❌ 避免：直接引用内部路径
+// 'photoswipe/dist/photoswipe.css'  // 不推荐
+```
+
+**为什么这样更好：**
+- 使用 PhotoSwipe 官方提供的 `./style.css` 映射路径
+- 如果包内部结构变化，只要保持映射关系，代码就不需要修改
+- 在 Nuxt 配置中全局导入，避免在每个页面重复导入
+- 符合包管理的最佳实践
+
+---
+
 ## 🔄 **数据获取模式**
 
 ### **1. 标准 API 请求模式**
