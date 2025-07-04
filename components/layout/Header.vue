@@ -210,7 +210,7 @@ const navMenus = [
   },
   {
     label: '演员',
-    to: '/people',
+    to: '/actors',
   },
   {
     label: '搜索',
