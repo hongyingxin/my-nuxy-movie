@@ -1,85 +1,85 @@
-# Components Directory Structure
+# 组件目录结构
 
-This directory contains all Vue components organized by their functionality and purpose.
+本目录包含按功能和用途组织的所有 Vue 组件。
 
-## Directory Structure
+## 目录结构
 
 ```
 components/
-├── layout/          # Layout components (header, footer, navigation)
-├── ui/              # Reusable UI components (buttons, ratings, forms)
-├── media/           # Media-related components (cards, players, galleries)
-├── common/          # Common/shared components
-└── README.md        # This file
+├── layout/          # 布局组件 (头部、底部、导航)
+├── ui/              # 可复用的 UI 组件 (按钮、评分、表单)
+├── media/           # 媒体相关组件 (卡片、播放器、画廊)
+├── common/          # 通用/共享组件
+└── README.md        # 本文件
 ```
 
-## Component Categories
+## 组件分类
 
-### 📐 Layout Components (`layout/`)
-Components that define the overall page structure and layout.
+### 📐 布局组件 (`layout/`)
+定义整体页面结构和布局的组件。
 
-- **AppHeader.vue** - Main navigation header with logo, menu, and search
-- **AppFooter.vue** - Site footer with links, social media, and copyright
+- **AppHeader.vue** - 主导航头部，包含 logo、菜单和搜索
+- **AppFooter.vue** - 网站底部，包含链接、社交媒体和版权信息
 
-### 🎨 UI Components (`ui/`)
-Reusable user interface components that can be used across the application.
+### 🎨 UI 组件 (`ui/`)
+可在整个应用程序中使用的可复用用户界面组件。
 
-- **MovieRating.vue** - Circular rating display with percentage
-- **Button.vue** - Reusable button component (future)
-- **Modal.vue** - Modal/dialog component (future)
-- **Loading.vue** - Loading spinner component (future)
+- **MovieRating.vue** - 带百分比的圆形评分显示
+- **Button.vue** - 可复用按钮组件 (未来)
+- **Modal.vue** - 模态框/对话框组件 (未来)
+- **Loading.vue** - 加载旋转器组件 (未来)
 
-### 🎬 Media Components (`media/`)
-Components specifically related to media content (movies, TV shows, etc.).
+### 🎬 媒体组件 (`media/`)
+专门与媒体内容相关的组件 (电影、电视剧等)。
 
-- **MediaCard.vue** - Movie/TV show card with poster, title, and rating
-- **MediaGrid.vue** - Grid layout for media cards (future)
-- **MediaPlayer.vue** - Video player component (future)
-- **MediaGallery.vue** - Image gallery component (future)
+- **MediaCard.vue** - 电影/电视剧卡片，包含海报、标题和评分
+- **MediaGrid.vue** - 媒体卡片网格布局 (未来)
+- **MediaPlayer.vue** - 视频播放器组件 (未来)
+- **MediaGallery.vue** - 图片画廊组件 (未来)
 
-### 🔧 Common Components (`common/`)
-Shared components that don't fit into other categories.
+### 🔧 通用组件 (`common/`)
+不属于其他类别的共享组件。
 
-- **Icon.vue** - Icon component (future)
-- **Tooltip.vue** - Tooltip component (future)
-- **Breadcrumb.vue** - Breadcrumb navigation (future)
+- **Icon.vue** - 图标组件 (未来)
+- **Tooltip.vue** - 工具提示组件 (未来)
+- **Breadcrumb.vue** - 面包屑导航组件 (未来)
 
-## Naming Conventions
+## 命名约定
 
-- **Layout components**: `Layout[ComponentName]` (e.g., `LayoutAppHeader`)
-- **UI components**: `Ui[ComponentName]` (e.g., `UiMovieRating`)
-- **Media components**: `Media[ComponentName]` (e.g., `MediaCard`)
-- **Common components**: `Common[ComponentName]` (e.g., `CommonIcon`)
+- **布局组件**: `Layout[组件名]` (例如: `LayoutAppHeader`)
+- **UI 组件**: `Ui[组件名]` (例如: `UiMovieRating`)
+- **媒体组件**: `Media[组件名]` (例如: `MediaCard`)
+- **通用组件**: `Common[组件名]` (例如: `CommonIcon`)
 
-**Nuxt 3 Auto-Import Rules:**
-- Components in subdirectories are automatically imported with the directory name as prefix
+**Nuxt 3 自动导入规则:**
+- 子目录中的组件会自动导入，目录名作为前缀
 - `components/layout/AppHeader.vue` → `<LayoutAppHeader />`
 - `components/ui/MovieRating.vue` → `<UiMovieRating />`
-- `components/media/MediaCard.vue` → `<MediaCard />` (no prefix for media directory)
+- `components/media/MediaCard.vue` → `<MediaCard />` (媒体目录无前缀)
 - `components/common/Icon.vue` → `<CommonIcon />`
 
-## Usage Examples
+## 使用示例
 
 ```vue
-<!-- Layout components -->
+<!-- 布局组件 -->
 <LayoutAppHeader />
 <LayoutAppFooter />
 
-<!-- UI components -->
+<!-- UI 组件 -->
 <UiMovieRating :score="8.5" />
 
-<!-- Media components -->
+<!-- 媒体组件 -->
 <MediaCard :item="movie" />
 
-<!-- Common components -->
+<!-- 通用组件 -->
 <CommonIcon name="star" />
 ```
 
-## Best Practices
+## 最佳实践
 
-1. **Keep components focused**: Each component should have a single responsibility
-2. **Use descriptive names**: Component names should clearly indicate their purpose
-3. **Group related components**: Place components in appropriate directories
-4. **Follow naming conventions**: Use consistent prefixes for different types
-5. **Document complex components**: Add comments for complex logic
-6. **Make components reusable**: Design components to be flexible and reusable 
+1. **保持组件专注**: 每个组件应该只有一个职责
+2. **使用描述性名称**: 组件名称应该清楚地表明其用途
+3. **分组相关组件**: 将组件放在适当的目录中
+4. **遵循命名约定**: 为不同类型使用一致的前缀
+5. **文档化复杂组件**: 为复杂逻辑添加注释
+6. **使组件可复用**: 设计灵活且可复用的组件 
