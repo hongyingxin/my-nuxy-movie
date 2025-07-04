@@ -13,7 +13,7 @@
       </div>
 
       <!-- 加载状态 -->
-      <div v-if="pending" class="text-center py-12">
+      <div v-if="actors?.pending.value" class="text-center py-12">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
         <p class="text-gray-600">加载演员列表中...</p>
       </div>
@@ -92,7 +92,7 @@
         </div>
 
         <!-- 分页组件 -->
-        <div v-if="actors?.data.value?.total_pages > 1" class="flex justify-center">
+        <div v-if="actors.data.value.total_pages > 1" class="flex justify-center">
           <div class="flex items-center space-x-2 bg-white rounded-lg shadow-sm px-4 py-2">
             <!-- 上一页 -->
             <button 
@@ -159,7 +159,7 @@
         </div>
 
         <!-- 分页信息 -->
-        <div v-if="actors?.data.value?.total_pages > 1" class="text-center text-gray-600 text-sm">
+        <div v-if="actors.data.value.total_pages > 1" class="text-center text-gray-600 text-sm">
           第 {{ currentPage }} 页，共 {{ actors.data.value.total_pages }} 页
           <span class="mx-2">•</span>
           共 {{ actors.data.value.total_results }} 位演员
@@ -167,12 +167,12 @@
       </div>
 
       <!-- 错误状态 -->
-      <div v-else-if="error" class="text-center py-12">
+      <div v-else-if="actors?.error.value" class="text-center py-12">
         <div class="text-red-600 text-6xl mb-4">😞</div>
         <h2 class="text-2xl font-bold text-gray-800 mb-2">加载失败</h2>
         <p class="text-gray-600 mb-4">无法获取演员列表，请稍后重试</p>
         <button 
-          @click="refresh"
+          @click="actors.refresh"
           class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
         >
           重新加载
@@ -202,31 +202,26 @@ useHead({
 const currentPage = ref(1)
 
 // 演员列表数据
-const actors = ref(null)
-const pending = ref(false)
-const error = ref(null)
+const actors = ref()
 
 // 获取演员列表数据
-const fetchActors = async (page) => {
-  pending.value = true
-  error.value = null
-  
+const fetchData = async () => {
   try {
-    const result = getPopularPeople(page)
-    await result
-    actors.value = result
-  } catch (err) {
-    error.value = err
-    console.error('获取演员列表失败:', err)
-  } finally {
-    pending.value = false
+    actors.value = getPopularPeople(currentPage.value)
+  } catch (error) {
+    console.error('获取演员列表失败:', error)
   }
 }
 
-// 监听页码变化，重新获取数据
-watchEffect(() => {
-  fetchActors(currentPage.value)
-})
+// 跳转到指定页面
+const goToPage = async (page) => {
+  if (page < 1 || page > actors.value?.data.value?.total_pages) return
+  currentPage.value = page
+  await fetchData()
+  
+  // 滚动到页面顶部
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
 
 // 计算可见的页码
 const visiblePages = computed(() => {
@@ -247,32 +242,8 @@ const visiblePages = computed(() => {
   return pages
 })
 
-// 跳转到指定页面
-const goToPage = (page) => {
-  if (page < 1 || page > actors.value?.data.value?.total_pages) return
-  currentPage.value = page
-  
-  // 滚动到页面顶部
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-}
-
-// 监听路由参数变化
-const route = useRoute()
-watch(() => route.query.page, (newPage) => {
-  if (newPage) {
-    const page = parseInt(newPage)
-    if (page > 0) {
-      currentPage.value = page
-    }
-  }
-}, { immediate: true })
-
-// 监听页码变化，更新URL
-watch(currentPage, (newPage) => {
-  navigateTo({
-    query: { ...route.query, page: newPage }
-  }, { replace: true })
-})
+// 页面加载时获取数据
+fetchData()
 
 // 导航到演员详情页
 const navigateToActor = (actorId) => {
@@ -283,11 +254,5 @@ const navigateToActor = (actorId) => {
 const handleImageError = (event) => {
   const img = event.target
   img.src = '/images/default-profile.png' // 设置默认头像
-}
-
-// 刷新功能
-const refresh = () => {
-  currentPage.value = 1
-  fetchActors(1)
 }
 </script> 
