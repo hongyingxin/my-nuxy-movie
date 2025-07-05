@@ -69,7 +69,7 @@ type ImageSize = PosterSize | BackdropSize | ProfileSize
  * @param {ImageSize} size - 图片尺寸
  * @returns {string} 完整的图片 URL
  */
-export function getTmdbImageUrl(path: string | null, type: ImageType = 'poster', size: ImageSize = 'medium'): string {
+function getTmdbImageUrl(path: string | null, type: ImageType = 'poster', size: ImageSize = 'medium'): string {
   if (!path) {
     // 返回本地 SVG 占位符，处理 xlarge 尺寸
     const fallbackSize = size === 'xlarge' && type !== 'poster' ? 'large' : size
@@ -94,7 +94,7 @@ export function getTmdbImageUrl(path: string | null, type: ImageType = 'poster',
  * @param {PosterSize} size - 尺寸 ('small', 'medium', 'large', 'xlarge', 'original')
  * @returns {string} 海报图片 URL
  */
-export function getPosterUrl(path: string | null, size: PosterSize = 'medium'): string {
+function getPosterUrl(path: string | null, size: PosterSize = 'medium'): string {
   return getTmdbImageUrl(path, 'poster', size)
 }
 
@@ -104,7 +104,7 @@ export function getPosterUrl(path: string | null, size: PosterSize = 'medium'): 
  * @param {BackdropSize} size - 尺寸 ('small', 'medium', 'large', 'original')
  * @returns {string} 背景图片 URL
  */
-export function getBackdropUrl(path: string | null, size: BackdropSize = 'medium'): string {
+function getBackdropUrl(path: string | null, size: BackdropSize = 'medium'): string {
   return getTmdbImageUrl(path, 'backdrop', size)
 }
 
@@ -114,7 +114,7 @@ export function getBackdropUrl(path: string | null, size: BackdropSize = 'medium
  * @param {ProfileSize} size - 尺寸 ('small', 'medium', 'large', 'original')
  * @returns {string} 头像图片 URL
  */
-export function getProfileUrl(path: string | null, size: ProfileSize = 'medium'): string {
+function getProfileUrl(path: string | null, size: ProfileSize = 'medium'): string {
   return getTmdbImageUrl(path, 'profile', size)
 }
 
@@ -124,7 +124,7 @@ export function getProfileUrl(path: string | null, size: ProfileSize = 'medium')
  * @param {ImageType} type - 图片类型
  * @returns {Array} 响应式图片 URL 数组
  */
-export function getResponsiveImageUrls(path: string | null, type: ImageType = 'poster'): Array<{size: string, url: string}> {
+function getResponsiveImageUrls(path: string | null, type: ImageType = 'poster'): Array<{size: string, url: string}> {
   if (!path) return []
   
   const sizes = Object.keys(IMAGE_SIZES[type] || {}) as ImageSize[]
@@ -132,4 +132,22 @@ export function getResponsiveImageUrls(path: string | null, type: ImageType = 'p
     size,
     url: getTmdbImageUrl(path, type, size)
   }))
-} 
+}
+
+// 导出 image 对象，包含所有图片处理函数
+export default {
+  getTmdbImageUrl,
+  getPosterUrl,
+  getBackdropUrl,
+  getProfileUrl,
+  getResponsiveImageUrls
+}
+
+// 为了向后兼容，也导出单独的函数
+// export {
+//   getTmdbImageUrl,
+//   getPosterUrl,
+//   getBackdropUrl,
+//   getProfileUrl,
+//   getResponsiveImageUrls
+// } 

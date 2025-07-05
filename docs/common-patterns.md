@@ -338,7 +338,17 @@ import { common } from '~/utils/common'
 common.formatRuntime(125) // 返回: '2h 5m'
 ```
 
-### **9. 文本截断**
+### **9. 图片处理工具**
+```javascript
+// 使用 image 命名空间，无需手动导入
+image.getPosterUrl(path, 'medium') // 海报图片
+image.getBackdropUrl(path, 'large') // 背景图片
+image.getProfileUrl(path, 'small') // 头像图片
+image.getTmdbImageUrl(path, 'poster', 'medium') // 通用图片
+image.getResponsiveImageUrls(path, 'poster') // 响应式图片数组
+```
+
+### **10. 文本截断**
 ```javascript
 // 使用 Tailwind CSS 的 line-clamp 类
 // line-clamp-1, line-clamp-2, line-clamp-3
