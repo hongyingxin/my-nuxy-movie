@@ -47,7 +47,7 @@
       <span class="text-gray-600">
         {{ (item.release_date || item.first_air_date)?.split('-')[0] || '未知' }}
       </span>
-      <span class="text-gray-500">🔥 {{ formatPopularity(item.popularity) }}</span>
+      <span class="text-gray-500">🔥 {{ common.formatPopularity(item.popularity) }}</span>
     </div>
     
     <!-- 分类 -->
@@ -95,12 +95,6 @@ const genreNames = computed(() => {
     .map(id => genres.find(genre => genre.id === id)?.name)
     .filter(Boolean)
 })
-
-// 格式化热度
-const formatPopularity = (popularity) => {
-  if (!popularity) return 'N/A'
-  return popularity.toFixed(1)
-}
 
 // 获取状态样式
 const getStatusClass = (status) => {

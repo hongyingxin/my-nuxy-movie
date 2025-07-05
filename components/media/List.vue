@@ -28,7 +28,7 @@
           </p>
           <!-- 元信息 - 年份、评分、时长 -->
           <div class="flex items-center space-x-4 text-sm text-gray-500">
-            <span>{{ formatDate(item.release_date || item.first_air_date) }}</span>
+            <span>{{ common.getYear(item.release_date || item.first_air_date) }}</span>
             <span v-if="item.vote_average">★ {{ item.vote_average.toFixed(1) }}</span>
             <span v-if="isMovie && item.runtime">{{ item.runtime }}分钟</span>
           </div>
@@ -64,16 +64,6 @@ const props = defineProps({
  */
 const getPosterUrl = (path) => {
   return getTmdbImageUrl(path, 'poster', 'medium')
-}
-
-/**
- * 格式化日期 - 提取年份
- * @param {string} dateString - 日期字符串
- * @returns {string} 年份或'未知'
- */
-const formatDate = (dateString) => {
-  if (!dateString) return '未知'
-  return new Date(dateString).getFullYear()
 }
 
 /**

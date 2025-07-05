@@ -256,23 +256,89 @@ const handleImageError = (event) => {
 
 ## 🛠️ **工具函数**
 
-### **1. 日期格式化**
+### **1. 命名空间使用方式（推荐）**
 ```javascript
-const formatDate = (dateString) => {
-  if (!dateString) return '未知'
-  return new Date(dateString).toLocaleDateString('zh-CN')
-}
+// 使用 common 命名空间，避免与页面方法名冲突
+// 无需手动导入，Nuxt 3 自动导入支持
+
+// 使用方式
+common.formatDate('2023-12-25') // 返回: '2023/12/25'
+common.formatPopularity(123.456) // 返回: '123.5'
+common.getGenderText(1) // 返回: '女'
+common.formatBudget(1500000) // 返回: '$1.5M'
+common.getYear('2023-12-25') // 返回: '2023'
+common.formatRuntime(125) // 返回: '2h 5m'
 ```
 
-### **2. 人气指数格式化**
+### **2. 手动导入方式（可选）**
 ```javascript
-const formatPopularity = (popularity) => {
-  if (!popularity) return 'N/A'
-  return popularity.toFixed(0)
-}
+// 也可以手动导入 common 对象
+import { common } from '~/utils/common'
+
+// 使用方式
+common.formatDate('2023-12-25') // 返回: '2023/12/25'
+common.formatPopularity(123.456) // 返回: '123.5'
+common.getGenderText(1) // 返回: '女'
 ```
 
-### **3. 文本截断**
+### **3. 日期格式化**
+```javascript
+// 从 utils/common.ts 导入
+import { common } from '~/utils/common'
+
+// 使用方式
+common.formatDate('2023-12-25') // 返回: '2023/12/25'
+```
+
+### **4. 人气指数格式化**
+```javascript
+// 从 utils/common.ts 导入
+import { common } from '~/utils/common'
+
+// 使用方式
+common.formatPopularity(123.456) // 返回: '123.5'
+```
+
+### **5. 性别转换**
+```javascript
+// 从 utils/common.ts 导入
+import { common } from '~/utils/common'
+
+// 使用方式
+common.getGenderText(1) // 返回: '女'
+common.getGenderText(2) // 返回: '男'
+common.getGenderText(0) // 返回: '未知'
+```
+
+### **6. 预算/票房格式化**
+```javascript
+// 从 utils/common.ts 导入
+import { common } from '~/utils/common'
+
+// 使用方式
+common.formatBudget(1500000) // 返回: '$1.5M'
+common.formatBudget(50000)   // 返回: '$50.0K'
+```
+
+### **7. 年份提取**
+```javascript
+// 从 utils/common.ts 导入
+import { common } from '~/utils/common'
+
+// 使用方式
+common.getYear('2023-12-25') // 返回: '2023'
+```
+
+### **8. 时长格式化**
+```javascript
+// 从 utils/common.ts 导入
+import { common } from '~/utils/common'
+
+// 使用方式
+common.formatRuntime(125) // 返回: '2h 5m'
+```
+
+### **9. 文本截断**
 ```javascript
 // 使用 Tailwind CSS 的 line-clamp 类
 // line-clamp-1, line-clamp-2, line-clamp-3
@@ -354,23 +420,4 @@ useHead(() => ({
 - 保持代码一致性
 
 ### **2. 性能优化**
-- 使用 `loading="lazy"` 进行图片懒加载
-- 合理使用 `computed` 和 `watch`
-- 避免不必要的响应式包装
-
-### **3. 错误处理**
-- 始终处理 API 请求错误
-- 提供用户友好的错误信息
-- 实现重试机制
-
-### **4. 类型安全**
-- 使用 TypeScript 类型定义
-- 避免 `any` 类型
-- 为函数参数添加类型注解
-
----
-
-## 📚 **相关文档**
-- [演员模块设计](./person.md)
-- [API 接口文档](./api.md)
-- [组件库文档](./components.md) 
+- 使用 `loading="lazy"`

@@ -46,9 +46,9 @@
                 </h1>
                 
                 <div v-if="detail.data.value.birthday" class="text-gray-600 mb-2">
-                  {{ formatDate(detail.data.value.birthday) }}
+                  {{ common.formatDate(detail.data.value.birthday) }}
                   <span v-if="detail.data.value.deathday" class="text-gray-400">
-                    - {{ formatDate(detail.data.value.deathday) }}
+                    - {{ common.formatDate(detail.data.value.deathday) }}
                   </span>
                 </div>
                 
@@ -60,7 +60,7 @@
                 <div class="flex items-center justify-center gap-6 mb-6">
                   <div class="text-center">
                     <div class="text-2xl font-bold text-gray-800">
-                      {{ getGenderText(detail.data.value.gender) }}
+                      {{ common.getGenderText(detail.data.value.gender) }}
                     </div>
                     <div class="text-sm text-gray-500">性别</div>
                   </div>
@@ -116,7 +116,7 @@
                   </svg>
                   <div>
                     <span class="text-gray-600 text-sm">生日</span>
-                    <p class="text-gray-800 font-medium">{{ formatDate(detail.data.value.birthday) }}</p>
+                    <p class="text-gray-800 font-medium">{{ common.formatDate(detail.data.value.birthday) }}</p>
                   </div>
                 </div>
                 <div v-if="detail.data.value.place_of_birth" class="flex items-start gap-3">
@@ -144,7 +144,7 @@
                   </svg>
                   <div>
                     <span class="text-gray-600 text-sm">性别</span>
-                    <p class="text-gray-800 font-medium">{{ getGenderText(detail.data.value.gender) }}</p>
+                    <p class="text-gray-800 font-medium">{{ common.getGenderText(detail.data.value.gender) }}</p>
                   </div>
                 </div>
                 <div v-if="detail.data.value.imdb_id" class="flex items-start gap-3">
@@ -286,7 +286,7 @@
                       <p class="text-xs text-gray-600 mb-2">{{ work.character }}</p>
                       <div class="flex items-center justify-between text-xs text-gray-500">
                         <span>{{ (work.release_date || work.first_air_date)?.split('-')[0] || '未知' }}</span>
-                        <span class="text-red-500">🔥 {{ formatPopularity(work.popularity) }}</span>
+                        <span class="text-red-500">🔥 {{ common.formatPopularity(work.popularity) }}</span>
                       </div>
                     </div>
                   </div>
@@ -386,12 +386,12 @@
                               <p class="text-sm text-gray-600 mb-2">{{ work.character }}</p>
                               
                               <div class="flex items-center gap-4 text-xs text-gray-500">
-                                <span>{{ formatDate(work.release_date || work.first_air_date) }}</span>
+                                <span>{{ common.formatDate(work.release_date || work.first_air_date) }}</span>
                                 <div class="flex items-center">
                                   <span class="text-yellow-500 mr-1">★</span>
                                   <span>{{ work.vote_average?.toFixed(1) || 'N/A' }}</span>
                                 </div>
-                                <span class="text-red-500">🔥 {{ formatPopularity(work.popularity) }}</span>
+                                <span class="text-red-500">🔥 {{ common.formatPopularity(work.popularity) }}</span>
                               </div>
                             </div>
                             
@@ -510,29 +510,6 @@ useHead(() => ({
     }
   ]
 }))
-
-// 工具函数
-const formatDate = (dateString) => {
-  if (!dateString) return '未知'
-  return new Date(dateString).toLocaleDateString('zh-CN')
-}
-
-const formatPopularity = (popularity) => {
-  if (!popularity) return 'N/A'
-  return popularity.toFixed(1)
-}
-
-// 性别转换函数
-const getGenderText = (gender) => {
-  switch (gender) {
-    case 1:
-      return '女'
-    case 2:
-      return '男'
-    default:
-      return '未知'
-  }
-}
 
 // 导航到作品详情页
 const navigateToWork = (work) => {

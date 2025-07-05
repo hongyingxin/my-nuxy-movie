@@ -47,9 +47,13 @@
                   <h1 class="text-3xl md:text-5xl font-bold mb-2">
                     {{ detail.data.value.title || detail.data.value.name }}
                   </h1>
-                  <p class="text-xl text-gray-300">
-                    {{ getYear() }}
-                  </p>
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="text-gray-600">{{ common.getYear(detail.data.value.release_date || detail.data.value.first_air_date) }}</span>
+                    <span class="text-gray-400">•</span>
+                    <span class="text-gray-600">{{ getRuntimeOrSeasons() }}</span>
+                    <span class="text-gray-400">•</span>
+                    <span class="text-gray-600">{{ detail.data.value.vote_average?.toFixed(1) }}/10</span>
+                  </div>
                 </div>
                 
                 <!-- 标签信息 -->
@@ -288,15 +292,15 @@
                 <template v-if="!isTv">
                   <div>
                     <span class="text-gray-600 text-sm">预算：</span>
-                    <span class="text-gray-800">{{ formatBudget(detail.data.value.budget) }}</span>
+                    <span class="text-gray-800">{{ common.formatBudget(detail.data.value.budget) }}</span>
                   </div>
                   <div>
                     <span class="text-gray-600 text-sm">票房：</span>
-                    <span class="text-gray-800">{{ formatBudget(detail.data.value.revenue) }}</span>
+                    <span class="text-gray-800">{{ common.formatBudget(detail.data.value.revenue) }}</span>
                   </div>
                   <div>
                     <span class="text-gray-600 text-sm">发行日期：</span>
-                    <span class="text-gray-800">{{ formatDate(detail.data.value.release_date) }}</span>
+                    <span class="text-gray-800">{{ common.formatDate(detail.data.value.release_date) }}</span>
                   </div>
                 </template>
                 
@@ -312,11 +316,11 @@
                   </div>
                   <div>
                     <span class="text-gray-600 text-sm">首播日期：</span>
-                    <span class="text-gray-800">{{ formatDate(detail.data.value.first_air_date) }}</span>
+                    <span class="text-gray-800">{{ common.formatDate(detail.data.value.first_air_date) }}</span>
                   </div>
                   <div v-if="detail.data.value.last_air_date">
                     <span class="text-gray-600 text-sm">最后播出：</span>
-                    <span class="text-gray-800">{{ formatDate(detail.data.value.last_air_date) }}</span>
+                    <span class="text-gray-800">{{ common.formatDate(detail.data.value.last_air_date) }}</span>
                   </div>
                 </template>
                 
@@ -497,11 +501,6 @@ const openLightbox = (type, index) => {
 }
 
 // 工具函数
-const getYear = () => {
-  const date = detail.data.value.release_date || detail.data.value.first_air_date
-  return date ? new Date(date).getFullYear() : '未知'
-}
-
 const getRuntimeOrSeasons = () => {
   if (isTv.value) {
     return `${detail.data.value.number_of_seasons} 季`
@@ -512,22 +511,6 @@ const getRuntimeOrSeasons = () => {
     const mins = minutes % 60
     return `${hours}h ${mins}m`
   }
-}
-
-const formatBudget = (amount) => {
-  if (!amount) return '未知'
-  if (amount >= 1000000) {
-    return `$${(amount / 1000000).toFixed(1)}M`
-  }
-  if (amount >= 1000) {
-    return `$${(amount / 1000).toFixed(1)}K`
-  }
-  return `$${amount}`
-}
-
-const formatDate = (dateString) => {
-  if (!dateString) return '未知'
-  return new Date(dateString).toLocaleDateString('zh-CN')
 }
 
 // 刷新功能
