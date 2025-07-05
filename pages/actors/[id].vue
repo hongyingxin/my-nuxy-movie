@@ -26,7 +26,7 @@
               <div class="text-center">
                 <div class="relative group mb-6">
                   <img 
-                    :src="getProfileUrl(detail.data.value.profile_path, 'large')"
+                    :src="image.getProfileUrl(detail.data.value.profile_path, 'large')"
                     :alt="detail.data.value.name"
                     class="w-full max-w-80 mx-auto rounded-xl shadow-lg"
                   />
@@ -253,7 +253,7 @@
                     <!-- 作品海报 -->
                     <div class="relative aspect-[2/3] overflow-hidden">
                       <img 
-                        :src="getPosterUrl(work.poster_path, 'medium')"
+                        :src="image.getPosterUrl(work.poster_path, 'medium')"
                         :alt="work.title || work.name"
                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                         loading="lazy"
@@ -362,7 +362,7 @@
                             <!-- 作品海报 -->
                             <div class="flex-shrink-0">
                               <img 
-                                :src="getPosterUrl(work.poster_path, 'small')"
+                                :src="image.getPosterUrl(work.poster_path, 'small')"
                                 :alt="work.title || work.name"
                                 class="w-16 h-16 rounded-lg object-cover shadow-sm"
                                 loading="lazy"
@@ -438,7 +438,6 @@ const actorId = parseInt(route.params.id)
 
 // API 导入
 import { getPersonDetail, getPersonCredits } from '~/api/person'
-import { getProfileUrl, getPosterUrl } from '~/utils/image'
 
 // 数据获取
 const detail = getPersonDetail(actorId)

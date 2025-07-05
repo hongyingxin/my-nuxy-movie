@@ -3,7 +3,7 @@
     <div class="relative overflow-hidden rounded-lg mb-3 aspect-[2/3] bg-gray-200">
       <NuxtImg
         v-if="item.poster_path"
-        :src="getPosterUrl(item.poster_path)"
+        :src="image.getPosterUrl(item.poster_path)"
         :alt="item.title || item.name"
         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         loading="lazy"
@@ -58,8 +58,6 @@
 </template>
 
 <script setup>
-import { getPosterUrl } from '~/utils/image'
-
 // Props
 const props = defineProps({
   // 电影/电视剧数据对象

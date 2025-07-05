@@ -132,7 +132,6 @@ const [mediaType, mediaId] = [route.params.type, parseInt(route.params.id)]
 
 // API 导入
 import { getDetail, getImages } from '~/api/detail'
-import { getPosterUrl, getBackdropUrl } from '~/utils/image'
 
 // 获取数据
 const detail = getDetail(mediaType, mediaId)
@@ -220,7 +219,7 @@ watch(activeTab, () => {
 
 // 图片链接生成
 const getFullImageUrl = (path, size, type) => {
-  return type === 'posters' ? getPosterUrl(path, size) : getBackdropUrl(path, size)
+  return type === 'posters' ? image.getPosterUrl(path, size) : image.getBackdropUrl(path, size)
 }
 
 // PhotoSwipe 初始化

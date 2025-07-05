@@ -21,7 +21,7 @@
         <!-- 背景图片 -->
         <div 
           class="absolute inset-0 bg-cover bg-center "
-          :style="{ backgroundImage: `url(${getBackdropUrl(detail.data.value.backdrop_path, 'original')})` }"
+          :style="{ backgroundImage: `url(${image.getBackdropUrl(detail.data.value.backdrop_path, 'original')})` }"
         >
           <!-- 渐变遮罩 -->
           <div class="absolute inset-0 bg-black/60"></div>
@@ -34,7 +34,7 @@
               <!-- 海报 -->
               <div class="flex-shrink-0">
                 <img 
-                  :src="getPosterUrl(detail.data.value.poster_path, 'medium')"
+                  :src="image.getPosterUrl(detail.data.value.poster_path, 'medium')"
                   :alt="detail.data.value.title || detail.data.value.name"
                   class="w-48 md:w-64 rounded-lg shadow-2xl"
                 />
@@ -144,24 +144,25 @@
                 </NuxtLink>
               </div>
               <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div 
+                <NuxtLink 
                   v-for="cast in credits.data.value.cast?.slice(0, 8)" 
                   :key="cast.id"
-                  class="text-center"
+                  :to="`/actors/${cast.id}`"
+                  class="text-center group hover:scale-105 transition-transform duration-200"
                 >
                   <img 
-                    :src="getProfileUrl(cast.profile_path, 'small')"
+                    :src="image.getProfileUrl(cast.profile_path, 'small')"
                     :alt="cast.name"
-                    class="w-16 h-16 rounded-full mx-auto mb-2 object-cover"
+                    class="w-16 h-16 rounded-full mx-auto mb-2 object-cover group-hover:ring-2 group-hover:ring-red-500 transition-all duration-200"
                   />
-                  <p class="text-sm font-medium text-gray-800">{{ cast.name }}</p>
+                  <p class="text-sm font-medium text-gray-800 group-hover:text-red-600 transition-colors">{{ cast.name }}</p>
                   <p class="text-xs text-gray-600">{{ cast.character }}</p>
-                </div>
+                </NuxtLink>
               </div>
             </section>
 
             <!-- 媒体 -->
-            <section class="mb-8" v-if="images.data.value">
+            <section class="mb-8" v-if="images.data.value && activeMediaTab">
               <h2 class="text-2xl font-bold text-gray-800 mb-4">媒体</h2>
               
               <!-- 标签页 -->
@@ -196,13 +197,13 @@
               <!-- 图片网格 -->
               <div v-if="activeMediaTab === 'backdrops'" class="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div 
-                  v-for="(image, index) in images.data.value.backdrops?.slice(0, 6)" 
+                  v-for="(imgItem, index) in images.data.value.backdrops?.slice(0, 6)" 
                   :key="index"
                   class="relative aspect-video rounded-lg overflow-hidden cursor-pointer group"
                   @click="openLightbox('backdrops', index)"
                 >
                   <img 
-                    :src="getBackdropUrl(image.file_path, 'medium')"
+                    :src="image.getBackdropUrl(imgItem.file_path, 'medium')"
                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                     loading="lazy"
                   />
@@ -212,13 +213,13 @@
               
               <div v-if="activeMediaTab === 'posters'" class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 <div 
-                  v-for="(image, index) in images.data.value.posters?.slice(0, 12)" 
+                  v-for="(imgItem, index) in images.data.value.posters?.slice(0, 12)" 
                   :key="index"
                   class="relative aspect-[2/3] rounded-lg overflow-hidden cursor-pointer group"
                   @click="openLightbox('posters', index)"
                 >
                   <img 
-                    :src="getPosterUrl(image.file_path, 'medium')"
+                    :src="image.getPosterUrl(imgItem.file_path, 'medium')"
                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                     loading="lazy"
                   />
@@ -388,7 +389,7 @@
                   class="flex items-center gap-3 p-2 rounded hover:bg-gray-50"
                 >
                   <img 
-                    :src="getPosterUrl(season.poster_path, 'small')"
+                    :src="image.getPosterUrl(season.poster_path, 'small')"
                     :alt="season.name"
                     class="w-12 h-16 rounded object-cover"
                   />
@@ -433,7 +434,6 @@ const mediaTypeText = computed(() => isTv.value ? '电视剧' : '电影')
 
 // API 导入
 import { getDetail, getCredits, getVideos, getSimilar, getImages } from '~/api/detail'
-import { getPosterUrl, getBackdropUrl, getProfileUrl } from '~/utils/image'
 
 // 数据获取
 const detail = getDetail(mediaType, mediaId)
@@ -465,6 +465,20 @@ const mediaTabs = [
   { id: 'posters', name: '海报' },
   { id: 'videos', name: '视频' }
 ]
+
+// 监听数据加载完成，设置默认标签页
+// watch(images, (newImages) => {
+//   if (newImages.data.value && !activeMediaTab.value) {
+//     // 优先显示有内容的标签页
+//     if (newImages.data.value.backdrops?.length > 0) {
+//       activeMediaTab.value = 'backdrops'
+//     } else if (newImages.data.value.posters?.length > 0) {
+//       activeMediaTab.value = 'posters'
+//     } else if (videos.data.value?.results?.length > 0) {
+//       activeMediaTab.value = 'videos'
+//     }
+//   }
+// }, { immediate: true })
 
 // 获取媒体数量
 const getMediaCount = (type) => {

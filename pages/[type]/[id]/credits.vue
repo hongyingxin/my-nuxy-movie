@@ -30,7 +30,7 @@
             >
               <div class="flex-shrink-0">
                 <img 
-                  :src="getProfileUrl(actor.profile_path, 'medium')"
+                  :src="image.getProfileUrl(actor.profile_path, 'medium')"
                   :alt="actor.name"
                   class="w-16 h-16 rounded-lg object-cover"
                   @error="handleImageError"
@@ -94,7 +94,6 @@ console.log('Media ID:', mediaId)
 
 // API 导入
 import { getDetail, getCredits } from '~/api/detail'
-import { getProfileUrl } from '~/utils/image'
 
 // 获取数据
 // 这里获取电影详情是为了电影/电视名字

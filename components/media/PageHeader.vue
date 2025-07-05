@@ -11,7 +11,7 @@
     <div 
       v-if="backdrop_path"
       class="absolute inset-0 bg-cover bg-center opacity-50"
-      :style="{ backgroundImage: `url(${getBackdropUrl(backdrop_path, 'original')})` }"
+      :style="{ backgroundImage: `url(${image.getBackdropUrl(backdrop_path, 'original')})` }"
     ></div>
 
     <div class="container mx-auto px-4 py-8 relative">
@@ -40,7 +40,6 @@
 </template>
 
 <script setup lang="ts">
-import { getBackdropUrl } from '~/utils/image'
 
 interface Props {
   title: string

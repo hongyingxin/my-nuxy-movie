@@ -1,5 +1,5 @@
 import { ref, onMounted, onBeforeUnmount, nextTick, type Ref, watch } from 'vue'
-import { debounce } from '~/utils/common'
+// import { debounce } from '~/utils/common'
 
 /**
  * 无限滚动配置选项接口
@@ -125,7 +125,7 @@ export function useInfiniteScroll(
   }
 
   // 创建防抖的加载函数
-  const debouncedLoadMore = debounce(() => {
+  const debouncedLoadMore = common.debounce(() => {
     if (hasMore.value && !isLoading.value && enabled) {
       loadMore()
     }

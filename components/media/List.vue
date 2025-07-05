@@ -11,7 +11,7 @@
       <div class="flex space-x-4">
         <!-- 海报图片 -->
         <img 
-          :src="getPosterUrl(item.poster_path)" 
+          :src="image.getPosterUrl(item.poster_path)" 
           :alt="item.title || item.name"
           class="w-16 h-24 object-cover rounded-lg"
           @error="handleImageError"
@@ -39,9 +39,6 @@
 </template>
 
 <script setup>
-// 导入工具函数
-import { getTmdbImageUrl } from '~/utils/image'
-
 // ==================== Props 定义 ====================
 const props = defineProps({
   // 媒体项目数组 - 包含电影或电视剧信息
@@ -57,15 +54,6 @@ const props = defineProps({
 })
 
 // ==================== 方法 ====================
-/**
- * 获取海报图片URL
- * @param {string} path - TMDB图片路径
- * @returns {string} 完整的图片URL
- */
-const getPosterUrl = (path) => {
-  return getTmdbImageUrl(path, 'poster', 'medium')
-}
-
 /**
  * 处理图片加载错误
  * @param {Event} event - 图片错误事件

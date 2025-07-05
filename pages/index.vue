@@ -9,7 +9,7 @@
       <div 
         v-if="heroContent.data.value?.results?.length" 
         class="relative h-full bg-cover bg-center transition-all duration-1000"
-        :style="{ backgroundImage: `url(${getBackdropUrl(currentHeroItem.backdrop_path, 'large')})` }"
+        :style="{ backgroundImage: `url(${image.getBackdropUrl(currentHeroItem.backdrop_path, 'large')})` }"
       >
         <!-- 内容区域 - 显示电影/电视剧信息 -->
         <div class="absolute inset-0 z-20 flex items-center">
@@ -231,9 +231,6 @@ import { getPopularTvShows, getOnTheAirTvShows } from '~/api/tv'
 // API 导入 - 趋势内容接口
 import { getAllTrending } from '~/api/trending'
 // API 导入 - 分类接口
-import { getMovieGenres, getTvGenres } from '~/api/genre'
-// 工具函数导入 - 图片 URL 生成
-import { getBackdropUrl } from '~/utils/image'
 
 // SEO 配置 - 设置页面标题和描述
 useHead({

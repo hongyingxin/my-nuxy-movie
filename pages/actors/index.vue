@@ -31,7 +31,7 @@
             <!-- 演员头像 -->
             <div class="relative aspect-[2/3] overflow-hidden rounded-t-lg">
               <img 
-                :src="getProfileUrl(actor.profile_path, 'medium')"
+                :src="image.getProfileUrl(actor.profile_path, 'medium')"
                 :alt="actor.name"
                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 loading="lazy"
@@ -185,7 +185,6 @@
 <script setup>
 // API 导入
 import { getPopularPeople } from '~/api/person'
-import { getProfileUrl } from '~/utils/image'
 
 // SEO 配置
 useHead({
