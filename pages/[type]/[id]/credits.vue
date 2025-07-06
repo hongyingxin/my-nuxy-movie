@@ -56,7 +56,7 @@
                   :src="image.getProfileUrl(actor.profile_path, 'medium')"
                   :alt="actor.name"
                   class="w-16 h-16 rounded-lg object-cover"
-                  @error="handleImageError"
+                  @error="(event) => image.handleImageError(event, 'profile')"
                 />
               </div>
               <div class="ml-4 flex-1">
@@ -139,12 +139,6 @@ useHead(() => ({
     }
   ]
 }))
-
-// 处理图片加载错误
-const handleImageError = (event) => {
-  const img = event.target
-  img.src = '/images/profile-placeholder.png' // 需要添加一个默认的占位图
-}
 
 // 按部门对剧组成员进行分组
 const groupedCrew = computed(() => {

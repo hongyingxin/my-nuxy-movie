@@ -10,7 +10,7 @@
         sizes="sm:100vw md:50vw lg:400px"
         format="webp"
         quality="80"
-        @error="handleImageError"
+        @error="(event) => image.handleImageError(event, 'poster')"
       />
       
       <!-- 状态标签 -->
@@ -124,15 +124,6 @@ const getStatusText = (status) => {
     default:
       return ''
   }
-}
-
-// 处理图片加载错误
-const handleImageError = (event) => {
-  // 设置默认图片或隐藏图片
-  const img = event.target
-  img.style.display = 'none'
-  // 或者设置一个默认的占位符图片
-  // img.src = '/images/placeholder.jpg'
 }
 
 // 跳转到详情页

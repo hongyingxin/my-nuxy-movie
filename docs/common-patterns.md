@@ -158,6 +158,46 @@ const handleImageError = (event) => {
 - 自动回退：当 TMDB 图片不可用时显示占位符
 - 支持不同尺寸和类型
 
+### **4. 统一错误处理模式**
+
+项目使用统一的图片错误处理函数，避免重复代码和不一致的行为。
+
+#### 使用方式
+
+```vue
+<!-- 在模板中直接使用内联方式 -->
+<img 
+  :src="image.getPosterUrl(item.poster_path)" 
+  :alt="item.title"
+  @error="(event) => image.handleImageError(event, 'poster')"
+/>
+
+<img 
+  :src="image.getProfileUrl(actor.profile_path)" 
+  :alt="actor.name"
+  @error="(event) => image.handleImageError(event, 'profile')"
+/>
+
+<img 
+  :src="image.getBackdropUrl(item.backdrop_path)" 
+  :alt="item.title"
+  @error="(event) => image.handleImageError(event, 'backdrop')"
+/>
+```
+
+#### 支持的图片类型
+
+- `poster`: 海报图片，自动回退到占位符
+- `profile`: 头像图片，自动回退到占位符
+- `backdrop`: 背景图片，自动回退到占位符
+
+#### 优势
+
+- **简洁直观**: 直接调用 `image.handleImageError(event, 'poster')`
+- **类型安全**: 自动根据图片类型设置正确的占位符
+- **一致性**: 所有组件使用相同的错误处理逻辑
+- **维护性**: 集中管理占位符图片
+
 ---
 
 ## 🎨 **UI 组件模式**

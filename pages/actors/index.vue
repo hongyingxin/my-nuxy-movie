@@ -40,7 +40,7 @@
                 :alt="actor.name"
                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 loading="lazy"
-                @error="handleImageError"
+                @error="(event) => image.handleImageError(event, 'profile')"
               />
               <!-- 悬停遮罩 -->
               <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
@@ -252,11 +252,5 @@ fetchData()
 // 导航到演员详情页
 const navigateToActor = (actorId) => {
   navigateTo(`/actors/${actorId}`)
-}
-
-// 处理图片加载错误
-const handleImageError = (event) => {
-  const img = event.target
-  img.src = '/images/default-profile.png' // 设置默认头像
 }
 </script> 

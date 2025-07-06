@@ -134,13 +134,37 @@ function getResponsiveImageUrls(path: string | null, type: ImageType = 'poster')
   }))
 }
 
+/**
+ * 处理图片加载错误
+ * @param {Event} event - 图片错误事件
+ * @param {string} type - 图片类型 ('poster', 'profile', 'backdrop')
+ */
+export const handleImageError = (event: Event, type: 'poster' | 'profile' | 'backdrop' = 'poster') => {
+  const img = event.target as HTMLImageElement
+  
+  // 根据类型设置对应的占位符图片
+  switch (type) {
+    case 'profile':
+      img.src = getProfileUrl(null, 'medium')
+      break
+    case 'backdrop':
+      img.src = getBackdropUrl(null, 'medium')
+      break
+    case 'poster':
+    default:
+      img.src = getPosterUrl(null, 'medium')
+      break
+  }
+}
+
 // 导出 image 对象，包含所有图片处理函数
 export default {
   getTmdbImageUrl,
   getPosterUrl,
   getBackdropUrl,
   getProfileUrl,
-  getResponsiveImageUrls
+  getResponsiveImageUrls,
+  handleImageError
 }
 
 // 为了向后兼容，也导出单独的函数

@@ -10,7 +10,7 @@
         :src="image.getPosterUrl(item.poster_path)" 
         :alt="item.title || item.name"
         class="w-16 h-24 object-cover rounded-lg"
-        @error="handleImageError"
+        @error="(event) => image.handleImageError(event, 'poster')"
       >
       <!-- 媒体信息区域 -->
       <div class="flex-1">
@@ -49,15 +49,6 @@ const props = defineProps({
 })
 
 // ==================== 方法 ====================
-/**
- * 处理图片加载错误
- * @param {Event} event - 图片错误事件
- */
-const handleImageError = (event) => {
-  const img = event.target
-  img.style.display = 'none'
-}
-
 /**
  * 跳转到详情页
  */
