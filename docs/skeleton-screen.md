@@ -182,6 +182,167 @@ components/
 - **更多变体**: 根据业务需求添加更多卡片变体
 - **智能骨架**: 根据数据结构自动生成骨架屏
 
+## 详情页骨架屏设计
+
+### 问题分析
+
+详情页存在显著的差异性：
+- **电影详情页** (`/movie/[id]`) - 有上映日期、时长、票房等
+- **电视剧详情页** (`/tv/[id]`) - 有季数、集数、播出状态等  
+- **演员详情页** (`/actors/[id]`) - 有生日、身高、代表作品等
+
+### 骨架屏设计的挑战
+
+1. **布局差异大**：不同类型的内容布局完全不同
+2. **字段不同**：电影有票房，电视剧有季数，演员有生日
+3. **组件复用困难**：很难用一个骨架屏组件适配所有类型
+4. **维护成本高**：需要为每种类型维护不同的骨架屏
+
+### 解决方案对比
+
+#### 方案一：类型化骨架屏组件
+```vue
+<!-- 为每种类型创建专门的骨架屏 -->
+<SkeletonMovieDetail v-if="type === 'movie'" />
+<SkeletonTvDetail v-if="type === 'tv'" />
+<SkeletonActorDetail v-if="type === 'person'" />
+```
+
+**优点**：完美匹配每种类型的布局
+**缺点**：维护成本高，代码重复
+
+#### 方案二：通用骨架屏 + 配置
+```vue
+<SkeletonDetail 
+  :type="type"
+  :layout="layoutConfig"
+  :fields="fieldConfig"
+/>
+```
+
+**优点**：配置灵活，复用性强
+**缺点**：配置复杂，实现难度大
+
+#### 方案三：分区块骨架屏（推荐）
+```vue
+<!-- 只为主要区块加骨架屏，忽略细节差异 -->
+<div class="min-h-screen bg-gray-50">
+  <!-- 头部骨架屏 - 所有类型都类似 -->
+  <SkeletonPageHeader />
+  
+  <!-- 内容区域 - 根据类型显示不同骨架屏 -->
+  <div class="container mx-auto px-6 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <!-- 左侧：海报 + 基本信息 -->
+      <div class="lg:col-span-3">
+        <SkeletonPoster />
+        <SkeletonBasicInfo :type="type" />
+      </div>
+      
+      <!-- 右侧：额外信息 -->
+      <div class="lg:col-span-1">
+        <SkeletonExtraInfo :type="type" />
+      </div>
+    </div>
+  </div>
+</div>
+```
+
+**优点**：平衡了复用性和准确性
+**缺点**：需要设计合理的区块划分
+
+#### 方案四：简单加载状态
+```vue
+<!-- 不追求完美匹配，用简单的加载状态 -->
+<div v-if="detail.pending.value" class="min-h-screen bg-gray-50 flex items-center justify-center">
+  <div class="text-center">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+    <p class="text-gray-600">加载详情信息中...</p>
+  </div>
+</div>
+```
+
+**优点**：实现简单，维护成本低
+**缺点**：用户体验一般
+
+### 实施策略
+
+#### 短期方案：简单加载状态
+- 使用统一的加载动画
+- 实现简单，维护成本低
+- 用户体验基本满足
+
+#### 长期方案：分区块骨架屏
+- 头部区域：所有类型都类似，可以复用
+- 内容区域：根据类型显示不同的基础骨架屏
+- 不追求完美匹配，只保证基本结构
+
+#### 具体实施步骤：
+1. **第一阶段**：实现简单加载状态，快速提升体验
+2. **第二阶段**：为头部等通用区域加骨架屏
+3. **第三阶段**：按需扩展，根据用户反馈决定是否需要更复杂的骨架屏
+
+### 技术实现
+
+#### 简单加载状态组件
+```vue
+<!-- components/Skeleton/LoadingState.vue -->
+<template>
+  <div class="min-h-screen bg-gray-50 flex items-center justify-center">
+    <div class="text-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+      <p class="text-gray-600">{{ message }}</p>
+    </div>
+  </div>
+</template>
+
+<script setup>
+defineProps({
+  message: {
+    type: String,
+    default: '加载中...'
+  }
+})
+</script>
+```
+
+#### 分区块骨架屏组件
+```vue
+<!-- components/Skeleton/DetailPage.vue -->
+<template>
+  <div class="min-h-screen bg-gray-50">
+    <!-- 头部骨架屏 -->
+    <SkeletonPageHeader />
+    
+    <!-- 内容区域 -->
+    <div class="container mx-auto px-6 py-8">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <!-- 左侧内容 -->
+        <div class="lg:col-span-3">
+          <SkeletonPoster />
+          <SkeletonBasicInfo :type="type" />
+        </div>
+        
+        <!-- 右侧信息 -->
+        <div class="lg:col-span-1">
+          <SkeletonExtraInfo :type="type" />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+defineProps({
+  type: {
+    type: String,
+    required: true,
+    validator: (value) => ['movie', 'tv', 'person'].includes(value)
+  }
+})
+</script>
+```
+
 ## 已完成的实现
 
 ### 1. SkeletonCard 组件 (`components/Skeleton/Card.vue`)
@@ -201,10 +362,17 @@ components/
 - ✅ 模拟真实列表项的布局
 - ✅ 可配置的列表项数量
 
-### 4. 页面应用
+### 4. SkeletonLoadingState 组件 (`components/Skeleton/LoadingState.vue`)
+- ✅ 简单统一的加载状态组件
+- ✅ 可自定义加载消息
+- ✅ 适用于详情页等复杂页面
+
+### 5. 页面应用
 - ✅ 首页：热门电影、电视剧、最新动态区域
 - ✅ 演员列表页面：演员网格布局
 - ✅ 演职员页面：演员列表和剧组列表
+- ✅ 电影/电视剧详情页：统一加载状态
+- ✅ 演员详情页：统一加载状态
 
 ## 使用示例
 
@@ -236,6 +404,21 @@ components/
 <SkeletonList 
   :count="15"
   variant="actor"
+/>
+```
+
+### 在详情页中使用
+```vue
+<!-- 电影/电视剧详情页 -->
+<SkeletonLoadingState 
+  v-if="detail.pending.value" 
+  :message="`加载${mediaTypeText}详情中...`"
+/>
+
+<!-- 演员详情页 -->
+<SkeletonLoadingState 
+  v-if="detail.pending.value" 
+  message="加载演员详情中..."
 />
 ```
 

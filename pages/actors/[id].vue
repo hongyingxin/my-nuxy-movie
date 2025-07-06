@@ -7,12 +7,10 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- 加载状态 -->
-    <div v-if="detail.pending.value" class="min-h-screen flex items-center justify-center">
-      <div class="text-center">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
-        <p class="text-gray-600">加载演员详情中...</p>
-      </div>
-    </div>
+    <SkeletonLoadingState 
+      v-if="detail.pending.value" 
+      message="加载演员详情中..."
+    />
 
     <!-- 演员详情内容 -->
     <div v-else-if="detail.data.value" class="relative">
