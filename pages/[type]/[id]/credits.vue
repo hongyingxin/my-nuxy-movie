@@ -25,8 +25,9 @@
           <h2 class="text-2xl font-bold text-gray-800 mb-6">演员 ({{ credits.data.value.cast?.length || 0 }})</h2>
           <div class="bg-white rounded-lg shadow-sm">
             <div v-for="(actor, index) in credits.data.value.cast" :key="actor.id" 
-              class="flex items-center p-4"
+              class="flex items-center p-4 cursor-pointer hover:bg-gray-100 hover:shadow-md transition-all duration-200 rounded-lg"
               :class="{'border-b': index !== credits.data.value.cast.length - 1}"
+              @click="navigateTo(`/actors/${actor.id}`)"
             >
               <div class="flex-shrink-0">
                 <img 
@@ -136,4 +137,23 @@ const groupedCrew = computed(() => {
     return acc
   }, {})
 })
+
+// 翻译部门名称
+const translateDepartment = (department) => {
+  const departmentMap = {
+    'Production': '制作',
+    'Directing': '导演',
+    'Writing': '编剧',
+    'Sound': '音效',
+    'Camera': '摄影',
+    'Editing': '剪辑',
+    'Art': '美术',
+    'Costume & Make-Up': '服装化妆',
+    'Visual Effects': '视觉效果',
+    'Lighting': '灯光',
+    'Creator': '创作',
+    'Actors': '演员'
+  }
+  return departmentMap[department] || department
+}
 </script> 
