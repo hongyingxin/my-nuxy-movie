@@ -13,9 +13,14 @@
       </div>
 
       <!-- 加载状态 -->
-      <div v-if="actors?.pending.value" class="text-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
-        <p class="text-gray-600">加载演员列表中...</p>
+      <div v-if="actors?.pending.value" class="space-y-8">
+        <!-- 使用骨架屏组件 -->
+        <SkeletonGrid 
+          :count="20"
+          variant="person"
+          :cols="{ sm: 2, md: 3, lg: 4, xl: 5 }"
+          :show-extra="true"
+        />
       </div>
 
       <!-- 演员列表 -->

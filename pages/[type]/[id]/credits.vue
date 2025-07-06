@@ -14,9 +14,31 @@
         :back-to="`/${mediaType}/${mediaId}`"
       />
 
-      <div v-if="credits.pending.value" class="text-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
-        <p class="text-gray-600">加载演职员信息中...</p>
+      <div v-if="credits.pending.value" class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <!-- 左侧：演员列表骨架屏 -->
+        <div class="lg:col-span-3">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">演员</h2>
+          <SkeletonList 
+            :count="15"
+            variant="actor"
+          />
+        </div>
+
+        <!-- 右侧：剧组成员骨架屏 -->
+        <div class="lg:col-span-1">
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">剧组</h2>
+          <div class="space-y-6">
+            <div v-for="n in 3" :key="n" class="animate-pulse">
+              <div class="bg-gray-300 h-5 rounded w-20 mb-3"></div>
+              <div class="bg-white rounded-lg shadow-sm">
+                <div v-for="m in 4" :key="m" class="p-3" :class="{'border-b': m !== 4}">
+                  <div class="bg-gray-300 h-4 rounded w-3/4 mb-1"></div>
+                  <div class="bg-gray-300 h-3 rounded w-1/2"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div v-else-if="credits.data.value" class="grid grid-cols-1 lg:grid-cols-4 gap-8">

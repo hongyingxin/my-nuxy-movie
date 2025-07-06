@@ -133,14 +133,13 @@
           <button class="text-red-600 hover:text-red-700 font-semibold">查看更多 →</button>
         </div>
         
-        <!-- 加载状态骨架屏 -->
-        <div v-if="popularMovies.pending.value" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          <div v-for="n in 6" :key="n" class="animate-pulse">
-            <div class="bg-gray-300 aspect-[2/3] rounded-lg mb-2"></div>
-            <div class="bg-gray-300 h-4 rounded mb-1"></div>
-            <div class="bg-gray-300 h-3 rounded w-1/2"></div>
-          </div>
-        </div>
+        <!-- 使用骨架屏组件 -->
+        <SkeletonGrid 
+          v-if="popularMovies.pending.value"
+          :count="12"
+          variant="movie"
+          :cols="{ sm: 2, md: 4, lg: 6 }"
+        />
         
         <!-- 电影卡片网格 -->
         <div v-else-if="popularMovies.data.value" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -161,14 +160,13 @@
           <button class="text-red-600 hover:text-red-700 font-semibold">查看更多 →</button>
         </div>
         
-        <!-- 加载状态骨架屏 -->
-        <div v-if="popularTvShows.pending.value" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          <div v-for="n in 6" :key="n" class="animate-pulse">
-            <div class="bg-gray-300 aspect-[2/3] rounded-lg mb-2"></div>
-            <div class="bg-gray-300 h-4 rounded mb-1"></div>
-            <div class="bg-gray-300 h-3 rounded w-1/2"></div>
-          </div>
-        </div>
+        <!-- 使用骨架屏组件 -->
+        <SkeletonGrid 
+          v-if="popularTvShows.pending.value"
+          :count="12"
+          variant="tv"
+          :cols="{ sm: 2, md: 4, lg: 6 }"
+        />
         
         <!-- 电视剧卡片网格 -->
         <div v-else-if="popularTvShows.data.value" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -189,14 +187,13 @@
           <button class="text-red-600 hover:text-red-700 font-semibold">查看更多 →</button>
         </div>
         
-        <!-- 加载状态骨架屏 -->
-        <div v-if="upcomingMovies.pending.value || onTheAirTvShows.pending.value" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-          <div v-for="n in 12" :key="n" class="animate-pulse">
-            <div class="bg-gray-300 aspect-[2/3] rounded-lg mb-2"></div>
-            <div class="bg-gray-300 h-4 rounded mb-1"></div>
-            <div class="bg-gray-300 h-3 rounded w-1/2"></div>
-          </div>
-        </div>
+        <!-- 使用骨架屏组件 -->
+        <SkeletonGrid 
+          v-if="upcomingMovies.pending.value || onTheAirTvShows.pending.value"
+          :count="12"
+          variant="movie"
+          :cols="{ sm: 2, md: 4, lg: 6 }"
+        />
         
         <!-- 混合内容网格 -->
         <div v-else class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
