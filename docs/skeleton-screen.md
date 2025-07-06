@@ -91,6 +91,20 @@
 - `count`: 列表项数量
 - `variant`: 列表项变体 ('actor', 'comment', 'review')
 
+### 4. SkeletonListItem 组件
+
+媒体列表项的骨架屏组件，用于媒体列表视图。
+
+**Props:**
+- `isMovie`: 是否为电影类型，用于显示不同的信息占位符
+
+### 5. SkeletonLoadingState 组件
+
+简单统一的加载状态组件，用于详情页等复杂页面。
+
+**Props:**
+- `message`: 加载消息
+
 ## 使用场景
 
 ### 1. 电影/电视剧列表
@@ -130,6 +144,17 @@
   variant="movie"
   :cols="{ sm: 2, md: 3, lg: 4 }"
 />
+```
+
+### 5. 媒体列表视图
+```vue
+<div class="space-y-4">
+  <SkeletonListItem
+    v-for="n in 12"
+    :key="n"
+    :is-movie="true"
+  />
+</div>
 ```
 
 ## 样式规范
@@ -362,12 +387,18 @@ defineProps({
 - ✅ 模拟真实列表项的布局
 - ✅ 可配置的列表项数量
 
-### 4. SkeletonLoadingState 组件 (`components/Skeleton/LoadingState.vue`)
+### 4. SkeletonListItem 组件 (`components/Skeleton/ListItem.vue`)
+- ✅ 媒体列表项的骨架屏显示
+- ✅ 支持电影/电视剧类型区分
+- ✅ 模拟真实列表项的布局结构
+- ✅ 与 MediaListItem 组件保持一致的样式
+
+### 5. SkeletonLoadingState 组件 (`components/Skeleton/LoadingState.vue`)
 - ✅ 简单统一的加载状态组件
 - ✅ 可自定义加载消息
 - ✅ 适用于详情页等复杂页面
 
-### 5. 页面应用
+### 6. 页面应用
 - ✅ 首页：热门电影、电视剧、最新动态区域
 - ✅ 演员列表页面：演员网格布局
 - ✅ 演职员页面：演员列表和剧组列表
@@ -405,6 +436,26 @@ defineProps({
   :count="15"
   variant="actor"
 />
+```
+
+### 在发现页面中使用
+```vue
+<!-- 网格视图骨架屏 -->
+<SkeletonGrid 
+  v-if="list.pending.value && viewMode === 'grid'"
+  :count="12"
+  variant="movie"
+  :cols="{ sm: 2, md: 4, lg: 6 }"
+/>
+
+<!-- 列表视图骨架屏 -->
+<div v-if="list.pending.value && viewMode === 'list'" class="space-y-4">
+  <SkeletonListItem
+    v-for="n in 12"
+    :key="n"
+    :is-movie="type === 'movie'"
+  />
+</div>
 ```
 
 ### 在详情页中使用

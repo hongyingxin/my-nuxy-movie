@@ -192,11 +192,23 @@
           </div>
 
           <!-- 加载状态 -->
-          <div v-if="list.pending.value" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            <div v-for="n in 12" :key="n" class="animate-pulse">
-              <div class="bg-gray-300 aspect-[2/3] rounded-lg mb-2"></div>
-              <div class="bg-gray-300 h-4 rounded mb-1"></div>
-              <div class="bg-gray-300 h-3 rounded w-1/2"></div>
+          <div v-if="list.pending.value">
+            <!-- 网格视图骨架屏 -->
+            <div v-if="viewMode === 'grid'" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              <div v-for="n in 12" :key="n" class="animate-pulse">
+                <div class="bg-gray-300 aspect-[2/3] rounded-lg mb-2"></div>
+                <div class="bg-gray-300 h-4 rounded mb-1"></div>
+                <div class="bg-gray-300 h-3 rounded w-1/2"></div>
+              </div>
+            </div>
+            
+            <!-- 列表视图骨架屏 -->
+            <div v-else-if="viewMode === 'list'" class="space-y-4">
+              <SkeletonListItem
+                v-for="n in 12"
+                :key="n"
+                :is-movie="type === 'movie'"
+              />
             </div>
           </div>
 
@@ -211,11 +223,14 @@
           </div>
 
           <!-- 列表视图 -->
-          <MediaList
-            v-else-if="viewMode === 'list' && list.data.value"
-            :items="list.data.value.results"
-            :is-movie="type === 'movie'"
-          />
+          <div v-else-if="viewMode === 'list' && list.data.value" class="space-y-4">
+            <MediaListItem
+              v-for="item in list.data.value.results"
+              :key="item.id"
+              :item="item"
+              :is-movie="type === 'movie'"
+            />
+          </div>
 
           <!-- 分页 -->
           <div v-if="list.data.value && list.data.value.total_pages > 1" class="mt-8 flex justify-center">
