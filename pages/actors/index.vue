@@ -96,79 +96,17 @@
           </div>
         </div>
 
-        <!-- 分页组件 -->
-        <div v-if="actors.data.value.total_pages > 1" class="flex justify-center">
-          <div class="flex items-center space-x-2 bg-white rounded-lg shadow-sm px-4 py-2">
-            <!-- 上一页 -->
-            <button 
-              @click="goToPage(currentPage - 1)"
-              :disabled="currentPage <= 1"
-              class="px-3 py-1 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
-              :class="currentPage <= 1 ? 'text-gray-400' : 'text-gray-700'"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-              </svg>
-            </button>
-
-            <!-- 页码 -->
-            <div class="flex items-center space-x-1">
-              <!-- 第一页 -->
-              <button 
-                v-if="currentPage > 3"
-                @click="goToPage(1)"
-                class="px-3 py-1 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
-              >
-                1
-              </button>
-              
-              <!-- 省略号 -->
-              <span v-if="currentPage > 4" class="px-2 text-gray-400">...</span>
-              
-              <!-- 当前页附近的页码 -->
-              <button 
-                v-for="page in visiblePages" 
-                :key="page"
-                @click="goToPage(page)"
-                class="px-3 py-1 rounded-md text-sm font-medium transition-colors"
-                :class="page === currentPage ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100'"
-              >
-                {{ page }}
-              </button>
-              
-              <!-- 省略号 -->
-              <span v-if="currentPage < actors.data.value.total_pages - 3" class="px-2 text-gray-400">...</span>
-              
-              <!-- 最后一页 -->
-              <button 
-                v-if="currentPage < actors.data.value.total_pages - 2"
-                @click="goToPage(actors.data.value.total_pages)"
-                class="px-3 py-1 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors"
-              >
-                {{ actors.data.value.total_pages }}
-              </button>
-            </div>
-
-            <!-- 下一页 -->
-            <button 
-              @click="goToPage(currentPage + 1)"
-              :disabled="currentPage >= actors.data.value.total_pages"
-              class="px-3 py-1 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
-              :class="currentPage >= actors.data.value.total_pages ? 'text-gray-400' : 'text-gray-700'"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <!-- 分页信息 -->
-        <div v-if="actors.data.value.total_pages > 1" class="text-center text-gray-600 text-sm">
-          第 {{ currentPage }} 页，共 {{ actors.data.value.total_pages }} 页
-          <span class="mx-2">•</span>
-          共 {{ actors.data.value.total_results }} 位演员
-        </div>
+        <!-- 公共分页组件 -->
+        <CommonPagination
+          v-if="actors.data.value.total_pages > 1"
+          :current-page="currentPage"
+          :total-pages="actors.data.value.total_pages"
+          :total-results="actors.data.value.total_results"
+          :show-first-last="true"
+          :show-quick-jump="true"
+          :max-visible-pages="7"
+          @page-change="handlePageChange"
+        />
       </div>
 
       <!-- 错误状态 -->
@@ -202,8 +140,14 @@ useHead({
   ]
 })
 
-// 当前页码
-const currentPage = ref(1)
+// 路由实例
+const route = useRoute()
+
+// 当前页码 - 从 URL 参数初始化
+const currentPage = computed(() => {
+  const page = parseInt(route.query.page)
+  return page > 0 ? page : 1
+})
 
 // 演员列表数据
 const actors = ref()
@@ -211,43 +155,40 @@ const actors = ref()
 // 获取演员列表数据
 const fetchData = async () => {
   try {
+    console.log('获取演员数据，页码:', currentPage.value)
     actors.value = getPopularPeople(currentPage.value)
   } catch (error) {
     console.error('获取演员列表失败:', error)
   }
 }
 
-// 跳转到指定页面
-const goToPage = async (page) => {
-  if (page < 1 || page > actors.value?.data.value?.total_pages) return
-  currentPage.value = page
-  await fetchData()
+// 页面跳转处理
+const handlePageChange = (page) => {
+  if (page < 1 || page > (actors.value?.data.value?.total_pages || 1)) return
   
-  // 滚动到页面顶部
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-}
-
-// 计算可见的页码
-const visiblePages = computed(() => {
-  if (!actors.value?.data.value) return []
+  // 更新 URL 参数
+  const newQuery = { ...route.query }
   
-  const totalPages = actors.value.data.value.total_pages
-  const current = currentPage.value
-  const pages = []
-  
-  // 显示当前页前后各2页
-  const start = Math.max(1, current - 2)
-  const end = Math.min(totalPages, current + 2)
-  
-  for (let i = start; i <= end; i++) {
-    pages.push(i)
+  if (page === 1) {
+    // 第1页时移除 page 参数
+    delete newQuery.page
+  } else {
+    // 其他页面添加 page 参数
+    newQuery.page = page
   }
   
-  return pages
-})
+  console.log('页面跳转，更新 URL:', newQuery)
+  
+  // 导航到新页面
+  navigateTo({
+    query: newQuery
+  }, { replace: true })
+}
 
-// 页面加载时获取数据
-fetchData()
+// 监听页码变化，重新获取数据
+watch(currentPage, () => {
+  fetchData()
+}, { immediate: true })
 
 // 导航到演员详情页
 const navigateToActor = (actorId) => {

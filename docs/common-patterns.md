@@ -1,4 +1,4 @@
-# 常用模式和组件文档
+# 常用模式
 
 ## 📋 **概述**
 本文档记录项目中常用的代码模式、组件和最佳实践，避免重复实现和忘记已有功能。
@@ -88,84 +88,6 @@ const fetchData = async () => {
   }
 }
 ```
-
-### **2. 分页数据获取**
-```javascript
-// 当前页码
-const currentPage = ref(1)
-
-// 获取数据
-const data = getApiFunction(currentPage.value)
-
-// 跳转页面
-const goToPage = (page) => {
-  if (page < 1 || page > data.data.value?.total_pages) return
-  currentPage.value = page
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-}
-
-// 监听路由参数
-const route = useRoute()
-watch(() => route.query.page, (newPage) => {
-  if (newPage) {
-    const page = parseInt(newPage)
-    if (page > 0) {
-      currentPage.value = page
-    }
-  }
-}, { immediate: true })
-
-// 更新 URL
-watch(currentPage, (newPage) => {
-  navigateTo({
-    query: { ...route.query, page: newPage }
-  }, { replace: true })
-})
-```
-
-### **3. 分页组件使用**
-```vue
-<!-- 基础使用 -->
-<CommonPagination
-  :current-page="currentPage"
-  :total-pages="data.data.value?.total_pages || 0"
-  @page-change="handlePageChange"
-/>
-
-<!-- 完整功能 -->
-<CommonPagination
-  :current-page="currentPage"
-  :total-pages="data.data.value?.total_pages || 0"
-  :total-results="data.data.value?.total_results || 0"
-  :show-first-last="true"
-  :show-quick-jump="true"
-  :show-page-size="true"
-  :page-size="pageSize"
-  :page-size-options="[10, 20, 50, 100]"
-  :max-visible-pages="7"
-  @page-change="handlePageChange"
-  @page-size-change="handlePageSizeChange"
-/>
-```
-
-```javascript
-// 页面跳转处理
-const handlePageChange = (page) => {
-  currentPage.value = page
-  // 组件会自动处理滚动到顶部
-}
-
-// 每页条数变化处理
-const handlePageSizeChange = (newPageSize) => {
-  pageSize.value = newPageSize
-  currentPage.value = 1 // 重置到第一页
-  // 重新获取数据
-}
-```
-
-> 📖 **详细文档**: 查看 `docs/components.md` 中的 `CommonPagination` 组件文档
-
----
 
 ## 🖼️ **图片处理**
 
