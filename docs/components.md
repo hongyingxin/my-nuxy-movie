@@ -6,51 +6,51 @@
 
 ```
 components/
-├── layout/          # 布局组件 (头部、底部、导航)
+├── Layout/          # 布局组件 (头部、底部、导航)
 ├── ui/              # 可复用的 UI 组件 (按钮、评分、表单)
-├── media/           # 媒体相关组件 (卡片、播放器、画廊)
-├── skeleton/        # 骨架屏组件 (加载状态)
-├── common/          # 通用/共享组件
+├── Media/           # 媒体相关组件 (卡片、播放器、画廊)
+├── Skeleton/        # 骨架屏组件 (加载状态)
+├── Common/          # 通用/共享组件
 └── README.md        # 本文件
 ```
 
 ## 组件分类
 
-### 📐 布局组件 (`layout/`)
+### 📐 布局组件 (`Layout/`)
 定义整体页面结构和布局的组件。
 
-- **AppHeader.vue** - 主导航头部，包含 logo、菜单和搜索
-- **AppFooter.vue** - 网站底部，包含链接、社交媒体和版权信息
+- **Header.vue** - 主导航头部，包含 logo、菜单和搜索
+- **Footer.vue** - 网站底部，包含链接、社交媒体和版权信息
 
 ### 🎨 UI 组件 (`ui/`)
 可在整个应用程序中使用的可复用用户界面组件。
 
-- **MovieRating.vue** - 带百分比的圆形评分显示
+- **MovieRating.vue** - 带百分比的圆形评分显示 (未来)
 - **Button.vue** - 可复用按钮组件 (未来)
 - **Modal.vue** - 模态框/对话框组件 (未来)
 - **Loading.vue** - 加载旋转器组件 (未来)
 
-### 🎬 媒体组件 (`media/`)
+### 🎬 媒体组件 (`Media/`)
 专门与媒体内容相关的组件 (电影、电视剧等)。
 
-- **MediaCard.vue** - 电影/电视剧卡片，包含海报、标题和评分
-- **MediaListItem.vue** - 媒体列表项，用于列表视图显示
-- **MediaRating.vue** - 媒体评分组件
-- **MediaPageHeader.vue** - 媒体页面头部组件
-- **MediaGrid.vue** - 媒体卡片网格布局 (未来)
-- **MediaPlayer.vue** - 视频播放器组件 (未来)
-- **MediaGallery.vue** - 图片画廊组件 (未来)
+- **Card.vue** - 电影/电视剧卡片，包含海报、标题和评分
+- **ListItem.vue** - 媒体列表项，用于列表视图显示
+- **Rating.vue** - 媒体评分组件
+- **PageHeader.vue** - 媒体页面头部组件
+- **Grid.vue** - 媒体卡片网格布局 (未来)
+- **Player.vue** - 视频播放器组件 (未来)
+- **Gallery.vue** - 图片画廊组件 (未来)
 
-### ⚡ 骨架屏组件 (`skeleton/`)
+### ⚡ 骨架屏组件 (`Skeleton/`)
 用于显示加载状态的骨架屏组件。
 
-- **SkeletonCard.vue** - 基础骨架卡片组件
-- **SkeletonGrid.vue** - 网格布局骨架屏
-- **SkeletonList.vue** - 列表布局骨架屏（用于演员、评论等）
-- **SkeletonListItem.vue** - 媒体列表项骨架屏（用于媒体列表视图）
-- **SkeletonLoadingState.vue** - 简单加载状态组件
+- **Card.vue** - 基础骨架卡片组件
+- **Grid.vue** - 网格布局骨架屏
+- **List.vue** - 列表布局骨架屏（用于演员、评论等）
+- **ListItem.vue** - 媒体列表项骨架屏（用于媒体列表视图）
+- **LoadingState.vue** - 简单加载状态组件
 
-### 🔧 通用组件 (`common/`)
+### 🔧 通用组件 (`Common/`)
 不属于其他类别的共享组件。
 
 - **Pagination.vue** - 分页组件，支持多种功能和移动端适配
@@ -60,7 +60,7 @@ components/
 
 ## 命名约定
 
-- **布局组件**: `Layout[组件名]` (例如: `LayoutAppHeader`)
+- **布局组件**: `Layout[组件名]` (例如: `LayoutHeader`)
 - **UI 组件**: `Ui[组件名]` (例如: `UiMovieRating`)
 - **媒体组件**: `Media[组件名]` (例如: `MediaCard`)
 - **骨架屏组件**: `Skeleton[组件名]` (例如: `SkeletonCard`)
@@ -68,11 +68,11 @@ components/
 
 **Nuxt 3 自动导入规则:**
 - 子目录中的组件会自动导入，目录名作为前缀
-- `components/layout/AppHeader.vue` → `<LayoutAppHeader />`
+- `components/Layout/Header.vue` → `<LayoutHeader />`
 - `components/ui/MovieRating.vue` → `<UiMovieRating />`
-- `components/media/MediaCard.vue` → `<MediaCard />` (媒体目录无前缀)
-- `components/skeleton/SkeletonCard.vue` → `<SkeletonCard />` (骨架屏目录无前缀)
-- `components/common/Icon.vue` → `<CommonIcon />`
+- `components/Media/Card.vue` → `<MediaCard />` (媒体目录无前缀)
+- `components/Skeleton/Card.vue` → `<SkeletonCard />` (骨架屏目录无前缀)
+- `components/Common/Icon.vue` → `<CommonIcon />`
 
 ## 组件设计模式
 
@@ -208,18 +208,26 @@ components/
 
 ```vue
 <!-- 布局组件 -->
-<LayoutAppHeader />
-<LayoutAppFooter />
+<LayoutHeader />
+<LayoutFooter />
 
 <!-- UI 组件 -->
 <UiMovieRating :score="8.5" />
 
 <!-- 媒体组件 -->
-<MediaCard :item="movie" />
+<MediaCard :item="movie" :is-movie="true" />
 <MediaListItem :item="movie" :is-movie="true" />
+<MediaPageHeader 
+  :backdrop_path="movie.backdrop_path" 
+  :title="movie.title"
+  :back-to="'/movies'"
+/>
+<MediaRating :score="movie.vote_average" />
 
 <!-- 骨架屏组件 -->
-<SkeletonGrid :count="12" variant="movie" />
+<SkeletonGrid :count="12" variant="movie" :cols="{ sm: 2, md: 4, lg: 6 }" />
+<SkeletonList :count="15" variant="actor" />
+<SkeletonListItem :count="10" />
 <SkeletonLoadingState message="加载中..." />
 
 <!-- 通用组件 -->
@@ -231,7 +239,6 @@ components/
   :show-quick-jump="true"
   @page-change="handlePageChange"
 />
-<CommonIcon name="star" />
 ```
 
 ## 最佳实践
@@ -243,7 +250,7 @@ components/
 5. **文档化复杂组件**: 为复杂逻辑添加注释
 6. **使组件可复用**: 设计灵活且可复用的组件
 7. **统一使用外循环模式**: 提高组件的灵活性和复用性
-8. **保持组件独立性**: 避免组件间的强耦合 
+8. **保持组件独立性**: 避免组件间的强耦合
 
 ## 组件详细文档
 
@@ -365,4 +372,211 @@ const handlePageSizeChange = (newPageSize) => {
   currentPage.value = 1 // 重置到第一页
   // 重新获取数据
 }
-``` 
+```
+
+### MediaCard 媒体卡片组件
+
+用于展示电影/电视剧信息的卡片组件。
+
+#### 基础使用
+
+```vue
+<MediaCard
+  :item="movie"
+  :is-movie="true"
+/>
+```
+
+#### Props
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `item` | `Object` | - | 媒体项目数据 (必填) |
+| `is-movie` | `Boolean` | `false` | 是否为电影类型 |
+| `status` | `String` | - | 状态标识 (upcoming, on-air 等) |
+
+### SkeletonGrid 骨架屏网格组件
+
+用于显示加载状态的网格骨架屏。
+
+#### 基础使用
+
+```vue
+<SkeletonGrid 
+  :count="12"
+  variant="movie"
+  :cols="{ sm: 2, md: 4, lg: 6 }"
+/>
+```
+
+#### Props
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `count` | `Number` | `6` | 骨架卡片数量 |
+| `variant` | `String` | `movie` | 变体类型 (movie, tv, actor) |
+| `cols` | `Object` | `{ sm: 2, md: 3, lg: 4 }` | 响应式列数配置 |
+
+### MediaPageHeader 媒体页面头部组件
+
+用于媒体详情页面的头部组件。
+
+#### 基础使用
+
+```vue
+<MediaPageHeader 
+  :backdrop_path="movie.backdrop_path" 
+  :title="movie.title"
+  :back-to="'/movies'"
+/>
+```
+
+#### Props
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `backdrop_path` | `String` | - | 背景图片路径 |
+| `title` | `String` | - | 页面标题 |
+| `back-to` | `String` | - | 返回链接 |
+
+### SkeletonList 骨架屏列表组件
+
+用于显示加载状态的列表骨架屏。
+
+#### 基础使用
+
+```vue
+<SkeletonList 
+  :count="15"
+  variant="actor"
+/>
+```
+
+#### Props
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `count` | `Number` | `10` | 骨架项数量 |
+| `variant` | `String` | `default` | 变体类型 (actor, movie, tv) |
+
+### SkeletonLoadingState 简单加载状态组件
+
+用于显示简单加载状态的组件。
+
+#### 基础使用
+
+```vue
+<SkeletonLoadingState message="加载中..." />
+```
+
+#### Props
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `message` | `String` | `加载中...` | 加载提示信息 |
+
+### MediaRating 媒体评分组件
+
+用于显示媒体评分的组件。
+
+#### 基础使用
+
+```vue
+<MediaRating :score="movie.vote_average" />
+```
+
+#### Props
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `score` | `Number` | - | 评分分数 (0-10) |
+| `showText` | `Boolean` | `true` | 是否显示文字评分 |
+| `size` | `String` | `medium` | 组件尺寸 (small, medium, large) |
+
+## 组件使用统计
+
+根据项目中的实际使用情况，以下是各组件的使用频率：
+
+### 高频使用组件
+- **MediaCard** - 在首页、发现页、详情页等广泛使用
+- **SkeletonGrid** - 在首页、发现页等数据加载时使用
+- **CommonPagination** - 在演员列表页、发现页等分页场景使用
+- **LayoutHeader/LayoutFooter** - 全局布局组件
+
+### 中频使用组件
+- **MediaPageHeader** - 在详情页子页面中使用
+- **SkeletonList** - 在演职员页面使用
+- **SkeletonLoadingState** - 在详情页和演员详情页使用
+- **MediaListItem** - 在发现页列表视图使用
+
+### 低频使用组件
+- **MediaRating** - 在 MediaCard 内部使用
+- **SkeletonListItem** - 在发现页列表视图加载时使用
+
+## 组件开发规范
+
+### 1. 文件命名
+- 使用 PascalCase 命名组件文件
+- 文件名应该与组件名一致
+- 目录名使用 PascalCase
+
+### 2. 组件结构
+```vue
+<template>
+  <!-- 模板内容 -->
+</template>
+
+<script setup>
+// 导入依赖
+import { ref, computed } from 'vue'
+
+// Props 定义
+const props = defineProps({
+  // props 定义
+})
+
+// Emits 定义
+const emit = defineEmits([
+  // events 定义
+])
+
+// 组件逻辑
+</script>
+
+<style scoped>
+/* 组件样式 */
+</style>
+```
+
+### 3. Props 规范
+- 使用 `defineProps` 定义 props
+- 为每个 prop 提供类型和默认值
+- 添加 JSDoc 注释说明用途
+
+### 4. 事件规范
+- 使用 `defineEmits` 定义事件
+- 事件名使用 kebab-case
+- 提供事件参数的类型说明
+
+### 5. 样式规范
+- 使用 `scoped` 样式避免污染
+- 优先使用 Tailwind CSS 类
+- 复杂样式使用 CSS 变量
+
+## 未来规划
+
+### 计划新增组件
+- **UiButton** - 通用按钮组件
+- **UiModal** - 模态框组件
+- **UiTooltip** - 工具提示组件
+- **MediaPlayer** - 视频播放器组件
+- **MediaGallery** - 图片画廊组件
+- **CommonIcon** - 图标组件
+- **CommonBreadcrumb** - 面包屑导航组件
+
+### 组件优化计划
+- 完善组件的 TypeScript 类型定义
+- 添加组件的单元测试
+- 优化组件的性能表现
+- 增强组件的可访问性
+- 完善组件的文档说明 
