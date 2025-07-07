@@ -1,9 +1,10 @@
 import { getMovieGenres, getTvGenres } from '~/api/genre'
+import type { Genre } from '~/types/apiType'
 
 export const useGenreStore = defineStore('genre',{
   state: () => ({
-    movieGenres: [],
-    tvGenres: [],
+    movieGenres: [] as Genre[],
+    tvGenres: [] as Genre[],
     initialized: false
   }),
 
