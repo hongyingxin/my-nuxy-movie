@@ -272,7 +272,6 @@ const type = route.params.type // 'movie' 或 'tv'
 
 // API 导入
 import { discoverMedia, MOVIE_SORT_OPTIONS, TV_SORT_OPTIONS } from '~/api/discover'
-import { getMovieGenres, getTvGenres } from '~/api/genre'
 
 // SEO 配置
 useHead({
@@ -290,32 +289,35 @@ useHead({
 // ==================== 响应式数据 ====================
 const showFilters = ref(true)
 const viewMode = ref('grid')
-const currentPage = ref(1)
+
+// 当前页码 - 从 URL 参数初始化
+const currentPage = computed(() => {
+  const page = parseInt(route.query.page)
+  return page > 0 ? page : 1
+})
+
 const pending = ref(false)
-// const data = ref(null)
 const isApplyButtonVisible = ref(true)
 const applyFilterBtn = ref(null)
 const list = ref()
 
-// 筛选条件
-const filters = ref({
-  sort_by: 'popularity.desc',
-  with_genres: [],
-  'vote_average.gte': 0,
-  year: null,
-  'air_date.gte': null,
-  with_original_language: ''
-})
+// 从 URL 参数初始化筛选条件
+const getInitialFilters = () => {
+  return {
+    sort_by: route.query.sort_by || 'popularity.desc',
+    with_genres: route.query.with_genres ? route.query.with_genres.split(',').map(Number) : [],
+    'vote_average.gte': route.query['vote_average.gte'] ? parseFloat(route.query['vote_average.gte']) : 0,
+    year: route.query.year ? parseInt(route.query.year) : null,
+    'air_date.gte': route.query['air_date.gte'] ? route.query['air_date.gte'] : null,
+    with_original_language: route.query.with_original_language || ''
+  }
+}
+
+// 筛选条件 - 从 URL 参数初始化
+const filters = ref(getInitialFilters())
 
 // 保存初始筛选条件状态，用于检测变化
-const initialFilters = ref({
-  sort_by: 'popularity.desc',
-  with_genres: [],
-  'vote_average.gte': 0,
-  year: null,
-  'air_date.gte': null,
-  with_original_language: ''
-})
+const initialFilters = ref(JSON.parse(JSON.stringify(filters.value)))
 
 // ==================== 计算属性 ====================
 const sortOptions = computed(() => {
@@ -323,7 +325,7 @@ const sortOptions = computed(() => {
 })
 
 const totalResults = computed(() => {
-  return list.value.data.value?.total_results || 0
+  return list.value?.data.value?.total_results || 0
 })
 
 // 检测筛选条件是否有变化
@@ -333,7 +335,6 @@ const hasFilterChanges = computed(() => {
 
 // 从 store 中获取分类数据
 const genreStore = useGenreStore()
-
 
 const genres = computed(() => {
   return type === 'movie' 
@@ -346,11 +347,53 @@ const toggleFilters = () => {
   showFilters.value = !showFilters.value
 }
 
+// 将筛选条件转换为 URL 查询参数
+const filtersToQuery = (filterParams) => {
+  const query = {}
+  
+  if (filterParams.sort_by && filterParams.sort_by !== 'popularity.desc') {
+    query.sort_by = filterParams.sort_by
+  }
+  
+  if (filterParams.with_genres && filterParams.with_genres.length > 0) {
+    query.with_genres = filterParams.with_genres.join(',')
+  }
+  
+  if (filterParams['vote_average.gte'] && filterParams['vote_average.gte'] > 0) {
+    query['vote_average.gte'] = filterParams['vote_average.gte'].toString()
+  }
+  
+  if (filterParams.year) {
+    query.year = filterParams.year.toString()
+  }
+  
+  if (filterParams['air_date.gte']) {
+    query['air_date.gte'] = filterParams['air_date.gte']
+  }
+  
+  if (filterParams.with_original_language) {
+    query.with_original_language = filterParams.with_original_language
+  }
+  
+  return query
+}
+
 const applyFilters = async () => {
-  currentPage.value = 1
   // 更新初始状态
   initialFilters.value = JSON.parse(JSON.stringify(filters.value))
-  await fetchData()
+  
+  // 构建新的查询参数
+  const filterQuery = filtersToQuery(filters.value)
+  const newQuery = { ...filterQuery }
+  
+  // 重置到第一页
+  delete newQuery.page
+  
+  console.log('应用筛选，更新 URL:', newQuery)
+  
+  navigateTo({
+    query: newQuery
+  }, { replace: true })
 }
 
 const resetFilters = () => {
@@ -367,15 +410,36 @@ const resetFilters = () => {
   applyFilters()
 }
 
-const changePage = async (page) => {
-  currentPage.value = page
-  await fetchData()
+// 页面跳转处理
+const changePage = (page) => {
+  if (page < 1 || page > (list.value?.data.value?.total_pages || 1)) return
+  
+  // 构建新的查询参数，保持筛选条件
+  const filterQuery = filtersToQuery(filters.value)
+  const newQuery = { ...filterQuery }
+  
+  if (page === 1) {
+    // 第1页时移除 page 参数
+    delete newQuery.page
+  } else {
+    // 其他页面添加 page 参数
+    newQuery.page = page
+  }
+  
+  console.log('页面跳转，更新 URL:', newQuery)
+  
+  // 导航到新页面
+  navigateTo({
+    query: newQuery
+  }, { replace: true })
 }
 
 const fetchData = async () => {
   pending.value = true
   
   try {
+    console.log('获取数据，页码:', currentPage.value, '筛选条件:', filters.value)
+    
     // 构建筛选参数
     const params = {
       page: currentPage.value,
@@ -392,16 +456,14 @@ const fetchData = async () => {
         with_original_language: filters.value.with_original_language 
       })
     }
-    // const result = await discoverMedia(type, params)
-    // data.value = result.data.value
+    
     list.value = discoverMedia(type, params)
   } catch (error) {
+    console.error('获取数据失败:', error)
   } finally {
     pending.value = false
   }
 }
-// 获取数据，不应该在 onMounted 中获取
-fetchData()
 
 const toggleGenre = (genreId) => {
   if (filters.value.with_genres.includes(genreId)) {
@@ -410,6 +472,15 @@ const toggleGenre = (genreId) => {
     filters.value.with_genres.push(genreId)
   }
 }
+
+// ==================== 监听器 ====================
+// 监听路由参数变化，恢复筛选条件并获取数据
+watch(() => route.query, (newQuery) => {
+  const newFilters = getInitialFilters()
+  filters.value = newFilters
+  initialFilters.value = JSON.parse(JSON.stringify(newFilters))
+  fetchData()
+}, { immediate: true })
 
 // 监听筛选条件变化，设置观察器
 watch(hasFilterChanges, (newValue) => {

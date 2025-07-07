@@ -67,6 +67,13 @@ const data = getApiFunction(params)
 // data.error.value - 错误状态
 // data.refresh() - 刷新方法
 ```
+**❌ 无效的请求**
+```javascript
+// ❌ 不要这样做：在 onMounted 中使用请求是不会调用的
+onMounted(async () => {
+  const data = getApiFunction(params)
+})
+```
 
 **❌ 避免的复杂化模式：**
 ```javascript
