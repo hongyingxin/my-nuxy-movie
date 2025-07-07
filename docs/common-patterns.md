@@ -1,7 +1,7 @@
-# 常用模式
+# 快速参考手册
 
 ## 📋 **概述**
-本文档记录项目中常用的代码模式、组件和最佳实践，避免重复实现和忘记已有功能。
+本文档记录项目中常用的代码模式、组件和最佳实践，帮助你快速了解项目结构和实现方式。
 
 ---
 
@@ -26,7 +26,61 @@ pnpm update package-name@latest
 pnpm run dev
 ```
 
-### **2. PhotoSwipe 样式导入最佳实践**
+### **2. 项目插件和模块**
+
+#### **核心模块**
+```javascript
+// nuxt.config.ts
+modules: [
+  '@nuxtjs/tailwindcss',    // Tailwind CSS 支持
+  '@nuxt/image',            // 图片优化模块
+  '@pinia/nuxt',            // Pinia 状态管理
+  'pinia-plugin-persistedstate/nuxt'  // Pinia 持久化
+]
+```
+
+#### **主要依赖**
+```json
+{
+  "dependencies": {
+    "nuxt": "^3.17.5",                    // Nuxt 3 框架
+    "vue": "^3.5.16",                     // Vue 3
+    "vue-router": "^4.5.1",               // Vue Router
+    "@nuxt/image": "^1.10.0",             // 图片优化
+    "@pinia/nuxt": "^0.11.1",             // Pinia 集成
+    "pinia": "^3.0.3",                    // 状态管理
+    "pinia-plugin-persistedstate": "^4.4.1", // 状态持久化
+    "photoswipe": "5.4.4"                 // 图片查看器
+  },
+  "devDependencies": {
+    "@nuxtjs/tailwindcss": "^6.14.0"      // Tailwind CSS
+  }
+}
+```
+
+#### **插件使用说明**
+
+**Tailwind CSS**
+- 自动配置，无需额外设置
+- 支持响应式设计和自定义主题
+- 使用 `@apply` 指令或直接使用类名
+
+**Nuxt Image**
+- 提供图片优化和响应式图片
+- 支持多种格式（webp, avif, jpeg, jpg）
+- 配置了不同屏幕尺寸的断点
+
+**Pinia 状态管理**
+- 用于全局状态管理
+- 支持持久化存储
+- 自动导入，无需手动导入
+
+**PhotoSwipe**
+- 用于图片画廊和查看器
+- 支持手势操作和键盘导航
+- 已在全局配置中导入样式
+
+### **3. PhotoSwipe 样式导入最佳实践**
 ```javascript
 // ✅ 推荐：在 nuxt.config.ts 中全局导入
 // nuxt.config.ts
@@ -171,138 +225,9 @@ const handleImageError = (event) => {
 
 ---
 
-## 🎨 **UI 组件模式**
-
-### **1. 加载状态**
-```vue
-<!-- 加载状态 -->
-<div v-if="data.pending.value" class="text-center py-12">
-  <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
-  <p class="text-gray-600">加载中...</p>
-</div>
-```
-
-### **2. 错误状态**
-```vue
-<!-- 错误状态 -->
-<div v-else-if="data.error.value" class="text-center py-12">
-  <div class="text-red-600 text-6xl mb-4">😞</div>
-  <h2 class="text-2xl font-bold text-gray-800 mb-2">加载失败</h2>
-  <p class="text-gray-600 mb-4">无法获取数据，请稍后重试</p>
-  <button 
-    @click="data.refresh"
-    class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
-  >
-    重新加载
-  </button>
-</div>
-```
-
-### **3. 分页组件**
-```vue
-<!-- 分页组件 -->
-<div v-if="data.data.value.total_pages > 1" class="flex justify-center">
-  <div class="flex items-center space-x-2 bg-white rounded-lg shadow-sm px-4 py-2">
-    <!-- 上一页 -->
-    <button 
-      @click="goToPage(currentPage - 1)"
-      :disabled="currentPage <= 1"
-      class="px-3 py-1 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
-    >
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-      </svg>
-    </button>
-
-    <!-- 页码 -->
-    <div class="flex items-center space-x-1">
-      <button 
-        v-for="page in visiblePages" 
-        :key="page"
-        @click="goToPage(page)"
-        class="px-3 py-1 rounded-md text-sm font-medium transition-colors"
-        :class="page === currentPage ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100'"
-      >
-        {{ page }}
-      </button>
-    </div>
-
-    <!-- 下一页 -->
-    <button 
-      @click="goToPage(currentPage + 1)"
-      :disabled="currentPage >= data.data.value.total_pages"
-      class="px-3 py-1 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
-    >
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-      </svg>
-    </button>
-  </div>
-</div>
-```
-
-### **4. 卡片悬停效果**
-```vue
-<!-- 卡片悬停效果 -->
-<div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
-  <!-- 图片悬停缩放 -->
-  <img 
-    class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-  />
-  
-  <!-- 悬停遮罩 -->
-  <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-    <div class="text-white text-center">
-      <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-      </svg>
-      <span class="text-sm font-medium">查看详情</span>
-    </div>
-  </div>
-</div>
-```
-
----
-
 ## 🛠️ **工具函数**
 
-### **1. 屏幕尺寸检测**
-```javascript
-// 使用 useScreenSize composable
-const { 
-  screenWidth, 
-  screenHeight, 
-  isMobile, 
-  isTablet, 
-  isDesktop, 
-  isLargeDesktop,
-  deviceType,
-  deviceTypeText 
-} = useScreenSize()
-
-// 使用示例
-if (isMobile.value) {
-  // 移动端逻辑
-}
-
-// 响应式屏幕宽度
-console.log(screenWidth.value) // 当前屏幕宽度
-
-// 设备类型
-console.log(deviceType.value) // 'mobile', 'tablet', 'desktop', 'large-desktop'
-console.log(deviceTypeText.value) // '移动端 (< 640px)', '平板 (640px - 768px)' 等
-```
-
-> 💡 **代码质量**: `useScreenSize` composable 包含完整的 JSDoc 注释，提供详细的参数说明和使用示例。
-
-**断点说明：**
-- **移动端**: `< 640px`
-- **平板**: `640px - 768px`
-- **桌面端**: `≥ 768px`
-- **大屏桌面**: `≥ 1024px`
-
-### **2. 命名空间使用方式（推荐）**
+### **1. 命名空间使用方式（推荐）**
 ```javascript
 // 使用 common 命名空间，避免与页面方法名冲突
 // 无需手动导入，Nuxt 3 自动导入支持
@@ -315,92 +240,6 @@ common.formatBudget(1500000) // 返回: '$1.5M'
 common.getYear('2023-12-25') // 返回: '2023'
 common.formatRuntime(125) // 返回: '2h 5m'
 ```
-
-### **3. 手动导入方式（可选）**
-```javascript
-// 也可以手动导入 common 对象
-import { common } from '~/utils/common'
-
-// 使用方式
-common.formatDate('2023-12-25') // 返回: '2023/12/25'
-common.formatPopularity(123.456) // 返回: '123.5'
-common.getGenderText(1) // 返回: '女'
-```
-
-### **4. 日期格式化**
-```javascript
-// 从 utils/common.ts 导入
-import { common } from '~/utils/common'
-
-// 使用方式
-common.formatDate('2023-12-25') // 返回: '2023/12/25'
-```
-
-### **5. 人气指数格式化**
-```javascript
-// 从 utils/common.ts 导入
-import { common } from '~/utils/common'
-
-// 使用方式
-common.formatPopularity(123.456) // 返回: '123.5'
-```
-
-### **6. 性别转换**
-```javascript
-// 从 utils/common.ts 导入
-import { common } from '~/utils/common'
-
-// 使用方式
-common.getGenderText(1) // 返回: '女'
-common.getGenderText(2) // 返回: '男'
-common.getGenderText(0) // 返回: '未知'
-```
-
-### **7. 预算/票房格式化**
-```javascript
-// 从 utils/common.ts 导入
-import { common } from '~/utils/common'
-
-// 使用方式
-common.formatBudget(1500000) // 返回: '$1.5M'
-common.formatBudget(50000)   // 返回: '$50.0K'
-```
-
-### **8. 年份提取**
-```javascript
-// 从 utils/common.ts 导入
-import { common } from '~/utils/common'
-
-// 使用方式
-common.getYear('2023-12-25') // 返回: '2023'
-```
-
-### **9. 时长格式化**
-```javascript
-// 从 utils/common.ts 导入
-import { common } from '~/utils/common'
-
-// 使用方式
-common.formatRuntime(125) // 返回: '2h 5m'
-```
-
-### **10. 图片处理工具**
-```javascript
-// 使用 image 命名空间，无需手动导入
-image.getPosterUrl(path, 'medium') // 海报图片
-image.getBackdropUrl(path, 'large') // 背景图片
-image.getProfileUrl(path, 'small') // 头像图片
-image.getTmdbImageUrl(path, 'poster', 'medium') // 通用图片
-image.getResponsiveImageUrls(path, 'poster') // 响应式图片数组
-```
-
-### **11. 文本截断**
-```javascript
-// 使用 Tailwind CSS 的 line-clamp 类
-// line-clamp-1, line-clamp-2, line-clamp-3
-```
-
----
 
 ## 📱 **响应式设计**
 
@@ -426,31 +265,6 @@ image.getResponsiveImageUrls(path, 'poster') // 响应式图片数组
 ```
 
 ---
-
-## 🔗 **导航模式**
-
-### **1. 页面跳转**
-```javascript
-// 跳转到详情页
-const navigateToDetail = (id) => {
-  navigateTo(`/detail/${id}`)
-}
-
-// 跳转到列表页
-const navigateToList = () => {
-  navigateTo('/list')
-}
-```
-
-### **2. 返回上一页**
-```javascript
-const goBack = () => {
-  navigateTo(-1)
-}
-```
-
----
-
 ## 🎯 **SEO 配置**
 
 ### **1. 动态标题和描述**
