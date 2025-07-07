@@ -123,6 +123,48 @@ watch(currentPage, (newPage) => {
 })
 ```
 
+### **3. 分页组件使用**
+```vue
+<!-- 基础使用 -->
+<CommonPagination
+  :current-page="currentPage"
+  :total-pages="data.data.value?.total_pages || 0"
+  @page-change="handlePageChange"
+/>
+
+<!-- 完整功能 -->
+<CommonPagination
+  :current-page="currentPage"
+  :total-pages="data.data.value?.total_pages || 0"
+  :total-results="data.data.value?.total_results || 0"
+  :show-first-last="true"
+  :show-quick-jump="true"
+  :show-page-size="true"
+  :page-size="pageSize"
+  :page-size-options="[10, 20, 50, 100]"
+  :max-visible-pages="7"
+  @page-change="handlePageChange"
+  @page-size-change="handlePageSizeChange"
+/>
+```
+
+```javascript
+// 页面跳转处理
+const handlePageChange = (page) => {
+  currentPage.value = page
+  // 组件会自动处理滚动到顶部
+}
+
+// 每页条数变化处理
+const handlePageSizeChange = (newPageSize) => {
+  pageSize.value = newPageSize
+  currentPage.value = 1 // 重置到第一页
+  // 重新获取数据
+}
+```
+
+> 📖 **详细文档**: 查看 `docs/components.md` 中的 `CommonPagination` 组件文档
+
 ---
 
 ## 🖼️ **图片处理**
@@ -296,7 +338,42 @@ const handleImageError = (event) => {
 
 ## 🛠️ **工具函数**
 
-### **1. 命名空间使用方式（推荐）**
+### **1. 屏幕尺寸检测**
+```javascript
+// 使用 useScreenSize composable
+const { 
+  screenWidth, 
+  screenHeight, 
+  isMobile, 
+  isTablet, 
+  isDesktop, 
+  isLargeDesktop,
+  deviceType,
+  deviceTypeText 
+} = useScreenSize()
+
+// 使用示例
+if (isMobile.value) {
+  // 移动端逻辑
+}
+
+// 响应式屏幕宽度
+console.log(screenWidth.value) // 当前屏幕宽度
+
+// 设备类型
+console.log(deviceType.value) // 'mobile', 'tablet', 'desktop', 'large-desktop'
+console.log(deviceTypeText.value) // '移动端 (< 640px)', '平板 (640px - 768px)' 等
+```
+
+> 💡 **代码质量**: `useScreenSize` composable 包含完整的 JSDoc 注释，提供详细的参数说明和使用示例。
+
+**断点说明：**
+- **移动端**: `< 640px`
+- **平板**: `640px - 768px`
+- **桌面端**: `≥ 768px`
+- **大屏桌面**: `≥ 1024px`
+
+### **2. 命名空间使用方式（推荐）**
 ```javascript
 // 使用 common 命名空间，避免与页面方法名冲突
 // 无需手动导入，Nuxt 3 自动导入支持
@@ -310,7 +387,7 @@ common.getYear('2023-12-25') // 返回: '2023'
 common.formatRuntime(125) // 返回: '2h 5m'
 ```
 
-### **2. 手动导入方式（可选）**
+### **3. 手动导入方式（可选）**
 ```javascript
 // 也可以手动导入 common 对象
 import { common } from '~/utils/common'
@@ -321,7 +398,7 @@ common.formatPopularity(123.456) // 返回: '123.5'
 common.getGenderText(1) // 返回: '女'
 ```
 
-### **3. 日期格式化**
+### **4. 日期格式化**
 ```javascript
 // 从 utils/common.ts 导入
 import { common } from '~/utils/common'
@@ -330,7 +407,7 @@ import { common } from '~/utils/common'
 common.formatDate('2023-12-25') // 返回: '2023/12/25'
 ```
 
-### **4. 人气指数格式化**
+### **5. 人气指数格式化**
 ```javascript
 // 从 utils/common.ts 导入
 import { common } from '~/utils/common'
@@ -339,7 +416,7 @@ import { common } from '~/utils/common'
 common.formatPopularity(123.456) // 返回: '123.5'
 ```
 
-### **5. 性别转换**
+### **6. 性别转换**
 ```javascript
 // 从 utils/common.ts 导入
 import { common } from '~/utils/common'
@@ -350,7 +427,7 @@ common.getGenderText(2) // 返回: '男'
 common.getGenderText(0) // 返回: '未知'
 ```
 
-### **6. 预算/票房格式化**
+### **7. 预算/票房格式化**
 ```javascript
 // 从 utils/common.ts 导入
 import { common } from '~/utils/common'
@@ -360,7 +437,7 @@ common.formatBudget(1500000) // 返回: '$1.5M'
 common.formatBudget(50000)   // 返回: '$50.0K'
 ```
 
-### **7. 年份提取**
+### **8. 年份提取**
 ```javascript
 // 从 utils/common.ts 导入
 import { common } from '~/utils/common'
@@ -369,7 +446,7 @@ import { common } from '~/utils/common'
 common.getYear('2023-12-25') // 返回: '2023'
 ```
 
-### **8. 时长格式化**
+### **9. 时长格式化**
 ```javascript
 // 从 utils/common.ts 导入
 import { common } from '~/utils/common'
@@ -378,7 +455,7 @@ import { common } from '~/utils/common'
 common.formatRuntime(125) // 返回: '2h 5m'
 ```
 
-### **9. 图片处理工具**
+### **10. 图片处理工具**
 ```javascript
 // 使用 image 命名空间，无需手动导入
 image.getPosterUrl(path, 'medium') // 海报图片
@@ -388,7 +465,7 @@ image.getTmdbImageUrl(path, 'poster', 'medium') // 通用图片
 image.getResponsiveImageUrls(path, 'poster') // 响应式图片数组
 ```
 
-### **10. 文本截断**
+### **11. 文本截断**
 ```javascript
 // 使用 Tailwind CSS 的 line-clamp 类
 // line-clamp-1, line-clamp-2, line-clamp-3

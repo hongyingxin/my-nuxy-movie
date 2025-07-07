@@ -233,29 +233,16 @@
           </div>
 
           <!-- 分页 -->
-          <div v-if="list.data.value && list.data.value.total_pages > 1" class="mt-8 flex justify-center">
-            <div class="flex items-center space-x-2">
-              <button 
-                @click="changePage(currentPage - 1)"
-                :disabled="currentPage <= 1"
-                class="px-3 py-2 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-              >
-                上一页
-              </button>
-              
-              <span class="px-3 py-2 text-gray-600">
-                {{ currentPage }} / {{ list.data.value.total_pages }}
-              </span>
-              
-              <button 
-                @click="changePage(currentPage + 1)"
-                :disabled="currentPage >= list.data.value.total_pages"
-                class="px-3 py-2 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
-              >
-                下一页
-              </button>
-            </div>
-          </div>
+          <CommonPagination
+            v-if="list.data.value && list.data.value.total_pages > 1"
+            :current-page="currentPage"
+            :total-pages="list.data.value.total_pages"
+            :total-results="list.data.value.total_results"
+            :show-first-last="true"
+            :show-quick-jump="true"
+            @page-change="changePage"
+            class="mt-8"
+          />
         </div>
       </div>
     </div>
@@ -383,14 +370,6 @@ const resetFilters = () => {
 const changePage = async (page) => {
   currentPage.value = page
   await fetchData()
-  
-  // 滚动到页面顶部
-  nextTick(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    })
-  })
 }
 
 const fetchData = async () => {
