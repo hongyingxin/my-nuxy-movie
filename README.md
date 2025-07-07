@@ -74,7 +74,8 @@ my-nuxt-movie/
 │   │   └── README.md       # 页面文档索引
 │   ├── common-patterns.md  # 通用模式和最佳实践
 │   ├── components.md       # 组件文档
-│   └── code-standards.md   # 代码规范
+│   ├── code-standards.md   # 代码规范
+│   └── api-typescript-improvements.md # API TypeScript 改进
 ├── 📁 pages/                # Nuxt 页面
 │   ├── 📁 actors/          # 演员相关页面
 │   │   ├── index.vue       # 演员列表页
@@ -94,7 +95,18 @@ my-nuxt-movie/
 ├── 📁 server/               # 服务端代码 (预留)
 ├── 📁 stores/               # Pinia 状态管理
 │   └── genre.ts            # 分类状态管理
-├── 📁 types/                # TypeScript 类型定义 (预留)
+├── 📁 types/                # TypeScript 类型定义
+│   └── 📁 apiType/         # API 类型定义
+│       ├── common.ts       # 通用类型
+│       ├── movie.ts        # 电影类型
+│       ├── tv.ts           # 电视剧类型
+│       ├── person.ts       # 演员类型
+│       ├── discover.ts     # 发现页类型
+│       ├── genre.ts        # 分类类型
+│       ├── trending.ts     # 趋势内容类型
+│       ├── search.ts       # 搜索类型
+│       ├── index.ts        # 统一导出入口
+│       └── README.md       # 类型使用说明
 ├── 📁 utils/                # 工具函数
 │   ├── common.ts           # 通用工具函数
 │   ├── department.ts       # 部门翻译工具
@@ -113,3 +125,5 @@ my-nuxt-movie/
 - [常用模式和最佳实践](./docs/common-patterns.md)
 - [API 文档](./docs/api.md)
 - [组件库](./docs/components.md)
+- [API 类型定义](./types/apiType/README.md)
+- [API TypeScript 改进](./docs/api-typescript-improvements.md)
