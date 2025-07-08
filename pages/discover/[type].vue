@@ -109,7 +109,9 @@
 
             <!-- 年份筛选 -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">时间范围</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                {{ isMovie ? '发行时间' : '播出时间' }}
+              </label>
               <div class="grid grid-cols-2 gap-2">
                 <input 
                   type="date" 
@@ -126,6 +128,12 @@
                   class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
               </div>
+              <p class="text-xs text-gray-500 mt-1">
+                {{ filterDescription }}
+                <span v-if="filters.sort_by === 'popularity.desc'" class="block mt-1 text-blue-600">
+                  💡 热门内容默认包含未来内容，确保内容新鲜度
+                </span>
+              </p>
             </div>
 
             <!-- 语言筛选 -->
@@ -147,7 +155,7 @@
             </div>
 
             <!-- 地区筛选 (仅电影) -->
-            <div v-if="type === 'movie'">
+            <div v-if="isMovie">
               <label class="block text-sm font-medium text-gray-700 mb-2">地区</label>
               <select 
                 v-model="filters.region"
@@ -169,7 +177,7 @@
             </div>
 
             <!-- 上映类型筛选 (仅电影) -->
-            <div v-if="type === 'movie'">
+            <div v-if="isMovie">
               <label class="block text-sm font-medium text-gray-700 mb-2">上映类型</label>
               <select 
                 v-model="filters.with_release_type"
@@ -248,7 +256,7 @@
               <SkeletonListItem
                 v-for="n in 12"
                 :key="n"
-                :is-movie="type === 'movie'"
+                :is-movie="isMovie"
               />
             </div>
           </div>
@@ -259,7 +267,7 @@
               v-for="item in list.data.value.results"
               :key="item.id"
               :item="item"
-              :is-movie="type === 'movie'"
+              :is-movie="isMovie"
             />
           </div>
 
@@ -269,7 +277,7 @@
               v-for="item in list.data.value.results"
               :key="item.id"
               :item="item"
-              :is-movie="type === 'movie'"
+              :is-movie="isMovie"
             />
           </div>
 
@@ -314,6 +322,15 @@ const type = route.params.type // 'movie' 或 'tv'
 // API 导入
 import { discoverMedia, MOVIE_SORT_OPTIONS, TV_SORT_OPTIONS } from '~/api/discover'
 
+// ==================== 工具函数 ====================
+
+/**
+ * 获取默认排序方式
+ */
+const getDefaultSortBy = () => {
+  return type === 'movie' ? 'release_date.desc' : 'first_air_date.desc'
+}
+
 // ==================== 响应式数据 ====================
 const showFilters = ref(true)
 const viewMode = ref('grid')
@@ -324,7 +341,6 @@ const currentPage = computed(() => {
   return page > 0 ? page : 1
 })
 
-const pending = ref(false)
 const isApplyButtonVisible = ref(true)
 const applyFilterBtn = ref(null)
 const list = ref()
@@ -342,22 +358,37 @@ const getInitialFilters = () => {
   const getDefaultDateRange = () => {
     // 从 URL 参数判断分类类型
     const sortBy = route.query.sort_by
+    const withStatus = route.query.with_status
+    const airDateGte = route.query['air_date.gte']
+    const airDateLte = route.query['air_date.lte']
     
+    // 如果用户已经设置了具体的日期范围，直接使用
+    if (airDateGte || airDateLte) {
+      return { startDate: airDateGte || null, endDate: airDateLte || null }
+    }
+    
+    // 根据不同的筛选条件设置时间范围
     if (sortBy === 'popularity.desc') {
-      // 热门电影：无时间限制
-      return { startDate: null, endDate: null }
+      // 热门内容：设置未来截止时间，避免过时内容
+      // 设置未来1.5年的截止时间
+      const futureDate = new Date(now.getFullYear(), now.getMonth() + 18, now.getDate())
+      return { startDate: null, endDate: futureDate.toISOString().split('T')[0] }
     } else if (sortBy === 'vote_average.desc') {
-      // 高分电影：无时间限制，但排除太新的电影（评分不足）
+      // 高分内容：无时间限制，但排除太新的内容（评分不足）
+      // 设置1年前的截止时间
       const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate()).toISOString().split('T')[0]
       return { startDate: null, endDate: oneYearAgo }
-    } else if (sortBy === 'release_date.asc') {
-      // 即将上映：当前日期到未来一年
+    } else if (sortBy === 'release_date.asc' || sortBy === 'first_air_date.asc') {
+      // 即将上映/播出：当前日期到未来一年
       const oneYearLater = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate()).toISOString().split('T')[0]
       return { startDate: today, endDate: oneYearLater }
-    } else if (sortBy === 'release_date.desc') {
-      // 正在上映：过去2个月到当前日期
+    } else if (sortBy === 'release_date.desc' || sortBy === 'first_air_date.desc') {
+      // 正在上映/播出：过去2个月到当前日期
       const twoMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 2, now.getDate()).toISOString().split('T')[0]
       return { startDate: twoMonthsAgo, endDate: today }
+    } else if (withStatus === '0') {
+      // 正在播出：无时间限制，使用状态筛选
+      return { startDate: null, endDate: null }
     } else {
       // 默认：当前年份到明年
       return { startDate: null, endDate: `${defaultEndYear}-12-31` }
@@ -367,7 +398,7 @@ const getInitialFilters = () => {
   const dateRange = getDefaultDateRange()
   
   return {
-    sort_by: route.query.sort_by || (type === 'movie' ? 'release_date.desc' : 'first_air_date.desc'),
+    sort_by: route.query.sort_by || getDefaultSortBy(),
     with_genres: route.query.with_genres ? route.query.with_genres.split(',').map(Number) : [],
     'vote_average.gte': route.query['vote_average.gte'] ? parseFloat(route.query['vote_average.gte']) : 0,
     'air_date.gte': route.query['air_date.gte'] ? route.query['air_date.gte'] : dateRange.startDate,
@@ -391,6 +422,78 @@ const filters = ref(getInitialFilters())
 // 保存初始筛选条件状态，用于检测变化
 const initialFilters = ref(JSON.parse(JSON.stringify(filters.value)))
 
+/**
+ * 获取媒体类型的基础标题
+ */
+const getMediaTypeTitle = () => {
+  return type === 'movie' ? '电影' : '电视剧'
+}
+
+/**
+ * 根据筛选条件获取分类名称
+ */
+const getCategoryName = (sortBy, withStatus, airDateGte, airDateLte) => {
+  if (withStatus === '0') {
+    return '正在播出'
+  } else if (airDateGte && airDateLte && airDateGte === airDateLte) {
+    return '今日播出'
+  } else if (sortBy === 'popularity.desc') {
+    return '热门'
+  } else if (sortBy === 'release_date.asc' || sortBy === 'first_air_date.asc') {
+    return '即将上映'
+  } else if (sortBy === 'release_date.desc' || sortBy === 'first_air_date.desc') {
+    return '正在上映'
+  } else if (sortBy === 'vote_average.desc') {
+    return '高分'
+  } else {
+    return '最新'
+  }
+}
+
+/**
+ * 根据筛选条件获取页面描述
+ */
+const getPageDescription = (sortBy, withStatus, airDateGte, airDateLte) => {
+  const isMovie = type === 'movie'
+  const releaseType = filters.value.with_release_type
+  
+  if (withStatus === '0') {
+    return isMovie 
+      ? '发现正在上映的电影，影院观影指南' 
+      : '发现正在播出的电视剧，当前热门剧集'
+  } else if (airDateGte && airDateLte && airDateGte === airDateLte) {
+    return isMovie 
+      ? '发现今天上映的电影' 
+      : '发现今天播出的电视剧'
+  } else if (sortBy === 'popularity.desc') {
+    return isMovie 
+      ? '发现最热门的电影，包含近期和即将上映的佳作' 
+      : '发现最热门的电视剧，包含近期和即将播出的精品'
+  } else if (sortBy === 'release_date.asc' || sortBy === 'first_air_date.asc') {
+    if (isMovie && releaseType === '2|3') {
+      return '发现即将在影院上映的电影，提前了解新片信息'
+    }
+    return isMovie 
+      ? '发现即将上映的电影，提前了解新片信息' 
+      : '发现即将播出的电视剧，提前了解新剧信息'
+  } else if (sortBy === 'release_date.desc' || sortBy === 'first_air_date.desc') {
+    if (isMovie && releaseType === '2|3') {
+      return '发现正在影院上映的电影，影院观影指南'
+    }
+    return isMovie 
+      ? '发现正在上映的电影，影院观影指南' 
+      : '发现正在播出的电视剧，当前热门剧集'
+  } else if (sortBy === 'vote_average.desc') {
+    return isMovie 
+      ? '发现评分最高的电影，经典佳作推荐' 
+      : '发现评分最高的电视剧，精品剧集推荐'
+  } else {
+    return isMovie 
+      ? '探索最新上映的电影' 
+      : '探索最新播出的电视剧'
+  }
+}
+
 // 计算当前时间范围
 const currentDateRange = computed(() => {
   const startDate = filters.value['air_date.gte'] || filters.value['primary_release_date.gte'] || filters.value['release_date.gte'] || filters.value['first_air_date.gte']
@@ -401,20 +504,6 @@ const currentDateRange = computed(() => {
     endDate
   }
 })
-
-// 格式化日期为年份
-const formatDate = (dateString) => {
-  if (!dateString) return 'N/A'
-  const date = new Date(dateString)
-  return date.getFullYear()
-}
-
-// 格式化日期为完整日期
-const formatFullDate = (dateString) => {
-  if (!dateString) return 'N/A'
-  const date = new Date(dateString)
-  return date.toISOString().split('T')[0] // YYYY-MM-DD
-}
 
 // 获取开始日期
 const getStartDate = () => {
@@ -467,6 +556,16 @@ const totalResults = computed(() => {
   return list.value?.data.value?.total_results || 0
 })
 
+// 计算属性：是否为电影类型
+const isMovie = computed(() => type === 'movie')
+
+// 计算属性：筛选说明文字
+const filterDescription = computed(() => {
+  return isMovie.value 
+    ? '筛选指定发行时间范围内的电影' 
+    : '筛选指定播出时间范围内的电视剧'
+})
+
 // 检测筛选条件是否有变化
 const hasFilterChanges = computed(() => {
   return JSON.stringify(filters.value) !== JSON.stringify(initialFilters.value)
@@ -475,43 +574,33 @@ const hasFilterChanges = computed(() => {
 // 动态页面标题
 const pageTitle = computed(() => {
   const sortBy = filters.value.sort_by
+  const withStatus = filters.value.with_status
+  const airDateGte = filters.value['air_date.gte']
+  const airDateLte = filters.value['air_date.lte']
   
-  // 根据排序方式确定分类名称
-  let categoryName = ''
-  if (sortBy === 'popularity.desc') {
-    categoryName = '热门'
-  } else if (sortBy === 'release_date.asc' || sortBy === 'first_air_date.asc') {
-    categoryName = '即将上映'
-  } else if (sortBy === 'release_date.desc' || sortBy === 'first_air_date.desc') {
-    categoryName = '正在上映'
-  } else if (sortBy === 'vote_average.desc') {
-    categoryName = '高分'
-  } else {
-    categoryName = '最新'
-  }
+  // 使用工具函数获取分类名称
+  const categoryName = getCategoryName(sortBy, withStatus, airDateGte, airDateLte)
+  const baseTitle = getMediaTypeTitle()
   
-  const baseTitle = type === 'movie' ? '电影' : '电视剧'
   const region = filters.value.region
   const releaseType = filters.value.with_release_type
   
+  const regionNames = {
+    'US': '美国', 'CN': '中国', 'JP': '日本', 'KR': '韩国',
+    'GB': '英国', 'FR': '法国', 'DE': '德国', 'CA': '加拿大',
+    'AU': '澳大利亚', 'IN': '印度'
+  }
+  const releaseTypeNames = {
+    '2|3': '影院上映', '3|2': '影院上映', '4': '数字发行',
+    '5': '实体发行', '6': '电视播出'
+  }
+  
   if (region && releaseType) {
-    const regionNames = {
-      'US': '美国', 'CN': '中国', 'JP': '日本', 'KR': '韩国',
-      'GB': '英国', 'FR': '法国', 'DE': '德国', 'CA': '加拿大',
-      'AU': '澳大利亚', 'IN': '印度'
-    }
-    const releaseTypeNames = {
-      '2|3': '影院上映', '3|2': '影院上映', '4': '数字发行',
-      '5': '实体发行', '6': '电视播出'
-    }
     return `${regionNames[region] || region}${releaseTypeNames[releaseType] || ''}${categoryName}${baseTitle} - Nuxt Movie`
   } else if (region) {
-    const regionNames = {
-      'US': '美国', 'CN': '中国', 'JP': '日本', 'KR': '韩国',
-      'GB': '英国', 'FR': '法国', 'DE': '德国', 'CA': '加拿大',
-      'AU': '澳大利亚', 'IN': '印度'
-    }
     return `${regionNames[region] || region}${categoryName}${baseTitle} - Nuxt Movie`
+  } else if (releaseType) {
+    return `${releaseTypeNames[releaseType] || ''}${categoryName}${baseTitle} - Nuxt Movie`
   }
   return `${categoryName}${baseTitle} - Nuxt Movie`
 })
@@ -519,28 +608,12 @@ const pageTitle = computed(() => {
 // 动态页面描述
 const pageDescription = computed(() => {
   const sortBy = filters.value.sort_by
+  const withStatus = filters.value.with_status
+  const airDateGte = filters.value['air_date.gte']
+  const airDateLte = filters.value['air_date.lte']
   
-  if (sortBy === 'popularity.desc') {
-    return type === 'movie' 
-      ? '发现最热门的电影，按人气排序' 
-      : '发现最热门的电视剧，按人气排序'
-  } else if (sortBy === 'release_date.asc' || sortBy === 'first_air_date.asc') {
-    return type === 'movie' 
-      ? '发现即将上映的电影，提前了解新片信息' 
-      : '发现即将播出的电视剧，提前了解新剧信息'
-  } else if (sortBy === 'release_date.desc' || sortBy === 'first_air_date.desc') {
-    return type === 'movie' 
-      ? '发现正在上映的电影，影院观影指南' 
-      : '发现正在播出的电视剧，当前热门剧集'
-  } else if (sortBy === 'vote_average.desc') {
-    return type === 'movie' 
-      ? '发现评分最高的电影，经典佳作推荐' 
-      : '发现评分最高的电视剧，精品剧集推荐'
-  } else {
-    return type === 'movie' 
-      ? '探索最新上映的电影' 
-      : '探索最新播出的电视剧'
-  }
+  // 使用工具函数获取页面描述
+  return getPageDescription(sortBy, withStatus, airDateGte, airDateLte)
 })
 
 // 从 store 中获取分类数据
@@ -571,57 +644,33 @@ const toggleFilters = () => {
 // 获取页面头部标题
 const getPageHeaderTitle = () => {
   const sortBy = filters.value.sort_by
+  const withStatus = filters.value.with_status
+  const airDateGte = filters.value['air_date.gte']
+  const airDateLte = filters.value['air_date.lte']
   
-  // 根据排序方式确定分类名称
-  let categoryName = ''
-  if (sortBy === 'popularity.desc') {
-    categoryName = '热门'
-  } else if (sortBy === 'release_date.asc' || sortBy === 'first_air_date.asc') {
-    categoryName = '即将上映'
-  } else if (sortBy === 'release_date.desc' || sortBy === 'first_air_date.desc') {
-    categoryName = '正在上映'
-  } else if (sortBy === 'vote_average.desc') {
-    categoryName = '高分'
-  } else {
-    categoryName = '最新'
-  }
+  // 使用工具函数获取分类名称和基础标题
+  const categoryName = getCategoryName(sortBy, withStatus, airDateGte, airDateLte)
+  const baseTitle = getMediaTypeTitle()
   
-  const baseTitle = type === 'movie' ? '电影' : '电视剧'
   return `${categoryName}${baseTitle}`
 }
 
 // 获取页面头部描述
 const getPageHeaderDescription = () => {
   const sortBy = filters.value.sort_by
+  const withStatus = filters.value.with_status
+  const airDateGte = filters.value['air_date.gte']
+  const airDateLte = filters.value['air_date.lte']
   
-  if (sortBy === 'popularity.desc') {
-    return type === 'movie' 
-      ? '发现最热门的电影，按人气排序' 
-      : '发现最热门的电视剧，按人气排序'
-  } else if (sortBy === 'release_date.asc' || sortBy === 'first_air_date.asc') {
-    return type === 'movie' 
-      ? '发现即将上映的电影，提前了解新片信息' 
-      : '发现即将播出的电视剧，提前了解新剧信息'
-  } else if (sortBy === 'release_date.desc' || sortBy === 'first_air_date.desc') {
-    return type === 'movie' 
-      ? '发现正在上映的电影，影院观影指南' 
-      : '发现正在播出的电视剧，当前热门剧集'
-  } else if (sortBy === 'vote_average.desc') {
-    return type === 'movie' 
-      ? '发现评分最高的电影，经典佳作推荐' 
-      : '发现评分最高的电视剧，精品剧集推荐'
-  } else {
-    return type === 'movie' 
-      ? '探索最新上映的电影' 
-      : '探索最新播出的电视剧'
-  }
+  // 使用工具函数获取页面描述
+  return getPageDescription(sortBy, withStatus, airDateGte, airDateLte)
 }
 
 // 将筛选条件转换为 URL 查询参数
 const filtersToQuery = (filterParams) => {
   const query = {}
   
-  const defaultSort = type === 'movie' ? 'release_date.desc' : 'first_air_date.desc'
+  const defaultSort = getDefaultSortBy()
   if (filterParams.sort_by && filterParams.sort_by !== defaultSort) {
     query.sort_by = filterParams.sort_by
   }
@@ -692,8 +741,6 @@ const applyFilters = async () => {
   // 重置到第一页
   delete newQuery.page
   
-  console.log('应用筛选，更新 URL:', newQuery)
-  
   navigateTo({
     query: newQuery
   }, { replace: true })
@@ -704,7 +751,7 @@ const resetFilters = () => {
   const defaultEndYear = currentYear + 1
   
   filters.value = {
-    sort_by: type === 'movie' ? 'release_date.desc' : 'first_air_date.desc',
+    sort_by: getDefaultSortBy(),
     with_genres: [],
     'vote_average.gte': 0,
     'air_date.gte': null,
@@ -741,20 +788,13 @@ const changePage = (page) => {
     newQuery.page = page
   }
   
-  console.log('页面跳转，更新 URL:', newQuery)
-  
-  // 导航到新页面
   navigateTo({
     query: newQuery
   }, { replace: true })
 }
 
 const fetchData = async () => {
-  pending.value = true
-  
   try {
-    console.log('获取数据，页码:', currentPage.value, '筛选条件:', filters.value)
-    
     // 构建筛选参数
     const params = {
       page: currentPage.value,
@@ -789,8 +829,6 @@ const fetchData = async () => {
     list.value = discoverMedia(type, params)
   } catch (error) {
     console.error('获取数据失败:', error)
-  } finally {
-    pending.value = false
   }
 }
 
@@ -815,12 +853,10 @@ watch(() => route.query, (newQuery) => {
 watch(hasFilterChanges, (newValue) => {
   if (newValue) {
     nextTick(() => {
-      console.log('Filter changes detected, setting up observer...')
       if (applyFilterBtn.value) {
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
-              console.log('Intersection observed:', entry.isIntersecting)
               isApplyButtonVisible.value = entry.isIntersecting
             })
           },
@@ -831,17 +867,13 @@ watch(hasFilterChanges, (newValue) => {
         )
         
         observer.observe(applyFilterBtn.value)
-        console.log('Observer attached to button')
         
         // 清理函数 - 当筛选条件应用后清理
         watch(hasFilterChanges, (hasChanges) => {
           if (!hasChanges) {
             observer.disconnect()
-            console.log('Observer disconnected')
           }
         })
-      } else {
-        console.log('Button element not found')
       }
     })
   } else {

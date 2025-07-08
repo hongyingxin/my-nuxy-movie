@@ -200,17 +200,15 @@ const navMenus = computed(() => [
   {
     label: '电影',
     dropdown: [
-      { label: '最新电影', to: '/discover/movie', desc: '最新上映的电影' },
       { label: '热门电影', to: '/discover/movie?sort_by=popularity.desc', desc: '最受欢迎的电影' },
-      { label: '即将上映', to: '/discover/movie?sort_by=release_date.asc', desc: '即将上映的新片' },
-      { label: '正在上映', to: '/discover/movie?sort_by=release_date.desc', desc: '影院正在放映' },
+      { label: '即将上映', to: '/discover/movie?sort_by=release_date.asc&with_release_type=2|3', desc: '即将上映的新片' },
+      { label: '正在上映', to: '/discover/movie?sort_by=release_date.desc&with_release_type=2|3', desc: '影院正在放映' },
       { label: '高分电影', to: '/discover/movie?sort_by=vote_average.desc&vote_average.gte=7', desc: '评分最高的电影' },
     ],
   },
   {
     label: '电视剧',
     dropdown: [
-      { label: '最新剧集', to: '/discover/tv', desc: '最新播出的电视剧' },
       { label: '热门剧集', to: '/discover/tv?sort_by=popularity.desc', desc: '最受欢迎的电视剧' },
       { label: '正在播出', to: '/discover/tv?with_status=0', desc: '正在播出的剧集' },
       { label: '高分剧集', to: '/discover/tv?sort_by=vote_average.desc&vote_average.gte=7', desc: '评分最高的电视剧' },
