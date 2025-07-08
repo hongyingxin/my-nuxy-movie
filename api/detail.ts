@@ -104,21 +104,6 @@ export const getRecommendations = (mediaType: MediaType, id: number, page = 1) =
 }
 
 /**
- * 通用搜索接口
- * @param mediaType 媒体类型
- * @param query 搜索关键词
- * @param page 页码，默认1
- * @returns 搜索结果
- */
-export const searchMedia = (mediaType: MediaType, query: string, page = 1) => {
-  return useHttp<MovieSearchResponse | TvShowSearchResponse>({
-    url: `/search/${mediaType}`,
-    method: 'GET',
-    params: { query, page }
-  })
-}
-
-/**
  * 评分接口 (仅电影支持)
  * @param mediaType 媒体类型
  * @param id 媒体ID

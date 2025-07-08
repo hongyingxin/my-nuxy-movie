@@ -97,18 +97,4 @@ export function getPopularPeople(page: number = 1) {
     method: 'GET',
     params: { page }
   })
-}
-
-/**
- * 搜索演员
- * @param query 搜索关键词
- * @param page 页码，默认1
- * @returns 演员搜索结果
- */
-export function searchPeople(query: string, page: number = 1) {
-  return useHttp<PersonSearchResponse>({
-    url: '/search/person',
-    method: 'GET',
-    params: { query, page }
-  })
 } 

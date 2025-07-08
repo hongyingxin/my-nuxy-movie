@@ -80,20 +80,6 @@ export const getMovieDetail = (id: number) => {
 }
 
 /**
- * 搜索电影
- * @param query 搜索关键词
- * @param page 页码，默认1
- * @returns 电影搜索结果
- */
-export const searchMovies = (query: string, page = 1) => {
-  return useHttp<MovieSearchResponse>({
-    url: '/search/movie',
-    method: 'GET',
-    params: { query, page }
-  })
-}
-
-/**
  * 获取相似电影
  * @param id 电影ID
  * @param page 页码，默认1

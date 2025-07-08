@@ -79,20 +79,6 @@ export const getTvShowDetail = (id: number) => {
 }
 
 /**
- * 搜索电视剧
- * @param query 搜索关键词
- * @param page 页码，默认1
- * @returns 电视剧搜索结果
- */
-export const searchTvShows = (query: string, page = 1) => {
-  return useHttp<TvShowSearchResponse>({
-    url: '/search/tv',
-    method: 'GET',
-    params: { query, page }
-  })
-}
-
-/**
  * 获取相似电视剧
  * @param id 电视剧ID
  * @param page 页码，默认1

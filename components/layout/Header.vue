@@ -66,14 +66,15 @@
         <!-- 右侧：搜索和功能区域 -->
         <div class="flex items-center space-x-4">
           <!-- 搜索框 -->
-          <div class="hidden lg:flex items-center space-x-2 bg-gray-100 rounded-lg px-3 py-2">
-            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-            </svg>
-            <input 
-              type="text" 
-              placeholder="搜索电影、电视剧、演员..." 
-              class="bg-transparent outline-none text-sm w-48"
+          <div class="hidden lg:block">
+            <SearchBox
+              v-model="searchQuery"
+              placeholder="搜索电影、电视剧、演员..."
+              :show-search-button="false"
+              :input-class="'bg-gray-50 hover:bg-white focus:bg-white border border-gray-200 hover:border-gray-300 focus:border-red-500 pl-10 pr-4 py-2.5 text-sm w-64 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:shadow-lg'"
+              @search="handleHeaderSearch"
+              @suggestion-select="handleSuggestionSelect"
+              @view-all-results="handleViewAllResults"
             />
           </div>
 
@@ -132,14 +133,15 @@
       <div v-if="isMobileMenuOpen" class="md:hidden border-t border-gray-200 py-4">
         <div class="space-y-4">
           <!-- 移动端搜索框 -->
-          <div class="flex items-center space-x-2 bg-gray-100 rounded-lg px-3 py-2">
-            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-            </svg>
-            <input 
-              type="text" 
-              placeholder="搜索..." 
-              class="bg-transparent outline-none text-sm flex-1"
+          <div class="px-3">
+            <SearchBox
+              v-model="mobileSearchQuery"
+              placeholder="搜索..."
+              :show-search-button="false"
+              :input-class="'bg-gray-50 hover:bg-white focus:bg-white border border-gray-200 hover:border-gray-300 focus:border-red-500 pl-10 pr-4 py-2.5 text-sm w-full rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:shadow-lg'"
+              @search="handleMobileSearch"
+              @suggestion-select="handleSuggestionSelect"
+              @view-all-results="handleViewAllResults"
             />
           </div>
 
@@ -218,11 +220,71 @@ const navMenus = [
   },
 ]
 
+// ==================== 响应式数据 ====================
 const isMobileMenuOpen = ref(false)
 const isScrolled = ref(false)
+const searchQuery = ref('')
+const mobileSearchQuery = ref('')
+
+// ==================== 方法 ====================
 const toggleMobileMenu = () => {
   isMobileMenuOpen.value = !isMobileMenuOpen.value
 }
+
+/**
+ * 处理 Header 搜索
+ */
+const handleHeaderSearch = (query) => {
+  if (!query.trim()) return
+  
+  // 跳转到搜索页面
+  navigateTo({
+    path: '/search',
+    query: { q: query }
+  })
+}
+
+/**
+ * 处理建议选择
+ */
+const handleSuggestionSelect = (suggestion) => {
+  // 跳转到对应的详情页面
+  if (suggestion.media_type === 'movie') {
+    navigateTo(`/movie/${suggestion.id}`)
+  } else if (suggestion.media_type === 'tv') {
+    navigateTo(`/tv/${suggestion.id}`)
+  } else if (suggestion.media_type === 'person') {
+    navigateTo(`/person/${suggestion.id}`)
+  }
+}
+
+/**
+ * 处理查看所有结果
+ */
+const handleViewAllResults = (query) => {
+  if (!query.trim()) return
+  
+  // 跳转到搜索页面
+  navigateTo({
+    path: '/search',
+    query: { q: query }
+  })
+}
+
+/**
+ * 处理移动端搜索
+ */
+const handleMobileSearch = (query) => {
+  if (!query.trim()) return
+  
+  // 跳转到搜索页面
+  navigateTo({
+    path: '/search',
+    query: { q: query }
+  })
+}
+
+// ==================== 生命周期 ====================
 onMounted(() => {
   const handleScroll = () => {
     isScrolled.value = window.scrollY > 20
