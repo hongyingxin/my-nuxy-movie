@@ -26,6 +26,8 @@ export interface DiscoverParams {
   // 日期筛选
   'primary_release_date.gte'?: string // 电影专用
   'primary_release_date.lte'?: string // 电影专用
+  'release_date.gte'?: string // 电影专用，当指定 region 时使用
+  'release_date.lte'?: string // 电影专用，当指定 region 时使用
   'first_air_date.gte'?: string // 电视剧专用
   'first_air_date.lte'?: string // 电视剧专用
   
@@ -35,6 +37,9 @@ export interface DiscoverParams {
   // 地区筛选
   with_origin_country?: string // 电视剧专用
   region?: string // 电影专用
+  
+  // 上映类型筛选 (电影专用)
+  with_release_type?: string // 上映类型: 1=Premiere, 2=Theatrical (limited), 3=Theatrical, 4=Digital, 5=Physical, 6=TV
   
   // 关键词筛选
   with_keywords?: string | number

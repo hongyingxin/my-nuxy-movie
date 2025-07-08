@@ -78,27 +78,27 @@
           <h3 class="text-white font-semibold text-lg">热门分类</h3>
           <ul class="space-y-2">
             <li>
-              <NuxtLink to="/movies/popular" class="text-gray-400 hover:text-red-500 transition-colors">
+              <NuxtLink to="/discover/movie?sort_by=popularity.desc" class="text-gray-400 hover:text-red-500 transition-colors">
                 热门电影
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink to="/movies/upcoming" class="text-gray-400 hover:text-red-500 transition-colors">
+              <NuxtLink to="/discover/movie?sort_by=release_date.asc" class="text-gray-400 hover:text-red-500 transition-colors">
                 即将上映
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink to="/tv/popular" class="text-gray-400 hover:text-red-500 transition-colors">
+              <NuxtLink to="/discover/tv?sort_by=popularity.desc" class="text-gray-400 hover:text-red-500 transition-colors">
                 热门剧集
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink to="/tv/on-the-air" class="text-gray-400 hover:text-red-500 transition-colors">
+              <NuxtLink to="/discover/tv?with_status=0" class="text-gray-400 hover:text-red-500 transition-colors">
                 正在播出
               </NuxtLink>
             </li>
             <li>
-              <NuxtLink to="/movies/top-rated" class="text-gray-400 hover:text-red-500 transition-colors">
+              <NuxtLink to="/discover/movie?sort_by=vote_average.desc&vote_average.gte=7" class="text-gray-400 hover:text-red-500 transition-colors">
                 高分推荐
               </NuxtLink>
             </li>

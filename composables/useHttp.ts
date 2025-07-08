@@ -29,6 +29,7 @@ export const useHttp = <T>(
   options.lazy = options.lazy ?? true
   options.method = method
   options.params = {
+    // 后续修改，可以根据用户设置的语言，来设置语言
     language: 'zh-CN',
     ...params
   }

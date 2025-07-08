@@ -182,8 +182,17 @@
 </template>
 
 <script setup>
+// ==================== 响应式数据 ====================
+const isMobileMenuOpen = ref(false)
+const isScrolled = ref(false)
+const searchQuery = ref('')
+const mobileSearchQuery = ref('')
+
+// 获取当前日期字符串
+const today = computed(() => new Date().toISOString().split('T')[0])
+
 // 菜单数据结构
-const navMenus = [
+const navMenus = computed(() => [
   {
     label: '首页',
     to: '/',
@@ -191,23 +200,21 @@ const navMenus = [
   {
     label: '电影',
     dropdown: [
-      { label: '发现电影', to: '/discover/movie', desc: '高级筛选发现电影' },
-      { label: '全部电影', to: '/movies', desc: '浏览所有电影' },
-      { label: '热门电影', to: '/movies/popular', desc: '最受欢迎的电影' },
-      { label: '即将上映', to: '/movies/upcoming', desc: '即将上映的新片' },
-      { label: '高分电影', to: '/movies/top-rated', desc: '评分最高的电影' },
-      { label: '正在上映', to: '/movies/now-playing', desc: '影院正在放映' },
+      { label: '最新电影', to: '/discover/movie', desc: '最新上映的电影' },
+      { label: '热门电影', to: '/discover/movie?sort_by=popularity.desc', desc: '最受欢迎的电影' },
+      { label: '即将上映', to: '/discover/movie?sort_by=release_date.asc', desc: '即将上映的新片' },
+      { label: '正在上映', to: '/discover/movie?sort_by=release_date.desc', desc: '影院正在放映' },
+      { label: '高分电影', to: '/discover/movie?sort_by=vote_average.desc&vote_average.gte=7', desc: '评分最高的电影' },
     ],
   },
   {
     label: '电视剧',
     dropdown: [
-      { label: '发现电视剧', to: '/discover/tv', desc: '高级筛选发现电视剧' },
-      { label: '全部电视剧', to: '/tv', desc: '浏览所有电视剧' },
-      { label: '热门剧集', to: '/tv/popular', desc: '最受欢迎的电视剧' },
-      { label: '正在播出', to: '/tv/on-the-air', desc: '正在播出的剧集' },
-      { label: '高分剧集', to: '/tv/top-rated', desc: '评分最高的电视剧' },
-      { label: '今日播出', to: '/tv/airing-today', desc: '今天播出的剧集' },
+      { label: '最新剧集', to: '/discover/tv', desc: '最新播出的电视剧' },
+      { label: '热门剧集', to: '/discover/tv?sort_by=popularity.desc', desc: '最受欢迎的电视剧' },
+      { label: '正在播出', to: '/discover/tv?with_status=0', desc: '正在播出的剧集' },
+      { label: '高分剧集', to: '/discover/tv?sort_by=vote_average.desc&vote_average.gte=7', desc: '评分最高的电视剧' },
+      { label: '今日播出', to: `/discover/tv?air_date.gte=${today.value}&air_date.lte=${today.value}`, desc: '今天播出的剧集' },
     ],
   },
   {
@@ -218,13 +225,7 @@ const navMenus = [
     label: '搜索',
     to: '/search',
   },
-]
-
-// ==================== 响应式数据 ====================
-const isMobileMenuOpen = ref(false)
-const isScrolled = ref(false)
-const searchQuery = ref('')
-const mobileSearchQuery = ref('')
+])
 
 // ==================== 方法 ====================
 const toggleMobileMenu = () => {

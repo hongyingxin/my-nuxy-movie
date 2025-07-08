@@ -11,10 +11,10 @@
         <div class="flex items-center justify-between">
           <div>
             <h1 class="text-3xl font-bold text-gray-900">
-              {{ type === 'movie' ? '发现电影' : '发现电视剧' }}
+              {{ getPageHeaderTitle() }}
             </h1>
             <p class="text-gray-600 mt-2">
-              探索最新、最热门的{{ type === 'movie' ? '电影' : '电视剧' }}
+              {{ getPageHeaderDescription() }}
             </p>
           </div>
           
@@ -109,18 +109,20 @@
 
             <!-- 年份筛选 -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">年份范围</label>
+              <label class="block text-sm font-medium text-gray-700 mb-2">时间范围</label>
               <div class="grid grid-cols-2 gap-2">
                 <input 
-                  type="number" 
-                  v-model="filters.year"
-                  placeholder="开始年份"
+                  type="date" 
+                  :value="getStartDate()"
+                  @input="updateStartDate($event.target.value)"
+                  placeholder="开始日期"
                   class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
                 <input 
-                  type="number" 
-                  v-model="filters['air_date.gte']"
-                  placeholder="结束年份"
+                  type="date" 
+                  :value="getEndDate()"
+                  @input="updateEndDate($event.target.value)"
+                  placeholder="结束日期"
                   class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
               </div>
@@ -142,6 +144,45 @@
                 <option value="de">德语</option>
                 <option value="es">西班牙语</option>
               </select>
+            </div>
+
+            <!-- 地区筛选 (仅电影) -->
+            <div v-if="type === 'movie'">
+              <label class="block text-sm font-medium text-gray-700 mb-2">地区</label>
+              <select 
+                v-model="filters.region"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+              >
+                <option value="">全球</option>
+                <option value="US">美国</option>
+                <option value="CN">中国</option>
+                <option value="JP">日本</option>
+                <option value="KR">韩国</option>
+                <option value="GB">英国</option>
+                <option value="FR">法国</option>
+                <option value="DE">德国</option>
+                <option value="CA">加拿大</option>
+                <option value="AU">澳大利亚</option>
+                <option value="IN">印度</option>
+              </select>
+              <p class="text-xs text-gray-500 mt-1">选择地区会影响上映日期的排序</p>
+            </div>
+
+            <!-- 上映类型筛选 (仅电影) -->
+            <div v-if="type === 'movie'">
+              <label class="block text-sm font-medium text-gray-700 mb-2">上映类型</label>
+              <select 
+                v-model="filters.with_release_type"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+              >
+                <option value="">所有类型</option>
+                <option value="2|3">影院上映</option>
+                <option value="3|2">影院上映 (优先)</option>
+                <option value="4">数字发行</option>
+                <option value="5">实体发行</option>
+                <option value="6">电视播出</option>
+              </select>
+              <p class="text-xs text-gray-500 mt-1">选择上映类型会影响日期排序</p>
             </div>
           </div>
 
@@ -273,19 +314,6 @@ const type = route.params.type // 'movie' 或 'tv'
 // API 导入
 import { discoverMedia, MOVIE_SORT_OPTIONS, TV_SORT_OPTIONS } from '~/api/discover'
 
-// SEO 配置
-useHead({
-  title: type === 'movie' ? '发现电影 - Nuxt Movie' : '发现电视剧 - Nuxt Movie',
-  meta: [
-    { 
-      name: 'description', 
-      content: type === 'movie' 
-        ? '发现最新最热门的电影，支持多种筛选条件' 
-        : '发现最新最热门的电视剧，支持多种筛选条件' 
-    }
-  ]
-})
-
 // ==================== 响应式数据 ====================
 const showFilters = ref(true)
 const viewMode = ref('grid')
@@ -303,13 +331,57 @@ const list = ref()
 
 // 从 URL 参数初始化筛选条件
 const getInitialFilters = () => {
+  const currentYear = new Date().getFullYear()
+  const defaultEndYear = currentYear + 1
+  
+  // 获取当前日期
+  const now = new Date()
+  const today = now.toISOString().split('T')[0]
+  
+  // 计算不同分类的默认时间范围
+  const getDefaultDateRange = () => {
+    // 从 URL 参数判断分类类型
+    const sortBy = route.query.sort_by
+    
+    if (sortBy === 'popularity.desc') {
+      // 热门电影：无时间限制
+      return { startDate: null, endDate: null }
+    } else if (sortBy === 'vote_average.desc') {
+      // 高分电影：无时间限制，但排除太新的电影（评分不足）
+      const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate()).toISOString().split('T')[0]
+      return { startDate: null, endDate: oneYearAgo }
+    } else if (sortBy === 'release_date.asc') {
+      // 即将上映：当前日期到未来一年
+      const oneYearLater = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate()).toISOString().split('T')[0]
+      return { startDate: today, endDate: oneYearLater }
+    } else if (sortBy === 'release_date.desc') {
+      // 正在上映：过去2个月到当前日期
+      const twoMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 2, now.getDate()).toISOString().split('T')[0]
+      return { startDate: twoMonthsAgo, endDate: today }
+    } else {
+      // 默认：当前年份到明年
+      return { startDate: null, endDate: `${defaultEndYear}-12-31` }
+    }
+  }
+  
+  const dateRange = getDefaultDateRange()
+  
   return {
-    sort_by: route.query.sort_by || 'popularity.desc',
+    sort_by: route.query.sort_by || (type === 'movie' ? 'release_date.desc' : 'first_air_date.desc'),
     with_genres: route.query.with_genres ? route.query.with_genres.split(',').map(Number) : [],
     'vote_average.gte': route.query['vote_average.gte'] ? parseFloat(route.query['vote_average.gte']) : 0,
-    year: route.query.year ? parseInt(route.query.year) : null,
-    'air_date.gte': route.query['air_date.gte'] ? route.query['air_date.gte'] : null,
-    with_original_language: route.query.with_original_language || ''
+    'air_date.gte': route.query['air_date.gte'] ? route.query['air_date.gte'] : dateRange.startDate,
+    'air_date.lte': route.query['air_date.lte'] ? route.query['air_date.lte'] : dateRange.endDate,
+    'primary_release_date.gte': route.query['primary_release_date.gte'] ? route.query['primary_release_date.gte'] : dateRange.startDate,
+    'primary_release_date.lte': route.query['primary_release_date.lte'] ? route.query['primary_release_date.lte'] : dateRange.endDate,
+    'release_date.gte': route.query['release_date.gte'] ? route.query['release_date.gte'] : dateRange.startDate,
+    'release_date.lte': route.query['release_date.lte'] ? route.query['release_date.lte'] : dateRange.endDate,
+    'first_air_date.gte': route.query['first_air_date.gte'] ? route.query['first_air_date.gte'] : dateRange.startDate,
+    'first_air_date.lte': route.query['first_air_date.lte'] ? route.query['first_air_date.lte'] : dateRange.endDate,
+    with_original_language: route.query.with_original_language || '',
+    with_status: route.query.with_status || null,
+    region: route.query.region || '',
+    with_release_type: route.query.with_release_type || ''
   }
 }
 
@@ -318,6 +390,73 @@ const filters = ref(getInitialFilters())
 
 // 保存初始筛选条件状态，用于检测变化
 const initialFilters = ref(JSON.parse(JSON.stringify(filters.value)))
+
+// 计算当前时间范围
+const currentDateRange = computed(() => {
+  const startDate = filters.value['air_date.gte'] || filters.value['primary_release_date.gte'] || filters.value['release_date.gte'] || filters.value['first_air_date.gte']
+  const endDate = filters.value['air_date.lte'] || filters.value['primary_release_date.lte'] || filters.value['release_date.lte'] || filters.value['first_air_date.lte']
+
+  return {
+    startDate,
+    endDate
+  }
+})
+
+// 格式化日期为年份
+const formatDate = (dateString) => {
+  if (!dateString) return 'N/A'
+  const date = new Date(dateString)
+  return date.getFullYear()
+}
+
+// 格式化日期为完整日期
+const formatFullDate = (dateString) => {
+  if (!dateString) return 'N/A'
+  const date = new Date(dateString)
+  return date.toISOString().split('T')[0] // YYYY-MM-DD
+}
+
+// 获取开始日期
+const getStartDate = () => {
+  const startDate = currentDateRange.value.startDate
+  return startDate || ''
+}
+
+// 更新开始日期
+const updateStartDate = (dateString) => {
+  if (dateString) {
+    filters.value['air_date.gte'] = dateString
+    filters.value['primary_release_date.gte'] = dateString
+    filters.value['release_date.gte'] = dateString
+    filters.value['first_air_date.gte'] = dateString
+  } else {
+    filters.value['air_date.gte'] = null
+    filters.value['primary_release_date.gte'] = null
+    filters.value['release_date.gte'] = null
+    filters.value['first_air_date.gte'] = null
+  }
+}
+
+// 获取结束日期
+const getEndDate = () => {
+  const endDate = currentDateRange.value.endDate
+  return endDate || ''
+}
+
+// 更新结束日期
+const updateEndDate = (dateString) => {
+  if (dateString) {
+    filters.value['air_date.lte'] = dateString
+    filters.value['primary_release_date.lte'] = dateString
+    filters.value['release_date.lte'] = dateString
+    filters.value['first_air_date.lte'] = dateString
+  } else {
+    filters.value['air_date.lte'] = null
+    filters.value['primary_release_date.lte'] = null
+    filters.value['release_date.lte'] = null
+    filters.value['first_air_date.lte'] = null
+  }
+}
 
 // ==================== 计算属性 ====================
 const sortOptions = computed(() => {
@@ -333,6 +472,77 @@ const hasFilterChanges = computed(() => {
   return JSON.stringify(filters.value) !== JSON.stringify(initialFilters.value)
 })
 
+// 动态页面标题
+const pageTitle = computed(() => {
+  const sortBy = filters.value.sort_by
+  
+  // 根据排序方式确定分类名称
+  let categoryName = ''
+  if (sortBy === 'popularity.desc') {
+    categoryName = '热门'
+  } else if (sortBy === 'release_date.asc' || sortBy === 'first_air_date.asc') {
+    categoryName = '即将上映'
+  } else if (sortBy === 'release_date.desc' || sortBy === 'first_air_date.desc') {
+    categoryName = '正在上映'
+  } else if (sortBy === 'vote_average.desc') {
+    categoryName = '高分'
+  } else {
+    categoryName = '最新'
+  }
+  
+  const baseTitle = type === 'movie' ? '电影' : '电视剧'
+  const region = filters.value.region
+  const releaseType = filters.value.with_release_type
+  
+  if (region && releaseType) {
+    const regionNames = {
+      'US': '美国', 'CN': '中国', 'JP': '日本', 'KR': '韩国',
+      'GB': '英国', 'FR': '法国', 'DE': '德国', 'CA': '加拿大',
+      'AU': '澳大利亚', 'IN': '印度'
+    }
+    const releaseTypeNames = {
+      '2|3': '影院上映', '3|2': '影院上映', '4': '数字发行',
+      '5': '实体发行', '6': '电视播出'
+    }
+    return `${regionNames[region] || region}${releaseTypeNames[releaseType] || ''}${categoryName}${baseTitle} - Nuxt Movie`
+  } else if (region) {
+    const regionNames = {
+      'US': '美国', 'CN': '中国', 'JP': '日本', 'KR': '韩国',
+      'GB': '英国', 'FR': '法国', 'DE': '德国', 'CA': '加拿大',
+      'AU': '澳大利亚', 'IN': '印度'
+    }
+    return `${regionNames[region] || region}${categoryName}${baseTitle} - Nuxt Movie`
+  }
+  return `${categoryName}${baseTitle} - Nuxt Movie`
+})
+
+// 动态页面描述
+const pageDescription = computed(() => {
+  const sortBy = filters.value.sort_by
+  
+  if (sortBy === 'popularity.desc') {
+    return type === 'movie' 
+      ? '发现最热门的电影，按人气排序' 
+      : '发现最热门的电视剧，按人气排序'
+  } else if (sortBy === 'release_date.asc' || sortBy === 'first_air_date.asc') {
+    return type === 'movie' 
+      ? '发现即将上映的电影，提前了解新片信息' 
+      : '发现即将播出的电视剧，提前了解新剧信息'
+  } else if (sortBy === 'release_date.desc' || sortBy === 'first_air_date.desc') {
+    return type === 'movie' 
+      ? '发现正在上映的电影，影院观影指南' 
+      : '发现正在播出的电视剧，当前热门剧集'
+  } else if (sortBy === 'vote_average.desc') {
+    return type === 'movie' 
+      ? '发现评分最高的电影，经典佳作推荐' 
+      : '发现评分最高的电视剧，精品剧集推荐'
+  } else {
+    return type === 'movie' 
+      ? '探索最新上映的电影' 
+      : '探索最新播出的电视剧'
+  }
+})
+
 // 从 store 中获取分类数据
 const genreStore = useGenreStore()
 
@@ -342,16 +552,77 @@ const genres = computed(() => {
     : genreStore.tvGenres || []
 })
 
+// SEO 配置
+useHead({
+  title: pageTitle,
+  meta: [
+    { 
+      name: 'description', 
+      content: pageDescription.value
+    }
+  ]
+})
+
 // ==================== 方法 ====================
 const toggleFilters = () => {
   showFilters.value = !showFilters.value
+}
+
+// 获取页面头部标题
+const getPageHeaderTitle = () => {
+  const sortBy = filters.value.sort_by
+  
+  // 根据排序方式确定分类名称
+  let categoryName = ''
+  if (sortBy === 'popularity.desc') {
+    categoryName = '热门'
+  } else if (sortBy === 'release_date.asc' || sortBy === 'first_air_date.asc') {
+    categoryName = '即将上映'
+  } else if (sortBy === 'release_date.desc' || sortBy === 'first_air_date.desc') {
+    categoryName = '正在上映'
+  } else if (sortBy === 'vote_average.desc') {
+    categoryName = '高分'
+  } else {
+    categoryName = '最新'
+  }
+  
+  const baseTitle = type === 'movie' ? '电影' : '电视剧'
+  return `${categoryName}${baseTitle}`
+}
+
+// 获取页面头部描述
+const getPageHeaderDescription = () => {
+  const sortBy = filters.value.sort_by
+  
+  if (sortBy === 'popularity.desc') {
+    return type === 'movie' 
+      ? '发现最热门的电影，按人气排序' 
+      : '发现最热门的电视剧，按人气排序'
+  } else if (sortBy === 'release_date.asc' || sortBy === 'first_air_date.asc') {
+    return type === 'movie' 
+      ? '发现即将上映的电影，提前了解新片信息' 
+      : '发现即将播出的电视剧，提前了解新剧信息'
+  } else if (sortBy === 'release_date.desc' || sortBy === 'first_air_date.desc') {
+    return type === 'movie' 
+      ? '发现正在上映的电影，影院观影指南' 
+      : '发现正在播出的电视剧，当前热门剧集'
+  } else if (sortBy === 'vote_average.desc') {
+    return type === 'movie' 
+      ? '发现评分最高的电影，经典佳作推荐' 
+      : '发现评分最高的电视剧，精品剧集推荐'
+  } else {
+    return type === 'movie' 
+      ? '探索最新上映的电影' 
+      : '探索最新播出的电视剧'
+  }
 }
 
 // 将筛选条件转换为 URL 查询参数
 const filtersToQuery = (filterParams) => {
   const query = {}
   
-  if (filterParams.sort_by && filterParams.sort_by !== 'popularity.desc') {
+  const defaultSort = type === 'movie' ? 'release_date.desc' : 'first_air_date.desc'
+  if (filterParams.sort_by && filterParams.sort_by !== defaultSort) {
     query.sort_by = filterParams.sort_by
   }
   
@@ -363,16 +634,48 @@ const filtersToQuery = (filterParams) => {
     query['vote_average.gte'] = filterParams['vote_average.gte'].toString()
   }
   
-  if (filterParams.year) {
-    query.year = filterParams.year.toString()
-  }
-  
   if (filterParams['air_date.gte']) {
     query['air_date.gte'] = filterParams['air_date.gte']
   }
   
+  if (filterParams['primary_release_date.gte']) {
+    query['primary_release_date.gte'] = filterParams['primary_release_date.gte']
+  }
+  
+  if (filterParams['primary_release_date.lte']) {
+    query['primary_release_date.lte'] = filterParams['primary_release_date.lte']
+  }
+  
+  if (filterParams['release_date.gte']) {
+    query['release_date.gte'] = filterParams['release_date.gte']
+  }
+  
+  if (filterParams['release_date.lte']) {
+    query['release_date.lte'] = filterParams['release_date.lte']
+  }
+  
+  if (filterParams['first_air_date.gte']) {
+    query['first_air_date.gte'] = filterParams['first_air_date.gte']
+  }
+  
+  if (filterParams['first_air_date.lte']) {
+    query['first_air_date.lte'] = filterParams['first_air_date.lte']
+  }
+  
   if (filterParams.with_original_language) {
     query.with_original_language = filterParams.with_original_language
+  }
+  
+  if (filterParams.with_status !== null) {
+    query.with_status = filterParams.with_status
+  }
+  
+  if (filterParams.region) {
+    query.region = filterParams.region
+  }
+  
+  if (filterParams.with_release_type) {
+    query.with_release_type = filterParams.with_release_type
   }
   
   return query
@@ -397,13 +700,25 @@ const applyFilters = async () => {
 }
 
 const resetFilters = () => {
+  const currentYear = new Date().getFullYear()
+  const defaultEndYear = currentYear + 1
+  
   filters.value = {
-    sort_by: 'popularity.desc',
+    sort_by: type === 'movie' ? 'release_date.desc' : 'first_air_date.desc',
     with_genres: [],
     'vote_average.gte': 0,
-    year: null,
     'air_date.gte': null,
-    with_original_language: ''
+    'air_date.lte': `${defaultEndYear}-12-31`,
+    'primary_release_date.gte': null,
+    'primary_release_date.lte': `${defaultEndYear}-12-31`,
+    'release_date.gte': null,
+    'release_date.lte': `${defaultEndYear}-12-31`,
+    'first_air_date.gte': null,
+    'first_air_date.lte': `${defaultEndYear}-12-31`,
+    with_original_language: '',
+    with_status: null,
+    region: '',
+    with_release_type: ''
   }
   // 重置初始状态
   initialFilters.value = JSON.parse(JSON.stringify(filters.value))
@@ -450,10 +765,24 @@ const fetchData = async () => {
       ...(filters.value['vote_average.gte'] > 0 && { 
         'vote_average.gte': filters.value['vote_average.gte'] 
       }),
-      ...(filters.value.year && { year: filters.value.year }),
       ...(filters.value['air_date.gte'] && { 'air_date.gte': filters.value['air_date.gte'] }),
+      ...(filters.value['primary_release_date.gte'] && { 'primary_release_date.gte': filters.value['primary_release_date.gte'] }),
+      ...(filters.value['primary_release_date.lte'] && { 'primary_release_date.lte': filters.value['primary_release_date.lte'] }),
+      ...(filters.value['release_date.gte'] && { 'release_date.gte': filters.value['release_date.gte'] }),
+      ...(filters.value['release_date.lte'] && { 'release_date.lte': filters.value['release_date.lte'] }),
+      ...(filters.value['first_air_date.gte'] && { 'first_air_date.gte': filters.value['first_air_date.gte'] }),
+      ...(filters.value['first_air_date.lte'] && { 'first_air_date.lte': filters.value['first_air_date.lte'] }),
       ...(filters.value.with_original_language && { 
         with_original_language: filters.value.with_original_language 
+      }),
+      ...(filters.value.with_status !== null && { 
+        with_status: filters.value.with_status 
+      }),
+      ...(filters.value.region && { 
+        region: filters.value.region 
+      }),
+      ...(filters.value.with_release_type && { 
+        with_release_type: filters.value.with_release_type 
       })
     }
     

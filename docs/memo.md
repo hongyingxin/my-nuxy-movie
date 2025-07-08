@@ -5,8 +5,8 @@
 - [ ] 封装 photoswipe 图片查看器
 - [ ] 将图片加载失败的方法换成公共的
 - [ ] 整理标签组件（电影/电视剧）（即将上映/正在热映）
-- [ ] 搜索页面
 - [ ] 分页页面接口支持最大为500页
+- [ ] 实现多语言支持（语言切换、地区设置）
 
 ## 已完成任务
 
@@ -21,12 +21,4 @@
 - [x] 演员详情页
 - [x] 封装一个分页组件
 - [x] typescript 类型定义，接口
-
-## 技术债务
-
-
-## 参考链接
-
-- [Nuxt 3 文档](https://nuxt.com/docs)
-- [TMDB API 文档](https://developers.themoviedb.org/3)
-- [Tailwind CSS](https://tailwindcss.com/docs)
+- [x] 多语言支持
