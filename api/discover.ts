@@ -10,6 +10,9 @@ import type {
   MediaType
 } from '~/types/apiType'
 
+// 导入排序选项常量
+import { MOVIE_SORT_OPTIONS, TV_SORT_OPTIONS } from '~/constants'
+
 // ==================== 通用 Discover 接口 ====================
 
 /**
@@ -155,11 +158,8 @@ export const getUpcomingTvShows = (page = 1) => {
 
 // ==================== 排序选项 ====================
 
-// 注意：排序选项已移至 types/apiType/discover.ts 中定义
+// 注意：排序选项已移至 constants/sortOptions.ts 中定义
 // 这里通过 import 导入使用
-
-// 重新导出排序选项，保持向后兼容性
-export { MOVIE_SORT_OPTIONS, TV_SORT_OPTIONS } from '~/types/apiType/discover'
 
 // ==================== 筛选条件对比 ====================
 

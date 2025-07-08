@@ -28,7 +28,8 @@ import type { MovieItem, TvShowItem, PersonItem } from '~/types/apiType'
 
 // 导入特定模块类型
 import type { MovieDetail, MoviePaginatedResponse } from '~/types/apiType/movie'
-import type { DiscoverParams, SortOption } from '~/types/apiType/discover'
+import type { DiscoverParams } from '~/types/apiType/discover'
+import type { SortOption } from '~/types/apiType/sortOptions'
 ```
 
 ### 在 API 函数中使用

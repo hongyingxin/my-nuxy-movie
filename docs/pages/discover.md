@@ -864,9 +864,9 @@ Discover API 是 TMDB 提供的最强大的筛选接口，支持电影和电视�
 - `TvShowDiscoverResponse`：电视剧响应类型
 
 **排序选项类型**：
-- `SortOption`：排序选项接口
-- `MOVIE_SORT_OPTIONS`：电影排序选项
-- `TV_SORT_OPTIONS`：电视剧排序选项
+- `SortOption`：排序选项接口（定义在 `types/apiType/sortOptions.ts`）
+- `MOVIE_SORT_OPTIONS`：电影排序选项（定义在 `constants/sortOptions.ts`）
+- `TV_SORT_OPTIONS`：电视剧排序选项（定义在 `constants/sortOptions.ts`）
 
 #### **筛选器类型**
 

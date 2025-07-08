@@ -105,7 +105,6 @@ export type {
   DiscoverResponse,
   MovieDiscoverResponse,
   TvShowDiscoverResponse,
-  SortOption,
   FilterOption,
   FilterGroup,
   FilterState,
@@ -114,6 +113,12 @@ export type {
   LatestParams,
   UpcomingParams
 } from './discover'
+
+// ==================== 排序选项类型 ====================
+export type {
+  SortOption,
+  MediaType as SortMediaType
+} from './sortOptions'
 
 // ==================== 分类类型 ====================
 export type {
@@ -288,3 +293,7 @@ export interface BasePaginatedResponse<T> {
   total_pages: number
   total_results: number
 } 
+
+/**
+ * 排序选项类型
+ */

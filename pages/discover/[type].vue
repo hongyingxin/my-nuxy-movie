@@ -143,14 +143,13 @@
                 v-model="filters.with_original_language"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
               >
-                <option value="">所有语言</option>
-                <option value="zh">中文</option>
-                <option value="en">英语</option>
-                <option value="ja">日语</option>
-                <option value="ko">韩语</option>
-                <option value="fr">法语</option>
-                <option value="de">德语</option>
-                <option value="es">西班牙语</option>
+                <option 
+                  v-for="option in LANGUAGE_OPTIONS" 
+                  :key="option.value" 
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </option>
               </select>
             </div>
 
@@ -161,17 +160,13 @@
                 v-model="filters.region"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
               >
-                <option value="">全球</option>
-                <option value="US">美国</option>
-                <option value="CN">中国</option>
-                <option value="JP">日本</option>
-                <option value="KR">韩国</option>
-                <option value="GB">英国</option>
-                <option value="FR">法国</option>
-                <option value="DE">德国</option>
-                <option value="CA">加拿大</option>
-                <option value="AU">澳大利亚</option>
-                <option value="IN">印度</option>
+                <option 
+                  v-for="option in REGION_OPTIONS" 
+                  :key="option.value" 
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </option>
               </select>
               <p class="text-xs text-gray-500 mt-1">选择地区会影响上映日期的排序</p>
             </div>
@@ -183,12 +178,13 @@
                 v-model="filters.with_release_type"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
               >
-                <option value="">所有类型</option>
-                <option value="2|3">影院上映</option>
-                <option value="3|2">影院上映 (优先)</option>
-                <option value="4">数字发行</option>
-                <option value="5">实体发行</option>
-                <option value="6">电视播出</option>
+                <option 
+                  v-for="option in RELEASE_TYPE_OPTIONS" 
+                  :key="option.value" 
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </option>
               </select>
               <p class="text-xs text-gray-500 mt-1">选择上映类型会影响日期排序</p>
             </div>
@@ -320,7 +316,19 @@ const route = useRoute()
 const type = route.params.type // 'movie' 或 'tv'
 
 // API 导入
-import { discoverMedia, MOVIE_SORT_OPTIONS, TV_SORT_OPTIONS } from '~/api/discover'
+import { discoverMedia } from '~/api/discover'
+
+// 常量导入
+import { 
+  REGION_OPTIONS, 
+  RELEASE_TYPE_OPTIONS, 
+  LANGUAGE_OPTIONS, 
+  getRegionName, 
+  getReleaseTypeName, 
+  isTheatricalRelease,
+  MOVIE_SORT_OPTIONS,
+  TV_SORT_OPTIONS
+} from '~/constants'
 
 // ==================== 工具函数 ====================
 
@@ -470,14 +478,14 @@ const getPageDescription = (sortBy, withStatus, airDateGte, airDateLte) => {
       ? '发现最热门的电影，包含近期和即将上映的佳作' 
       : '发现最热门的电视剧，包含近期和即将播出的精品'
   } else if (sortBy === 'release_date.asc' || sortBy === 'first_air_date.asc') {
-    if (isMovie && releaseType === '2|3') {
+    if (isMovie && isTheatricalRelease(releaseType)) {
       return '发现即将在影院上映的电影，提前了解新片信息'
     }
     return isMovie 
       ? '发现即将上映的电影，提前了解新片信息' 
       : '发现即将播出的电视剧，提前了解新剧信息'
   } else if (sortBy === 'release_date.desc' || sortBy === 'first_air_date.desc') {
-    if (isMovie && releaseType === '2|3') {
+    if (isMovie && isTheatricalRelease(releaseType)) {
       return '发现正在影院上映的电影，影院观影指南'
     }
     return isMovie 
@@ -585,22 +593,15 @@ const pageTitle = computed(() => {
   const region = filters.value.region
   const releaseType = filters.value.with_release_type
   
-  const regionNames = {
-    'US': '美国', 'CN': '中国', 'JP': '日本', 'KR': '韩国',
-    'GB': '英国', 'FR': '法国', 'DE': '德国', 'CA': '加拿大',
-    'AU': '澳大利亚', 'IN': '印度'
-  }
-  const releaseTypeNames = {
-    '2|3': '影院上映', '3|2': '影院上映', '4': '数字发行',
-    '5': '实体发行', '6': '电视播出'
-  }
+  const regionName = region ? getRegionName(region) : ''
+  const releaseTypeName = releaseType ? getReleaseTypeName(releaseType) : ''
   
-  if (region && releaseType) {
-    return `${regionNames[region] || region}${releaseTypeNames[releaseType] || ''}${categoryName}${baseTitle} - Nuxt Movie`
-  } else if (region) {
-    return `${regionNames[region] || region}${categoryName}${baseTitle} - Nuxt Movie`
-  } else if (releaseType) {
-    return `${releaseTypeNames[releaseType] || ''}${categoryName}${baseTitle} - Nuxt Movie`
+  if (regionName && releaseTypeName) {
+    return `${regionName}${releaseTypeName}${categoryName}${baseTitle} - Nuxt Movie`
+  } else if (regionName) {
+    return `${regionName}${categoryName}${baseTitle} - Nuxt Movie`
+  } else if (releaseTypeName) {
+    return `${releaseTypeName}${categoryName}${baseTitle} - Nuxt Movie`
   }
   return `${categoryName}${baseTitle} - Nuxt Movie`
 })
