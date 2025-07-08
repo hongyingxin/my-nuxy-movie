@@ -6,7 +6,6 @@ import { useHttp } from '~/composables/useHttp'
 import type {
   TvShowPaginatedResponse,
   TvShowDetail,
-  TvShowSearchResponse,
   CreditsResponse,
   VideosResponse,
   ImagesResponse,

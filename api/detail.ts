@@ -12,8 +12,6 @@ import type {
   ImagesResponse,
   MoviePaginatedResponse,
   TvShowPaginatedResponse,
-  MovieSearchResponse,
-  TvShowSearchResponse,
   MovieRatingResponse
 } from '~/types/apiType'
 

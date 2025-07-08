@@ -9,6 +9,7 @@ components/
 ├── Layout/          # 布局组件 (头部、底部、导航)
 ├── ui/              # 可复用的 UI 组件 (按钮、评分、表单)
 ├── Media/           # 媒体相关组件 (卡片、播放器、画廊)
+├── Search/          # 搜索相关组件 (搜索框、建议)
 ├── Skeleton/        # 骨架屏组件 (加载状态)
 ├── Common/          # 通用/共享组件
 └── README.md        # 本文件
@@ -41,6 +42,12 @@ components/
 - **Player.vue** - 视频播放器组件 (未来)
 - **Gallery.vue** - 图片画廊组件 (未来)
 
+### 🔍 搜索组件 (`Search/`)
+专门处理搜索功能的组件。
+
+- **SearchBox.vue** - 统一搜索输入框组件，支持头部和搜索页面使用
+- **SearchSuggestions.vue** - 搜索建议组件，显示实时搜索建议
+
 ### ⚡ 骨架屏组件 (`Skeleton/`)
 用于显示加载状态的骨架屏组件。
 
@@ -63,6 +70,7 @@ components/
 - **布局组件**: `Layout[组件名]` (例如: `LayoutHeader`)
 - **UI 组件**: `Ui[组件名]` (例如: `UiMovieRating`)
 - **媒体组件**: `Media[组件名]` (例如: `MediaCard`)
+- **搜索组件**: `Search[组件名]` (例如: `SearchBox`)
 - **骨架屏组件**: `Skeleton[组件名]` (例如: `SkeletonCard`)
 - **通用组件**: `Common[组件名]` (例如: `CommonIcon`)
 
@@ -71,6 +79,7 @@ components/
 - `components/Layout/Header.vue` → `<LayoutHeader />`
 - `components/ui/MovieRating.vue` → `<UiMovieRating />`
 - `components/Media/Card.vue` → `<MediaCard />` (媒体目录无前缀)
+- `components/Search/SearchBox.vue` → `<SearchBox />` (搜索目录无前缀)
 - `components/Skeleton/Card.vue` → `<SkeletonCard />` (骨架屏目录无前缀)
 - `components/Common/Icon.vue` → `<CommonIcon />`
 
@@ -223,6 +232,27 @@ components/
   :back-to="'/movies'"
 />
 <MediaRating :score="movie.vote_average" />
+
+<!-- 搜索组件 -->
+<SearchBox
+  v-model="searchQuery"
+  placeholder="搜索电影、电视剧、演员..."
+  :show-search-button="true"
+  :show-suggestions="true"
+  :debounce-delay="300"
+  :suggestion-limit="5"
+  @search="handleSearch"
+  @suggestion-select="handleSuggestionSelect"
+  @view-all-results="handleViewAllResults"
+/>
+
+<SearchSuggestions
+  :show-suggestions="showSuggestions && suggestions.length > 0"
+  :suggestions="suggestions"
+  :total-results="totalResults"
+  @select-suggestion="handleSuggestionSelect"
+  @view-all-results="handleViewAllResults"
+/>
 
 <!-- 骨架屏组件 -->
 <SkeletonGrid :count="12" variant="movie" :cols="{ sm: 2, md: 4, lg: 6 }" />
@@ -493,6 +523,121 @@ const handlePageSizeChange = (newPageSize) => {
 | `showText` | `Boolean` | `true` | 是否显示文字评分 |
 | `size` | `String` | `medium` | 组件尺寸 (small, medium, large) |
 
+### SearchBox 搜索框组件
+
+统一的搜索输入框组件，支持头部和搜索页面使用，包含实时搜索建议功能。
+
+#### 基础使用
+
+```vue
+<SearchBox
+  v-model="searchQuery"
+  placeholder="搜索电影、电视剧、演员..."
+  @search="handleSearch"
+/>
+```
+
+#### 头部搜索框
+
+```vue
+<SearchBox
+  v-model="searchQuery"
+  placeholder="搜索..."
+  :input-class="'w-full px-4 py-2 pl-10 pr-4 bg-gray-100 border-0 rounded-full focus:bg-white focus:ring-2 focus:ring-red-500 focus:shadow-lg transition-all duration-200'"
+  :show-search-button="false"
+  :show-suggestions="true"
+  :debounce-delay="300"
+  :suggestion-limit="5"
+  @search="handleSearch"
+  @suggestion-select="handleSuggestionSelect"
+  @view-all-results="handleViewAllResults"
+/>
+```
+
+#### Props
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `modelValue` | `String` | `''` | 搜索关键词（v-model） |
+| `placeholder` | `String` | `'搜索电影、电视剧、演员...'` | 输入框占位符 |
+| `inputClass` | `String` | 默认样式类 | 输入框样式类 |
+| `showSearchButton` | `Boolean` | `true` | 是否显示搜索按钮 |
+| `showSuggestions` | `Boolean` | `true` | 是否显示搜索建议 |
+| `debounceDelay` | `Number` | `300` | 防抖延迟时间（毫秒） |
+| `suggestionLimit` | `Number` | `5` | 建议数量限制 |
+
+#### Events
+
+| 事件名 | 参数 | 说明 |
+|--------|------|------|
+| `update:modelValue` | `(value: string)` | 搜索关键词更新 |
+| `search` | `(query: string)` | 执行搜索 |
+| `suggestion-select` | `(suggestion: object)` | 选择搜索建议 |
+| `view-all-results` | `(query: string)` | 查看所有搜索结果 |
+
+#### 功能特性
+
+- **防抖处理**: 使用项目统一的防抖函数，避免频繁请求
+- **实时建议**: 支持实时搜索建议，提升用户体验
+- **样式定制**: 通过 `inputClass` prop 自定义输入框样式
+- **响应式设计**: 支持移动端和桌面端不同样式
+- **键盘支持**: 支持回车搜索和方向键导航
+
+### SearchSuggestions 搜索建议组件
+
+显示搜索建议列表的组件，支持电影、电视剧、演员类型标签。
+
+#### 基础使用
+
+```vue
+<SearchSuggestions
+  :show-suggestions="showSuggestions && suggestions.length > 0"
+  :suggestions="suggestions"
+  :total-results="totalResults"
+  @select-suggestion="handleSuggestionSelect"
+  @view-all-results="handleViewAllResults"
+/>
+```
+
+#### Props
+
+| 属性 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `showSuggestions` | `Boolean` | `false` | 是否显示建议 |
+| `suggestions` | `Array` | `[]` | 建议数据数组 |
+| `totalResults` | `Number` | `0` | 总结果数 |
+
+#### Events
+
+| 事件名 | 参数 | 说明 |
+|--------|------|------|
+| `select-suggestion` | `(suggestion: object)` | 选择建议项 |
+| `view-all-results` | `(query: string)` | 查看所有结果 |
+
+#### 建议数据结构
+
+```typescript
+interface SearchSuggestion {
+  id: number
+  title?: string          // 电影/电视剧标题
+  name?: string           // 演员姓名
+  media_type: 'movie' | 'tv' | 'person'
+  poster_path?: string    // 海报路径
+  profile_path?: string   // 头像路径
+  release_date?: string   // 发布日期
+  first_air_date?: string // 首播日期
+  known_for_department?: string // 演员部门
+}
+```
+
+#### 功能特性
+
+- **类型标签**: 显示电影、电视剧、演员的类型标签
+- **图片显示**: 显示海报或头像图片
+- **结果统计**: 显示总结果数
+- **现代化 UI**: 圆角、阴影、悬停效果
+- **键盘导航**: 支持方向键和回车键操作
+
 ## 组件使用统计
 
 根据项目中的实际使用情况，以下是各组件的使用频率：
@@ -502,12 +647,14 @@ const handlePageSizeChange = (newPageSize) => {
 - **SkeletonGrid** - 在首页、发现页等数据加载时使用
 - **CommonPagination** - 在演员列表页、发现页等分页场景使用
 - **LayoutHeader/LayoutFooter** - 全局布局组件
+- **SearchBox** - 在头部导航和搜索页面使用
 
 ### 中频使用组件
 - **MediaPageHeader** - 在详情页子页面中使用
 - **SkeletonList** - 在演职员页面使用
 - **SkeletonLoadingState** - 在详情页和演员详情页使用
 - **MediaListItem** - 在发现页列表视图使用
+- **SearchSuggestions** - 在搜索框下方显示建议
 
 ### 低频使用组件
 - **MediaRating** - 在 MediaCard 内部使用

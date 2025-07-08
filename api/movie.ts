@@ -6,12 +6,9 @@ import { useHttp } from '~/composables/useHttp'
 import type {
   MoviePaginatedResponse,
   MovieDetail,
-  MovieSearchResponse,
-  MovieSearchResult,
   CreditsResponse,
   VideosResponse,
   ImagesResponse,
-  MovieRatingRequest,
   MovieRatingResponse
 } from '~/types/apiType'
 

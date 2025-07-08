@@ -11,7 +11,6 @@ import type {
   PersonTvCreditsResponse,
   ExternalIds,
   PersonPaginatedResponse,
-  PersonSearchResponse
 } from '~/types/apiType'
 
 /**
