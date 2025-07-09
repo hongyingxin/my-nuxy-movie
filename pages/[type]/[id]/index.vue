@@ -26,7 +26,7 @@
           }"
         >
           <!-- 渐变遮罩 -->
-          <div class="absolute inset-0 bg-black/60"/>
+          <div class="absolute inset-0 bg-black/60" />
         </div>
 
         <!-- 内容区域 -->
@@ -43,7 +43,7 @@
                   "
                   :alt="detail.data.value.title || detail.data.value.name"
                   class="w-48 md:w-64 rounded-lg shadow-2xl"
-                >
+                />
               </div>
 
               <!-- 基本信息 -->
@@ -213,7 +213,7 @@
                     :src="image.getProfileUrl(cast.profile_path, 'small')"
                     :alt="cast.name"
                     class="w-16 h-16 rounded-full mx-auto mb-2 object-cover group-hover:ring-2 group-hover:ring-red-500 transition-all duration-200"
-                  >
+                  />
                   <p
                     class="text-sm font-medium text-gray-800 group-hover:text-red-600 transition-colors"
                   >
@@ -275,7 +275,7 @@
                     :src="image.getBackdropUrl(imgItem.file_path, 'medium')"
                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                     loading="lazy"
-                  >
+                  />
                   <div
                     class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"
                   />
@@ -299,7 +299,7 @@
                     :src="image.getPosterUrl(imgItem.file_path, 'medium')"
                     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                     loading="lazy"
-                  >
+                  />
                   <div
                     class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"
                   />
@@ -516,7 +516,7 @@
                     :src="image.getPosterUrl(season.poster_path, 'small')"
                     :alt="season.name"
                     class="w-12 h-16 rounded object-cover"
-                  >
+                  />
                   <div class="flex-1">
                     <p class="font-medium text-gray-800">{{ season.name }}</p>
                     <p class="text-sm text-gray-600">

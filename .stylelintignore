@@ -1,0 +1,32 @@
+# 依赖
+node_modules
+.pnpm-store
+
+# 构建输出
+.nuxt
+.output
+dist
+
+# 缓存
+.cache
+.temp
+
+# 日志
+*.log
+
+# 环境变量
+.env
+.env.*
+
+# 其他
+.DS_Store
+*.local
+
+# 公共资源
+public/
+
+# JavaScript/TypeScript 文件
+*.js
+*.ts
+*.mjs
+*.cjs

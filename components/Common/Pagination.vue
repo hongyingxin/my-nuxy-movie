@@ -112,7 +112,7 @@
           class="w-16 px-2 py-1 border border-gray-300 rounded-md text-center focus:outline-none focus:ring-2 focus:ring-red-500"
           @keyup.enter="handleQuickJump"
           @blur="handleQuickJump"
-        >
+        />
         <span class="text-gray-600">页</span>
         <button
           class="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"

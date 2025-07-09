@@ -29,7 +29,7 @@
           <h2 class="text-2xl font-bold text-gray-800 mb-6">剧组</h2>
           <div class="space-y-6">
             <div v-for="n in 3" :key="n" class="animate-pulse">
-              <div class="bg-gray-300 h-5 rounded w-20 mb-3"/>
+              <div class="bg-gray-300 h-5 rounded w-20 mb-3" />
               <div class="bg-white rounded-lg shadow-sm">
                 <div
                   v-for="m in 4"
@@ -37,8 +37,8 @@
                   class="p-3"
                   :class="{ 'border-b': m !== 4 }"
                 >
-                  <div class="bg-gray-300 h-4 rounded w-3/4 mb-1"/>
-                  <div class="bg-gray-300 h-3 rounded w-1/2"/>
+                  <div class="bg-gray-300 h-4 rounded w-3/4 mb-1" />
+                  <div class="bg-gray-300 h-3 rounded w-1/2" />
                 </div>
               </div>
             </div>
@@ -71,7 +71,7 @@
                   :alt="actor.name"
                   class="w-16 h-16 rounded-lg object-cover"
                   @error="event => image.handleImageError(event, 'profile')"
-                >
+                />
               </div>
               <div class="ml-4 flex-1">
                 <h3 class="font-medium text-gray-900">{{ actor.name }}</h3>

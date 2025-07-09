@@ -48,6 +48,9 @@ importers:
       eslint:
         specifier: ^9.30.1
         version: 9.30.1(jiti@2.4.2)
+      postcss-html:
+        specifier: 1.6.0
+        version: 1.6.0
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
@@ -59,7 +62,7 @@ importers:
         version: 9.0.5(stylelint@15.11.0(typescript@5.8.3))
       stylelint-config-recommended-vue:
         specifier: 1.5.0
-        version: 1.5.0(postcss-html@1.8.0)(stylelint@15.11.0(typescript@5.8.3))
+        version: 1.5.0(postcss-html@1.6.0)(stylelint@15.11.0(typescript@5.8.3))
       stylelint-config-standard:
         specifier: 34.0.0
         version: 34.0.0(stylelint@15.11.0(typescript@5.8.3))
@@ -3014,6 +3017,9 @@ packages:
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
+  js-tokens@8.0.3:
+    resolution: {integrity: sha512-UfJMcSJc+SEXEl9lH/VLHSZbThQyLpw1vLO1Lb+j4RWDvG3N2f7yj3PVQA3cmkTBNldJ9eFnM+xEXxHIXrYiJw==}
+
   js-tokens@9.0.1:
     resolution: {integrity: sha512-mxa9E9ITFOt0ban3j6L5MpjwegGz6lBQmM1IJkWeBZGcMxto50+eWdjC/52xDbS2vy0k7vIMK0Fe2wfL9OQSpQ==}
 
@@ -3865,8 +3871,8 @@ packages:
     peerDependencies:
       postcss: ^8.4.32
 
-  postcss-html@1.8.0:
-    resolution: {integrity: sha512-5mMeb1TgLWoRKxZ0Xh9RZDfwUUIqRrcxO2uXO+Ezl1N5lqpCiSU5Gk6+1kZediBfBHFtPCdopr2UZ2SgUsKcgQ==}
+  postcss-html@1.6.0:
+    resolution: {integrity: sha512-OWgQ9/Pe23MnNJC0PL4uZp8k0EDaUvqpJFSiwFxOLClAhmD7UEisyhO3x5hVsD4xFrjReVTXydlrMes45dJ71w==}
     engines: {node: ^12 || >=14}
 
   postcss-import@15.1.0:
@@ -8664,6 +8670,8 @@ snapshots:
 
   js-tokens@4.0.0: {}
 
+  js-tokens@8.0.3: {}
+
   js-tokens@9.0.1: {}
 
   js-yaml@4.1.0:
@@ -9663,10 +9671,10 @@ snapshots:
     dependencies:
       postcss: 8.5.6
 
-  postcss-html@1.8.0:
+  postcss-html@1.6.0:
     dependencies:
       htmlparser2: 8.0.2
-      js-tokens: 9.0.1
+      js-tokens: 8.0.3
       postcss: 8.5.6
       postcss-safe-parser: 6.0.0(postcss@8.5.6)
 
@@ -10387,21 +10395,21 @@ snapshots:
       postcss: 8.5.6
       postcss-selector-parser: 7.1.0
 
-  stylelint-config-html@1.1.0(postcss-html@1.8.0)(stylelint@15.11.0(typescript@5.8.3)):
+  stylelint-config-html@1.1.0(postcss-html@1.6.0)(stylelint@15.11.0(typescript@5.8.3)):
     dependencies:
-      postcss-html: 1.8.0
+      postcss-html: 1.6.0
       stylelint: 15.11.0(typescript@5.8.3)
 
   stylelint-config-prettier@9.0.5(stylelint@15.11.0(typescript@5.8.3)):
     dependencies:
       stylelint: 15.11.0(typescript@5.8.3)
 
-  stylelint-config-recommended-vue@1.5.0(postcss-html@1.8.0)(stylelint@15.11.0(typescript@5.8.3)):
+  stylelint-config-recommended-vue@1.5.0(postcss-html@1.6.0)(stylelint@15.11.0(typescript@5.8.3)):
     dependencies:
-      postcss-html: 1.8.0
+      postcss-html: 1.6.0
       semver: 7.7.2
       stylelint: 15.11.0(typescript@5.8.3)
-      stylelint-config-html: 1.1.0(postcss-html@1.8.0)(stylelint@15.11.0(typescript@5.8.3))
+      stylelint-config-html: 1.1.0(postcss-html@1.6.0)(stylelint@15.11.0(typescript@5.8.3))
       stylelint-config-recommended: 16.0.0(stylelint@15.11.0(typescript@5.8.3))
 
   stylelint-config-recommended@13.0.0(stylelint@15.11.0(typescript@5.8.3)):

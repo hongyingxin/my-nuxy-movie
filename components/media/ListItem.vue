@@ -11,7 +11,7 @@
         :alt="item.title || item.name"
         class="w-16 h-24 object-cover rounded-lg"
         @error="event => image.handleImageError(event, 'poster')"
-      >
+      />
       <!-- 媒体信息区域 -->
       <div class="flex-1">
         <!-- 标题 -->

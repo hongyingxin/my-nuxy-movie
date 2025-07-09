@@ -24,7 +24,7 @@
                   suggestion.media_type === 'person' ? 'profile' : 'poster'
                 )
             "
-          >
+          />
           <div
             v-else
             class="w-12 h-16 bg-gray-200 rounded-lg flex items-center justify-center shadow-sm"

@@ -10,6 +10,7 @@
 - [Stylelint 配置](#stylelint-配置)
 - [编辑器集成](#编辑器集成)
 - [最佳实践](#最佳实践)
+- [已知问题](#已知问题)
 
 ## 概述
 
@@ -401,6 +402,49 @@ pnpm stylelint
 3. **Git Hooks**: 考虑使用 husky 在提交前自动检查
 4. **文档**: 维护本指南，确保团队成员了解工具使用
 
+## 已知问题
+
+### 1. VSCode 中的 TypeScript 错误
+
+在 VSCode 中，Tailwind CSS 类名可能会被错误地识别为 TypeScript 类型断言，显示错误："类型断言表达式只能在 TypeScript 文件中使用"。
+
+**临时解决方案**：
+
+- 这个错误只在编辑器中出现，不影响实际的代码运行和构建
+- 运行 `pnpm lint` 不会报告此错误
+- 可以忽略这个编辑器提示
+
+### 2. ESLint 警告
+
+项目中存在一些 ESLint 警告：
+
+- `vue/prop-name-casing`: prop 命名应使用 camelCase
+- `vue/html-self-closing`: HTML void 元素不应使用自闭合标签
+
+这些警告可以通过运行 `pnpm lint:fix` 自动修复大部分问题。
+
+### 3. Stylelint 版本兼容性
+
+由于版本兼容性问题，当前配置使用：
+
+- Stylelint 15.11.0（而不是最新的 16.x）
+- 只使用基础配置，未包含 Vue 和 Tailwind CSS 的专门配置
+
+## 快速命令
+
+```bash
+# 检查所有代码质量
+pnpm check
+
+# 修复所有可自动修复的问题
+pnpm fix
+
+# 单独运行各工具
+pnpm format        # 格式化代码
+pnpm lint         # 检查 ESLint
+pnpm stylelint    # 检查样式
+```
+
 ## 故障排除
 
 ### 常见问题
@@ -448,3 +492,5 @@ npx stylelint --print-config assets/css/tailwind.css
 4. **减少代码审查负担**: 自动化格式化检查
 
 这些工具配合使用，能够显著提升项目的代码质量和开发体验。
+
+另外有一部分报错是因为编辑器的插件问题，排查问题的时候需要注意下。

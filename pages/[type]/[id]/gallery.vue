@@ -83,7 +83,7 @@
                 :alt="detail.data.value?.title || detail.data.value?.name"
                 class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 loading="lazy"
-              >
+              />
             </div>
 
             <!-- 悬停遮罩 -->

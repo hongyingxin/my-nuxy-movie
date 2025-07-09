@@ -11,7 +11,7 @@
         :alt="person.name"
         class="w-16 h-24 object-cover rounded-lg"
         @error="event => image.handleImageError(event, 'profile')"
-      >
+      />
       <!-- 演员信息区域 -->
       <div class="flex-1">
         <!-- 姓名 -->

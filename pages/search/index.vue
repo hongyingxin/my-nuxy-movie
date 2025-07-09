@@ -60,7 +60,7 @@
                   v-model="includeAdult"
                   type="checkbox"
                   class="rounded border-gray-300 text-red-600 focus:ring-red-500"
-                >
+                />
                 <span class="text-gray-600">包含成人内容</span>
               </label>
             </div>

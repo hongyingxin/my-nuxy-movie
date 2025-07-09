@@ -1,6 +1,7 @@
 {
   "extends": [
-    "stylelint-config-standard"
+    "stylelint-config-standard",
+    "stylelint-config-prettier"
   ],
   "rules": {
     "at-rule-no-unknown": [
@@ -52,5 +53,16 @@
       "files": ["**/*.vue"],
       "customSyntax": "postcss-html"
     }
+  ],
+  "ignoreFiles": [
+    "node_modules/**",
+    ".nuxt/**",
+    ".output/**",
+    "dist/**",
+    "public/**",
+    "*.js",
+    "*.ts",
+    "*.mjs",
+    "*.cjs"
   ]
 }

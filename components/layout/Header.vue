@@ -180,7 +180,7 @@
                 >
                   <span class="text-sm text-gray-700">观看清单</span>
                 </NuxtLink>
-                <hr class="my-2" >
+                <hr class="my-2" />
                 <button
                   class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors w-full text-left"
                 >
@@ -281,7 +281,7 @@
               >
                 <span class="text-sm text-gray-700">观看清单</span>
               </NuxtLink>
-              <hr class="my-2" >
+              <hr class="my-2" />
               <button
                 class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors w-full text-left"
               >

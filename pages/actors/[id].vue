@@ -32,7 +32,7 @@
                     "
                     :alt="detail.data.value.name"
                     class="w-full max-w-80 mx-auto rounded-xl shadow-lg"
-                  >
+                  />
                   <!-- 悬停效果 -->
                   <div
                     class="absolute inset-0 rounded-xl bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center"
@@ -414,7 +414,7 @@
                         :alt="work.title || work.name"
                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                         loading="lazy"
-                      >
+                      />
                       <!-- 媒体类型标签 -->
                       <div
                         class="absolute top-2 left-2 px-2 py-1 rounded text-xs font-medium text-white"
@@ -569,7 +569,7 @@
                                 :alt="work.title || work.name"
                                 class="w-16 h-16 rounded-lg object-cover shadow-sm"
                                 loading="lazy"
-                              >
+                              />
                             </div>
 
                             <!-- 作品信息 -->

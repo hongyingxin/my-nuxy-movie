@@ -5,20 +5,20 @@
 <template>
   <div class="animate-pulse">
     <!-- 海报/图片占位符 -->
-    <div class="bg-gray-300 rounded-lg mb-2" :class="posterClass"/>
+    <div class="bg-gray-300 rounded-lg mb-2" :class="posterClass" />
 
     <!-- 内容占位符 -->
     <div class="space-y-1">
       <!-- 标题占位符 -->
-      <div class="bg-gray-300 h-4 rounded" :class="titleClass"/>
+      <div class="bg-gray-300 h-4 rounded" :class="titleClass" />
 
       <!-- 副标题占位符 -->
-      <div class="bg-gray-300 h-3 rounded" :class="subtitleClass"/>
+      <div class="bg-gray-300 h-3 rounded" :class="subtitleClass" />
 
       <!-- 可选的额外信息占位符 -->
       <div v-if="showExtra" class="flex items-center gap-2 mt-2">
-        <div class="bg-gray-300 h-3 w-8 rounded"/>
-        <div class="bg-gray-300 h-3 w-16 rounded"/>
+        <div class="bg-gray-300 h-3 w-8 rounded" />
+        <div class="bg-gray-300 h-3 w-16 rounded" />
       </div>
     </div>
   </div>
