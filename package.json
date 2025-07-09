@@ -26,7 +26,8 @@
     "stylelint": "stylelint \"**/*.{css,vue,scss}\"",
     "stylelint:fix": "stylelint \"**/*.{css,vue,scss}\" --fix",
     "check": "pnpm format:check && pnpm lint && pnpm stylelint",
-    "fix": "pnpm format && pnpm lint:fix && pnpm stylelint:fix"
+    "fix": "pnpm format && pnpm lint:fix && pnpm stylelint:fix",
+    "commit": "czg"
   },
   "dependencies": {
     "@nuxt/image": "^1.10.0",
@@ -44,6 +45,7 @@
     "@nuxt/eslint-config": "^1.5.2",
     "@nuxtjs/stylelint-module": "^5.2.1",
     "@nuxtjs/tailwindcss": "^6.14.0",
+    "czg": "^1.11.2",
     "eslint": "^9.30.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",

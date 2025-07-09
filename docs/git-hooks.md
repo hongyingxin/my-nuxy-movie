@@ -9,6 +9,7 @@
 - **husky**: Git hooks 管理工具
 - **lint-staged**: 只对暂存区的文件运行检查
 - **commitlint**: 提交信息格式验证（自定义实现）
+- **czg**: 交互式提交工具（可选但推荐）
 
 ## Pre-commit Hook
 
@@ -88,48 +89,65 @@ git commit -n -m "feat: 紧急修复"
 
 ⚠️ **注意**: 应该尽量避免跳过 hooks，只在紧急情况下使用。
 
+## 使用 czg 进行交互式提交（推荐）
+
+项目配置了 `czg` 工具，提供友好的交互式提交界面。
+
+### 使用方法
+
+```bash
+# 1. 添加文件到暂存区
+git add .
+
+# 2. 使用交互式提交
+pnpm commit
+# 或
+npx czg
+```
+
+### 交互流程
+
+1. **选择提交类型** - 使用方向键选择，回车确认
+2. **选择影响范围**（可选） - 选择预定义范围或输入自定义范围
+3. **填写简短描述** - 描述本次提交的主要内容
+4. **填写详细描述**（可选） - 提供更多上下文信息
+5. **确认提交** - 检查生成的提交信息并确认
+
+### 预定义的范围
+
+- `components` - 组件相关
+- `pages` - 页面相关
+- `utils` - 工具相关
+- `styles` - 样式相关
+- `deps` - 依赖相关
+- `config` - 配置相关
+- `other` - 其他修改
+
+### 快捷别名
+
+```bash
+# 快速修复文档错别字
+pnpm commit fd
+# 等同于 git commit -m "docs: fix typos"
+```
+
+## 手动提交 vs 交互式提交
+
+### 手动提交（传统方式）
+
+```bash
+git commit -m "feat: 添加电影搜索功能"
+git commit -m "fix(search): 修复搜索结果为空的问题"
+git commit -m "docs: 更新 API 文档"
+git commit -m "style: 统一代码缩进"
+```
+
 ## 故障排除
 
 ### 1. Hooks 没有执行
 
 确保 husky 已正确安装：
 
-```bash
-pnpm prepare
 ```
 
-### 2. 权限问题
-
-如果遇到权限错误：
-
-```bash
-chmod +x .husky/pre-commit
-chmod +x .husky/commit-msg
 ```
-
-### 3. lint-staged 运行失败
-
-检查配置文件：
-
-```bash
-cat .lintstagedrc.json
-```
-
-确保所有工具都已安装：
-
-```bash
-pnpm install
-```
-
-## 最佳实践
-
-1. **频繁提交**: 小而频繁的提交更容易管理
-2. **有意义的提交信息**: 清晰描述做了什么改动
-3. **运行测试**: 在提交前本地运行 `pnpm check`
-4. **不要跳过 hooks**: 除非真的有紧急情况
-
-## 团队协作
-
-1. 所有团队成员都应该了解提交规范
-2. Code Review 时检查提交信息质量
-3. 定期更新 hooks 配置以适应项目需求
