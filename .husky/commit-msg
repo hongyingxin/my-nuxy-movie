@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# 获取提交信息
+commit_regex='^(feat|fix|docs|style|refactor|perf|test|chore|build|ci|revert)(\(.+\))?: .{1,100}$'
+commit_message=$(cat "$1")
+
+# 检查提交信息格式
+if ! echo "$commit_message" | grep -qE "$commit_regex"; then
+  echo "❌ 提交信息格式错误！"
+  echo ""
+  echo "正确格式: <type>(<scope>): <subject>"
+  echo ""
+  echo "示例:"
+  echo "  feat: 添加用户登录功能"
+  echo "  fix(auth): 修复登录验证错误"
+  echo "  docs: 更新 README 文档"
+  echo ""
+  echo "类型说明:"
+  echo "  feat:     新功能"
+  echo "  fix:      修复 bug"
+  echo "  docs:     文档更新"
+  echo "  style:    代码格式（不影响代码运行的变动）"
+  echo "  refactor: 重构（既不是新增功能，也不是修复 bug）"
+  echo "  perf:     性能优化"
+  echo "  test:     测试相关"
+  echo "  chore:    构建过程或辅助工具的变动"
+  echo "  build:    构建系统相关"
+  echo "  ci:       CI 配置相关"
+  echo "  revert:   回滚提交"
+  echo ""
+  exit 1
+fi

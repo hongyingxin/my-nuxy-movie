@@ -66,6 +66,30 @@ pnpm format:check && pnpm lint && pnpm stylelint
 
 **详细配置说明**: 查看 [docs/code-quality-tools.md](./docs/code-quality-tools.md)
 
+## Git Hooks
+
+项目使用 Git hooks 自动确保代码质量：
+
+- **pre-commit**: 提交前自动运行 ESLint、Stylelint 和 Prettier
+- **commit-msg**: 验证提交信息格式
+
+### 提交规范
+
+提交信息必须遵循以下格式：
+
+```
+<type>(<scope>): <subject>
+```
+
+示例：
+
+```bash
+git commit -m "feat: 添加电影搜索功能"
+git commit -m "fix(search): 修复搜索结果为空的问题"
+```
+
+详细说明请查看 [Git Hooks 文档](docs/git-hooks.md)。
+
 ## 📁 项目结构
 
 ```
