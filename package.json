@@ -45,6 +45,7 @@
     "@nuxt/eslint-config": "^1.5.2",
     "@nuxtjs/stylelint-module": "^5.2.1",
     "@nuxtjs/tailwindcss": "^6.14.0",
+    "cz-git": "^1.11.2",
     "czg": "^1.11.2",
     "eslint": "^9.30.1",
     "husky": "^9.1.7",
