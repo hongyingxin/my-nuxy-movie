@@ -163,22 +163,12 @@
             >
               <div class="p-2">
                 <NuxtLink
-                  to="/profile"
+                  v-for="item in userMenuItems"
+                  :key="item.to"
+                  :to="item.to"
                   class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors"
                 >
-                  <span class="text-sm text-gray-700">个人资料</span>
-                </NuxtLink>
-                <NuxtLink
-                  to="/favorites"
-                  class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors"
-                >
-                  <span class="text-sm text-gray-700">我的收藏</span>
-                </NuxtLink>
-                <NuxtLink
-                  to="/watchlist"
-                  class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors"
-                >
-                  <span class="text-sm text-gray-700">观看清单</span>
+                  <span class="text-sm text-gray-700">{{ item.label }}</span>
                 </NuxtLink>
                 <hr class="my-2" />
                 <button
@@ -234,56 +224,32 @@
           <!-- 移动端导航链接 -->
           <div class="space-y-2">
             <NuxtLink
-              to="/"
+              v-for="item in mobileNavItems"
+              :key="item.to"
+              :to="item.to"
               class="block py-2 text-gray-700 hover:text-red-600 transition-colors"
-              >首页</NuxtLink
+              @click="closeMobileMenu"
             >
-            <NuxtLink
-              to="/movies"
-              class="block py-2 text-gray-700 hover:text-red-600 transition-colors"
-              >电影</NuxtLink
-            >
-            <NuxtLink
-              to="/tv"
-              class="block py-2 text-gray-700 hover:text-red-600 transition-colors"
-              >电视剧</NuxtLink
-            >
-            <NuxtLink
-              to="/people"
-              class="block py-2 text-gray-700 hover:text-red-600 transition-colors"
-              >演员</NuxtLink
-            >
-            <NuxtLink
-              to="/search"
-              class="block py-2 text-gray-700 hover:text-red-600 transition-colors"
-              >搜索</NuxtLink
-            >
+              {{ item.label }}
+            </NuxtLink>
           </div>
 
           <!-- 移动端用户菜单 -->
           <div class="border-t border-gray-200 pt-4">
             <div class="space-y-2">
               <NuxtLink
-                to="/profile"
+                v-for="item in userMenuItems"
+                :key="item.to"
+                :to="item.to"
                 class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors"
+                @click="closeMobileMenu"
               >
-                <span class="text-sm text-gray-700">个人资料</span>
-              </NuxtLink>
-              <NuxtLink
-                to="/favorites"
-                class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors"
-              >
-                <span class="text-sm text-gray-700">我的收藏</span>
-              </NuxtLink>
-              <NuxtLink
-                to="/watchlist"
-                class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors"
-              >
-                <span class="text-sm text-gray-700">观看清单</span>
+                <span class="text-sm text-gray-700">{{ item.label }}</span>
               </NuxtLink>
               <hr class="my-2" />
               <button
                 class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors w-full text-left"
+                @click="closeMobileMenu"
               >
                 <span class="text-sm text-gray-700">退出登录</span>
               </button>
@@ -299,84 +265,31 @@
 </template>
 
 <script setup>
+  // ==================== 导入 ====================
+  import {
+    NAV_MENUS,
+    MOBILE_NAV_ITEMS,
+    USER_MENU_ITEMS,
+  } from '@/constants/navigation'
+
   // ==================== 响应式数据 ====================
   const isMobileMenuOpen = ref(false)
   const isScrolled = ref(false)
   const searchQuery = ref('')
   const mobileSearchQuery = ref('')
 
-  // 获取当前日期字符串
-  const today = computed(() => new Date().toISOString().split('T')[0])
-
-  // 菜单数据结构
-  const navMenus = computed(() => [
-    {
-      label: '首页',
-      to: '/',
-    },
-    {
-      label: '电影',
-      dropdown: [
-        {
-          label: '热门电影',
-          to: '/discover/movie?sort_by=popularity.desc',
-          desc: '最受欢迎的电影',
-        },
-        {
-          label: '即将上映',
-          to: '/discover/movie?sort_by=release_date.asc&with_release_type=2|3',
-          desc: '即将上映的新片',
-        },
-        {
-          label: '正在上映',
-          to: '/discover/movie?sort_by=release_date.desc&with_release_type=2|3',
-          desc: '影院正在放映',
-        },
-        {
-          label: '高分电影',
-          to: '/discover/movie?sort_by=vote_average.desc&vote_average.gte=7',
-          desc: '评分最高的电影',
-        },
-      ],
-    },
-    {
-      label: '电视剧',
-      dropdown: [
-        {
-          label: '热门剧集',
-          to: '/discover/tv?sort_by=popularity.desc',
-          desc: '最受欢迎的电视剧',
-        },
-        {
-          label: '正在播出',
-          to: '/discover/tv?with_status=0',
-          desc: '正在播出的剧集',
-        },
-        {
-          label: '高分剧集',
-          to: '/discover/tv?sort_by=vote_average.desc&vote_average.gte=7',
-          desc: '评分最高的电视剧',
-        },
-        {
-          label: '今日播出',
-          to: `/discover/tv?air_date.gte=${today.value}&air_date.lte=${today.value}`,
-          desc: '今天播出的剧集',
-        },
-      ],
-    },
-    {
-      label: '演员',
-      to: '/actors',
-    },
-    {
-      label: '搜索',
-      to: '/search',
-    },
-  ])
+  // 使用导入的导航数据
+  const navMenus = NAV_MENUS
+  const mobileNavItems = MOBILE_NAV_ITEMS
+  const userMenuItems = USER_MENU_ITEMS
 
   // ==================== 方法 ====================
   const toggleMobileMenu = () => {
     isMobileMenuOpen.value = !isMobileMenuOpen.value
+  }
+
+  const closeMobileMenu = () => {
+    isMobileMenuOpen.value = false
   }
 
   /**
@@ -396,6 +309,9 @@
    * 处理建议选择
    */
   const handleSuggestionSelect = suggestion => {
+    // 关闭移动端菜单（如果是移动端触发的）
+    closeMobileMenu()
+
     // 跳转到对应的详情页面
     if (suggestion.media_type === 'movie') {
       navigateTo(`/movie/${suggestion.id}`)
@@ -412,6 +328,9 @@
   const handleViewAllResults = query => {
     if (!query.trim()) return
 
+    // 关闭移动端菜单（如果是移动端触发的）
+    closeMobileMenu()
+
     // 跳转到搜索页面
     navigateTo({
       path: '/search',
@@ -424,6 +343,9 @@
    */
   const handleMobileSearch = query => {
     if (!query.trim()) return
+
+    // 关闭移动端菜单
+    closeMobileMenu()
 
     // 跳转到搜索页面
     navigateTo({
