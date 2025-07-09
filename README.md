@@ -81,6 +81,18 @@ pnpm format:check && pnpm lint && pnpm stylelint
 <type>(<scope>): <subject>
 ```
 
+### 交互式提交（推荐）
+
+使用 `czg` 工具进行交互式提交：
+
+```bash
+# 添加文件后使用交互式界面
+git add .
+pnpm commit
+```
+
+### 手动提交
+
 示例：
 
 ```bash
