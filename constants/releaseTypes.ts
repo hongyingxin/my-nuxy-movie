@@ -1,7 +1,7 @@
 /**
  * 上映类型常量
  * 用于电影筛选中的上映类型选择
- * 
+ *
  * 参考 TMDB API 文档：
  * 1 = Premiere (首映)
  * 2 = Theatrical (limited) (有限影院上映)
@@ -16,7 +16,7 @@ export const RELEASE_TYPE_NAMES: Record<string, string> = {
   '3|2': '影院上映',
   '4': '数字发行',
   '5': '实体发行',
-  '6': '电视播出'
+  '6': '电视播出',
 }
 
 /**
@@ -29,7 +29,7 @@ export const RELEASE_TYPE_OPTIONS = [
   { value: '3|2', label: '影院上映 (优先)' },
   { value: '4', label: '数字发行' },
   { value: '5', label: '实体发行' },
-  { value: '6', label: '电视播出' }
+  { value: '6', label: '电视播出' },
 ]
 
 /**
@@ -53,4 +53,4 @@ export const THEATRICAL_RELEASE_TYPES = ['2|3', '3|2']
  */
 export const isTheatricalRelease = (code: string): boolean => {
   return THEATRICAL_RELEASE_TYPES.includes(code)
-} 
+}

@@ -4,13 +4,13 @@
  */
 
 export const LANGUAGE_NAMES: Record<string, string> = {
-  'zh': '中文',
-  'en': '英语',
-  'ja': '日语',
-  'ko': '韩语',
-  'fr': '法语',
-  'de': '德语',
-  'es': '西班牙语'
+  zh: '中文',
+  en: '英语',
+  ja: '日语',
+  ko: '韩语',
+  fr: '法语',
+  de: '德语',
+  es: '西班牙语',
 }
 
 /**
@@ -25,7 +25,7 @@ export const LANGUAGE_OPTIONS = [
   { value: 'ko', label: '韩语' },
   { value: 'fr', label: '法语' },
   { value: 'de', label: '德语' },
-  { value: 'es', label: '西班牙语' }
+  { value: 'es', label: '西班牙语' },
 ]
 
 /**
@@ -35,4 +35,4 @@ export const LANGUAGE_OPTIONS = [
  */
 export const getLanguageName = (code: string): string => {
   return LANGUAGE_NAMES[code] || code
-} 
+}

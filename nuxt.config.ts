@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
-  
+
   // 运行时配置
   runtimeConfig: {
     public: {
@@ -11,26 +11,28 @@ export default defineNuxtConfig({
       tmdbImageBaseUrl: process.env.TMDB_IMAGE_BASE_URL,
       appName: 'My Nuxt Movie',
       appDescription: 'A modern movie discovery app built with Nuxt 3',
-    }
+    },
   },
-  
+
   // 模块
   modules: [
     '@nuxtjs/tailwindcss',
     '@nuxt/image',
     '@pinia/nuxt',
-    'pinia-plugin-persistedstate/nuxt'
+    'pinia-plugin-persistedstate/nuxt',
+    '@nuxt/eslint',
+    '@nuxtjs/stylelint-module',
   ],
-  
+
   // CSS
   css: [
     '~/assets/css/tailwind.css',
     'photoswipe/style.css',
     // 'photoswipe/dist/photoswipe.css'
   ],
-  
+
   devtools: { enabled: true },
-  
+
   // 图片配置
   image: {
     // ipx 处理器 需要 domains 配合，但 tmdb 可能限制了域名
@@ -38,7 +40,7 @@ export default defineNuxtConfig({
     // nuxt image 文档 https://image.nuxtjs.org.cn/
     provider: 'ipx',
     // domains: ['image.tmdb.org'],
-    format: ['webp', 'avif', 'jpeg','jpg'],
+    format: ['webp', 'avif', 'jpeg', 'jpg'],
     quality: 80,
     screens: {
       xs: 320,
@@ -47,6 +49,6 @@ export default defineNuxtConfig({
       lg: 1024,
       xl: 1280,
       xxl: 1536,
-    }
-  }
+    },
+  },
 })

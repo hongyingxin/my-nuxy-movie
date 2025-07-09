@@ -21,7 +21,7 @@ import type {
 export function getPersonDetail(personId: number) {
   return useHttp<PersonDetail>({
     url: `/person/${personId}`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -33,7 +33,7 @@ export function getPersonDetail(personId: number) {
 export function getPersonImages(personId: number) {
   return useHttp<PersonImagesResponse>({
     url: `/person/${personId}/images`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -45,7 +45,7 @@ export function getPersonImages(personId: number) {
 export function getPersonCredits(personId: number) {
   return useHttp<PersonCreditsResponse>({
     url: `/person/${personId}/combined_credits`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -57,7 +57,7 @@ export function getPersonCredits(personId: number) {
 export function getPersonMovieCredits(personId: number) {
   return useHttp<PersonMovieCreditsResponse>({
     url: `/person/${personId}/movie_credits`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -69,7 +69,7 @@ export function getPersonMovieCredits(personId: number) {
 export function getPersonTvCredits(personId: number) {
   return useHttp<PersonTvCreditsResponse>({
     url: `/person/${personId}/tv_credits`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -81,7 +81,7 @@ export function getPersonTvCredits(personId: number) {
 export function getPersonExternalIds(personId: number) {
   return useHttp<ExternalIds>({
     url: `/person/${personId}/external_ids`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -94,6 +94,6 @@ export function getPopularPeople(page: number = 1) {
   return useHttp<PersonPaginatedResponse>({
     url: '/person/popular',
     method: 'GET',
-    params: { page }
+    params: { page },
   })
-} 
+}

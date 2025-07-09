@@ -14,4 +14,4 @@ export interface SortOption {
 /**
  * 媒体类型
  */
-export type MediaType = 'movie' | 'tv' 
+export type MediaType = 'movie' | 'tv'

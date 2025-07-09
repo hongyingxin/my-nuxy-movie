@@ -34,7 +34,7 @@ export type {
   SearchResponse,
   MediaItem,
   MediaTitle,
-  MediaReleaseDate
+  MediaReleaseDate,
 } from './common'
 
 // ==================== 电影类型 ====================
@@ -54,7 +54,7 @@ export type {
   MovieChangesResponse,
   MovieAccountStates,
   MovieListItem,
-  MovieListResponse
+  MovieListResponse,
 } from './movie'
 
 // ==================== 电视剧类型 ====================
@@ -76,7 +76,7 @@ export type {
   TvShowChangesResponse,
   TvShowAccountStates,
   TvShowListItem,
-  TvShowListResponse
+  TvShowListResponse,
 } from './tv'
 
 // ==================== 演员类型 ====================
@@ -96,7 +96,7 @@ export type {
   PersonTaggedImage,
   PersonTaggedImagesResponse,
   PersonListItem,
-  PersonListResponse
+  PersonListResponse,
 } from './person'
 
 // ==================== 发现页类型 ====================
@@ -111,14 +111,11 @@ export type {
   GenreFilterParams,
   HighRatedParams,
   LatestParams,
-  UpcomingParams
+  UpcomingParams,
 } from './discover'
 
 // ==================== 排序选项类型 ====================
-export type {
-  SortOption,
-  MediaType as SortMediaType
-} from './sortOptions'
+export type { SortOption, MediaType as SortMediaType } from './sortOptions'
 
 // ==================== 分类类型 ====================
 export type {
@@ -133,7 +130,7 @@ export type {
   GenreMap,
   ReverseGenreMap,
   GenreUtilsParams,
-  GenreFormatResult
+  GenreFormatResult,
 } from './genre'
 
 // ==================== 趋势内容类型 ====================
@@ -145,7 +142,7 @@ export type {
   TrendingCategory,
   TrendingParams,
   TrendingUtilsParams,
-  TrendingGroupResult
+  TrendingGroupResult,
 } from './trending'
 
 // ==================== 搜索类型 ====================
@@ -169,7 +166,7 @@ export type {
   SearchFilterGroup,
   SearchUtilsParams,
   SearchGroupResult,
-  SearchStats
+  SearchStats,
 } from './search'
 
 // ==================== 类型别名 ====================
@@ -182,7 +179,7 @@ export type AllMediaType = 'movie' | 'tv' | 'person'
 /**
  * 所有响应类型的联合类型
  */
-export type AllResponseType = 
+export type AllResponseType =
   | import('./movie').MoviePaginatedResponse
   | import('./tv').TvShowPaginatedResponse
   | import('./person').PersonPaginatedResponse
@@ -192,7 +189,7 @@ export type AllResponseType =
 /**
  * 所有项目类型的联合类型
  */
-export type AllItemType = 
+export type AllItemType =
   | import('./common').MovieItem
   | import('./common').TvShowItem
   | import('./common').PersonItem
@@ -209,12 +206,15 @@ export type ExtractItemType<T> = T extends { results: infer R } ? R : never
 /**
  * 提取分页响应类型中的项目类型
  */
-export type ExtractPaginatedItemType<T> = T extends { results: (infer R)[] } ? R : never
+export type ExtractPaginatedItemType<T> = T extends { results: (infer R)[] }
+  ? R
+  : never
 
 /**
  * 创建可选字段类型
  */
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
+  Partial<Pick<T, K>>
 
 /**
  * 创建必需字段类型
@@ -224,7 +224,8 @@ export type MakeRequired<T, K extends keyof T> = T & Required<Pick<T, K>>
 /**
  * 创建只读字段类型
  */
-export type MakeReadonly<T, K extends keyof T> = Omit<T, K> & Readonly<Pick<T, K>>
+export type MakeReadonly<T, K extends keyof T> = Omit<T, K> &
+  Readonly<Pick<T, K>>
 
 // ==================== 常用组合类型 ====================
 
@@ -292,7 +293,7 @@ export interface BasePaginatedResponse<T> {
   results: T[]
   total_pages: number
   total_results: number
-} 
+}
 
 /**
  * 排序选项类型

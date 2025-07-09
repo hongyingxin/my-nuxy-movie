@@ -2,14 +2,14 @@
  * 电视剧 API 类型定义
  */
 
-import type { 
-  TvShowItem, 
-  TvShowPaginatedResponse, 
-  CreditsResponse, 
-  VideosResponse, 
+import type {
+  TvShowItem,
+  TvShowPaginatedResponse,
+  CreditsResponse,
+  VideosResponse,
   ImagesResponse,
   ExternalIds,
-  Season
+  Season,
 } from './common'
 
 // ==================== 电视剧详情类型 ====================
@@ -308,9 +308,11 @@ export interface TvShowChangesResponse {
 export interface TvShowAccountStates {
   id: number
   favorite: boolean
-  rated: {
-    value: number
-  } | false
+  rated:
+    | {
+        value: number
+      }
+    | false
   watchlist: boolean
 }
 
@@ -356,5 +358,5 @@ export type {
   VideosResponse,
   ImagesResponse,
   ExternalIds,
-  Season
-} 
+  Season,
+}

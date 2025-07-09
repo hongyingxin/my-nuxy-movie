@@ -372,5 +372,7 @@ export type MediaTitle = {
  * 获取媒体发布日期的工具类型
  */
 export type MediaReleaseDate = {
-  [K in MediaType]: K extends 'movie' ? { release_date: string } : { first_air_date: string }
-}[MediaType] 
+  [K in MediaType]: K extends 'movie'
+    ? { release_date: string }
+    : { first_air_date: string }
+}[MediaType]

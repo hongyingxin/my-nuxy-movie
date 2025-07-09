@@ -42,14 +42,14 @@ export const getPopularMovies = (page = 1) => {
   return useHttp<MoviePaginatedResponse>({
     url: '/movie/popular',
     method: 'GET',
-    params: { page }
+    params: { page },
   })
 }
 
 export const getMovieDetail = (id: number) => {
   return useHttp<MovieDetail>({
     url: `/movie/${id}`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 ```
@@ -58,14 +58,14 @@ export const getMovieDetail = (id: number) => {
 
 ```vue
 <script setup lang="ts">
-import type { MovieItem, TvShowItem } from '~/types/apiType'
+  import type { MovieItem, TvShowItem } from '~/types/apiType'
 
-interface Props {
-  movies: MovieItem[]
-  tvShows: TvShowItem[]
-}
+  interface Props {
+    movies: MovieItem[]
+    tvShows: TvShowItem[]
+  }
 
-defineProps<Props>()
+  defineProps<Props>()
 </script>
 ```
 
@@ -187,7 +187,7 @@ const movies = ref<any[]>([])
 export const getMovies = () => {
   return useHttp<MoviePaginatedResponse>({
     url: '/movie/popular',
-    method: 'GET'
+    method: 'GET',
   })
 }
 ```
@@ -225,4 +225,4 @@ const handleMovieClick = (movie: MovieItem) => {
 
 - [TMDB API 文档](https://developer.themoviedb.org/docs)
 - [TypeScript 官方文档](https://www.typescriptlang.org/docs/)
-- [Vue 3 TypeScript 支持](https://vuejs.org/guide/typescript/overview.html) 
+- [Vue 3 TypeScript 支持](https://vuejs.org/guide/typescript/overview.html)

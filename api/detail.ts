@@ -12,7 +12,7 @@ import type {
   ImagesResponse,
   MoviePaginatedResponse,
   TvShowPaginatedResponse,
-  MovieRatingResponse
+  MovieRatingResponse,
 } from '~/types/apiType'
 
 /**
@@ -24,7 +24,7 @@ import type {
 export const getDetail = (mediaType: MediaType, id: number) => {
   return useHttp<MovieDetail | TvShowDetail>({
     url: `/${mediaType}/${id}`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -37,7 +37,7 @@ export const getDetail = (mediaType: MediaType, id: number) => {
 export const getCredits = (mediaType: MediaType, id: number) => {
   return useHttp<CreditsResponse>({
     url: `/${mediaType}/${id}/credits`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -50,7 +50,7 @@ export const getCredits = (mediaType: MediaType, id: number) => {
 export const getVideos = (mediaType: MediaType, id: number) => {
   return useHttp<VideosResponse>({
     url: `/${mediaType}/${id}/videos`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -66,8 +66,8 @@ export const getImages = (mediaType: MediaType, id: number) => {
     method: 'GET',
     params: {
       // include_image_language: 'en,null',
-      language: ''
-    }
+      language: '',
+    },
   })
 }
 
@@ -82,7 +82,7 @@ export const getSimilar = (mediaType: MediaType, id: number, page = 1) => {
   return useHttp<MoviePaginatedResponse | TvShowPaginatedResponse>({
     url: `/${mediaType}/${id}/similar`,
     method: 'GET',
-    params: { page }
+    params: { page },
   })
 }
 
@@ -93,11 +93,15 @@ export const getSimilar = (mediaType: MediaType, id: number, page = 1) => {
  * @param page 页码，默认1
  * @returns 推荐内容列表
  */
-export const getRecommendations = (mediaType: MediaType, id: number, page = 1) => {
+export const getRecommendations = (
+  mediaType: MediaType,
+  id: number,
+  page = 1
+) => {
   return useHttp<MoviePaginatedResponse | TvShowPaginatedResponse>({
     url: `/${mediaType}/${id}/recommendations`,
     method: 'GET',
-    params: { page }
+    params: { page },
   })
 }
 
@@ -115,6 +119,6 @@ export const rateMedia = (mediaType: MediaType, id: number, rating: number) => {
   return useHttp<MovieRatingResponse>({
     url: `/${mediaType}/${id}/rating`,
     method: 'POST',
-    params: { value: rating }
+    params: { value: rating },
   })
-} 
+}

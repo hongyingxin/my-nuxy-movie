@@ -93,50 +93,50 @@ export const TRENDING_CATEGORIES: TrendingCategory[] = [
     timeWindow: 'day',
     mediaType: 'all',
     label: '今日趋势',
-    description: '今日最热门的电影、电视剧和演员'
+    description: '今日最热门的电影、电视剧和演员',
   },
   {
     timeWindow: 'week',
     mediaType: 'all',
     label: '本周趋势',
-    description: '本周最热门的电影、电视剧和演员'
+    description: '本周最热门的电影、电视剧和演员',
   },
   {
     timeWindow: 'day',
     mediaType: 'movie',
     label: '今日热门电影',
-    description: '今日最热门的电影'
+    description: '今日最热门的电影',
   },
   {
     timeWindow: 'week',
     mediaType: 'movie',
     label: '本周热门电影',
-    description: '本周最热门的电影'
+    description: '本周最热门的电影',
   },
   {
     timeWindow: 'day',
     mediaType: 'tv',
     label: '今日热门电视剧',
-    description: '今日最热门的电视剧'
+    description: '今日最热门的电视剧',
   },
   {
     timeWindow: 'week',
     mediaType: 'tv',
     label: '本周热门电视剧',
-    description: '本周最热门的电视剧'
+    description: '本周最热门的电视剧',
   },
   {
     timeWindow: 'day',
     mediaType: 'person',
     label: '今日热门演员',
-    description: '今日最热门的演员'
+    description: '今日最热门的演员',
   },
   {
     timeWindow: 'week',
     mediaType: 'person',
     label: '本周热门演员',
-    description: '本周最热门的演员'
-  }
+    description: '本周最热门的演员',
+  },
 ]
 
 // ==================== 趋势参数类型 ====================
@@ -173,9 +173,4 @@ export interface TrendingGroupResult {
 
 // ==================== 导出类型 ====================
 
-export type {
-  MediaType,
-  MovieItem,
-  TvShowItem,
-  PersonItem
-} 
+export type { MediaType, MovieItem, TvShowItem, PersonItem }

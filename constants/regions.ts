@@ -4,16 +4,16 @@
  */
 
 export const REGION_NAMES: Record<string, string> = {
-  'US': '美国',
-  'CN': '中国', 
-  'JP': '日本',
-  'KR': '韩国',
-  'GB': '英国',
-  'FR': '法国',
-  'DE': '德国',
-  'CA': '加拿大',
-  'AU': '澳大利亚',
-  'IN': '印度'
+  US: '美国',
+  CN: '中国',
+  JP: '日本',
+  KR: '韩国',
+  GB: '英国',
+  FR: '法国',
+  DE: '德国',
+  CA: '加拿大',
+  AU: '澳大利亚',
+  IN: '印度',
 }
 
 /**
@@ -31,7 +31,7 @@ export const REGION_OPTIONS = [
   { value: 'DE', label: '德国' },
   { value: 'CA', label: '加拿大' },
   { value: 'AU', label: '澳大利亚' },
-  { value: 'IN', label: '印度' }
+  { value: 'IN', label: '印度' },
 ]
 
 /**
@@ -41,4 +41,4 @@ export const REGION_OPTIONS = [
  */
 export const getRegionName = (code: string): string => {
   return REGION_NAMES[code] || code
-} 
+}

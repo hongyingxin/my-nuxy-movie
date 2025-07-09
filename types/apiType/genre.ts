@@ -110,4 +110,4 @@ export interface GenreFormatResult {
   full: string
   truncated: boolean
   count: number
-} 
+}

@@ -9,7 +9,7 @@ import type {
   PersonSearchResponse,
   MultiSearchResponse,
   SearchParams,
-  MultiSearchParams
+  MultiSearchParams,
 } from '~/types/apiType'
 
 // ==================== 多类型搜索 ====================
@@ -22,19 +22,23 @@ import type {
  * @param params 额外搜索参数
  * @returns 多类型搜索结果
  */
-export const multiSearch = (query: string, page = 1, params: {
-  include_adult?: boolean
-  language?: string
-  region?: string
-} = {}) => {
+export const multiSearch = (
+  query: string,
+  page = 1,
+  params: {
+    include_adult?: boolean
+    language?: string
+    region?: string
+  } = {}
+) => {
   return useHttp<MultiSearchResponse>({
     url: '/search/multi',
     method: 'GET',
-    params: { 
-      query, 
+    params: {
+      query,
       page,
-      ...params
-    }
+      ...params,
+    },
   })
 }
 
@@ -47,21 +51,25 @@ export const multiSearch = (query: string, page = 1, params: {
  * @param params 额外搜索参数
  * @returns 电影搜索结果
  */
-export const searchMovies = (query: string, page = 1, params: {
-  year?: number
-  include_adult?: boolean
-  language?: string
-  region?: string
-  primary_release_year?: number
-} = {}) => {
+export const searchMovies = (
+  query: string,
+  page = 1,
+  params: {
+    year?: number
+    include_adult?: boolean
+    language?: string
+    region?: string
+    primary_release_year?: number
+  } = {}
+) => {
   return useHttp<MovieSearchResponse>({
     url: '/search/movie',
     method: 'GET',
-    params: { 
-      query, 
+    params: {
+      query,
       page,
-      ...params
-    }
+      ...params,
+    },
   })
 }
 
@@ -72,20 +80,24 @@ export const searchMovies = (query: string, page = 1, params: {
  * @param params 额外搜索参数
  * @returns 电视剧搜索结果
  */
-export const searchTvShows = (query: string, page = 1, params: {
-  first_air_date_year?: number
-  include_adult?: boolean
-  language?: string
-  region?: string
-} = {}) => {
+export const searchTvShows = (
+  query: string,
+  page = 1,
+  params: {
+    first_air_date_year?: number
+    include_adult?: boolean
+    language?: string
+    region?: string
+  } = {}
+) => {
   return useHttp<TvShowSearchResponse>({
     url: '/search/tv',
     method: 'GET',
-    params: { 
-      query, 
+    params: {
+      query,
       page,
-      ...params
-    }
+      ...params,
+    },
   })
 }
 
@@ -96,19 +108,23 @@ export const searchTvShows = (query: string, page = 1, params: {
  * @param params 额外搜索参数
  * @returns 演员搜索结果
  */
-export const searchPeople = (query: string, page = 1, params: {
-  include_adult?: boolean
-  language?: string
-  region?: string
-} = {}) => {
+export const searchPeople = (
+  query: string,
+  page = 1,
+  params: {
+    include_adult?: boolean
+    language?: string
+    region?: string
+  } = {}
+) => {
   return useHttp<PersonSearchResponse>({
     url: '/search/person',
     method: 'GET',
-    params: { 
-      query, 
+    params: {
+      query,
       page,
-      ...params
-    }
+      ...params,
+    },
   })
 }
 
@@ -122,22 +138,29 @@ export const searchPeople = (query: string, page = 1, params: {
  * @param params 额外搜索参数
  * @returns 搜索结果
  */
-export const searchByType = (mediaType: 'movie' | 'tv' | 'person', query: string, page = 1, params: {
-  year?: number
-  first_air_date_year?: number
-  include_adult?: boolean
-  language?: string
-  region?: string
-  primary_release_year?: number
-} = {}) => {
-  return useHttp<MovieSearchResponse | TvShowSearchResponse | PersonSearchResponse>({
+export const searchByType = (
+  mediaType: 'movie' | 'tv' | 'person',
+  query: string,
+  page = 1,
+  params: {
+    year?: number
+    first_air_date_year?: number
+    include_adult?: boolean
+    language?: string
+    region?: string
+    primary_release_year?: number
+  } = {}
+) => {
+  return useHttp<
+    MovieSearchResponse | TvShowSearchResponse | PersonSearchResponse
+  >({
     url: `/search/${mediaType}`,
     method: 'GET',
-    params: { 
-      query, 
+    params: {
+      query,
       page,
-      ...params
-    }
+      ...params,
+    },
   })
 }
 
@@ -153,8 +176,8 @@ export const searchByType = (mediaType: 'movie' | 'tv' | 'person', query: string
  * @returns 过滤后的搜索结果
  */
 export const advancedMultiSearch = async (
-  query: string, 
-  page = 1, 
+  query: string,
+  page = 1,
   mediaTypes: ('movie' | 'tv' | 'person')[] = ['movie', 'tv', 'person'],
   params: {
     year?: number
@@ -171,35 +194,35 @@ export const advancedMultiSearch = async (
 
   // 否则分别搜索指定类型
   const searchPromises = []
-  
+
   if (mediaTypes.includes('movie')) {
     searchPromises.push(
       searchMovies(query, page, {
         year: params.year,
         include_adult: params.include_adult,
         language: params.language,
-        region: params.region
+        region: params.region,
       })
     )
   }
-  
+
   if (mediaTypes.includes('tv')) {
     searchPromises.push(
       searchTvShows(query, page, {
         first_air_date_year: params.first_air_date_year,
         include_adult: params.include_adult,
         language: params.language,
-        region: params.region
+        region: params.region,
       })
     )
   }
-  
+
   if (mediaTypes.includes('person')) {
     searchPromises.push(
       searchPeople(query, page, {
         include_adult: params.include_adult,
         language: params.language,
-        region: params.region
+        region: params.region,
       })
     )
   }
@@ -219,9 +242,9 @@ export const getSearchSuggestions = (query: string, limit = 5) => {
   return useHttp<MultiSearchResponse>({
     url: '/search/multi',
     method: 'GET',
-    params: { 
-      query, 
-      page: 1
-    }
+    params: {
+      query,
+      page: 1,
+    },
   })
-} 
+}

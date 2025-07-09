@@ -10,7 +10,7 @@ import type {
   VideosResponse,
   ImagesResponse,
   SeasonResponse,
-  EpisodeResponse
+  EpisodeResponse,
 } from '~/types/apiType'
 
 /**
@@ -22,7 +22,7 @@ export const getPopularTvShows = (page = 1) => {
   return useHttp<TvShowPaginatedResponse>({
     url: '/tv/popular',
     method: 'GET',
-    params: { page }
+    params: { page },
   })
 }
 
@@ -35,7 +35,7 @@ export const getOnTheAirTvShows = (page = 1) => {
   return useHttp<TvShowPaginatedResponse>({
     url: '/tv/on_the_air',
     method: 'GET',
-    params: { page }
+    params: { page },
   })
 }
 
@@ -48,7 +48,7 @@ export const getAiringTodayTvShows = (page = 1) => {
   return useHttp<TvShowPaginatedResponse>({
     url: '/tv/airing_today',
     method: 'GET',
-    params: { page }
+    params: { page },
   })
 }
 
@@ -61,7 +61,7 @@ export const getTopRatedTvShows = (page = 1) => {
   return useHttp<TvShowPaginatedResponse>({
     url: '/tv/top_rated',
     method: 'GET',
-    params: { page }
+    params: { page },
   })
 }
 
@@ -73,7 +73,7 @@ export const getTopRatedTvShows = (page = 1) => {
 export const getTvShowDetail = (id: number) => {
   return useHttp<TvShowDetail>({
     url: `/tv/${id}`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -87,7 +87,7 @@ export const getSimilarTvShows = (id: number, page = 1) => {
   return useHttp<TvShowPaginatedResponse>({
     url: `/tv/${id}/similar`,
     method: 'GET',
-    params: { page }
+    params: { page },
   })
 }
 
@@ -101,7 +101,7 @@ export const getTvShowRecommendations = (id: number, page = 1) => {
   return useHttp<TvShowPaginatedResponse>({
     url: `/tv/${id}/recommendations`,
     method: 'GET',
-    params: { page }
+    params: { page },
   })
 }
 
@@ -113,7 +113,7 @@ export const getTvShowRecommendations = (id: number, page = 1) => {
 export const getTvShowCredits = (id: number) => {
   return useHttp<CreditsResponse>({
     url: `/tv/${id}/credits`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -125,7 +125,7 @@ export const getTvShowCredits = (id: number) => {
 export const getTvShowVideos = (id: number) => {
   return useHttp<VideosResponse>({
     url: `/tv/${id}/videos`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -137,7 +137,7 @@ export const getTvShowVideos = (id: number) => {
 export const getTvShowImages = (id: number) => {
   return useHttp<ImagesResponse>({
     url: `/tv/${id}/images`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -149,7 +149,7 @@ export const getTvShowImages = (id: number) => {
 export const getTvShowSeasons = (id: number) => {
   return useHttp<TvShowDetail>({
     url: `/tv/${id}`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -162,7 +162,7 @@ export const getTvShowSeasons = (id: number) => {
 export const getSeasonDetail = (tvId: number, seasonNumber: number) => {
   return useHttp<SeasonResponse>({
     url: `/tv/${tvId}/season/${seasonNumber}`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -173,9 +173,13 @@ export const getSeasonDetail = (tvId: number, seasonNumber: number) => {
  * @param episodeNumber 集数
  * @returns 集详情信息
  */
-export const getEpisodeDetail = (tvId: number, seasonNumber: number, episodeNumber: number) => {
+export const getEpisodeDetail = (
+  tvId: number,
+  seasonNumber: number,
+  episodeNumber: number
+) => {
   return useHttp<EpisodeResponse>({
     url: `/tv/${tvId}/season/${seasonNumber}/episode/${episodeNumber}`,
-    method: 'GET'
+    method: 'GET',
   })
-} 
+}

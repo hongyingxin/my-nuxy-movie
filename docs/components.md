@@ -18,12 +18,14 @@ components/
 ## 组件分类
 
 ### 📐 布局组件 (`Layout/`)
+
 定义整体页面结构和布局的组件。
 
 - **Header.vue** - 主导航头部，包含 logo、菜单和搜索
 - **Footer.vue** - 网站底部，包含链接、社交媒体和版权信息
 
 ### 🎨 UI 组件 (`ui/`)
+
 可在整个应用程序中使用的可复用用户界面组件。
 
 - **MovieRating.vue** - 带百分比的圆形评分显示 (未来)
@@ -32,6 +34,7 @@ components/
 - **Loading.vue** - 加载旋转器组件 (未来)
 
 ### 🎬 媒体组件 (`Media/`)
+
 专门与媒体内容相关的组件 (电影、电视剧等)。
 
 - **Card.vue** - 电影/电视剧卡片，包含海报、标题和评分
@@ -43,12 +46,14 @@ components/
 - **Gallery.vue** - 图片画廊组件 (未来)
 
 ### 🔍 搜索组件 (`Search/`)
+
 专门处理搜索功能的组件。
 
 - **SearchBox.vue** - 统一搜索输入框组件，支持头部和搜索页面使用
 - **SearchSuggestions.vue** - 搜索建议组件，显示实时搜索建议
 
 ### ⚡ 骨架屏组件 (`Skeleton/`)
+
 用于显示加载状态的骨架屏组件。
 
 - **Card.vue** - 基础骨架卡片组件
@@ -58,6 +63,7 @@ components/
 - **LoadingState.vue** - 简单加载状态组件
 
 ### 🔧 通用组件 (`Common/`)
+
 不属于其他类别的共享组件。
 
 - **Pagination.vue** - 分页组件，支持多种功能和移动端适配
@@ -75,6 +81,7 @@ components/
 - **通用组件**: `Common[组件名]` (例如: `CommonIcon`)
 
 **Nuxt 3 自动导入规则:**
+
 - 子目录中的组件会自动导入，目录名作为前缀
 - `components/Layout/Header.vue` → `<LayoutHeader />`
 - `components/ui/MovieRating.vue` → `<UiMovieRating />`
@@ -131,15 +138,15 @@ components/
 
 ### 设计模式对比
 
-| 维度 | 外循环模式 | 内循环模式 |
-|------|-----------|-----------|
-| **灵活性** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ |
-| **复用性** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ |
-| **性能** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| **使用简单性** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| **维护性** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ |
-| **布局控制** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ |
-| **推荐指数** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ |
+| 维度           | 外循环模式 | 内循环模式 |
+| -------------- | ---------- | ---------- |
+| **灵活性**     | ⭐⭐⭐⭐⭐ | ⭐⭐⭐     |
+| **复用性**     | ⭐⭐⭐⭐⭐ | ⭐⭐⭐     |
+| **性能**       | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐   |
+| **使用简单性** | ⭐⭐⭐⭐   | ⭐⭐⭐⭐⭐ |
+| **维护性**     | ⭐⭐⭐⭐⭐ | ⭐⭐⭐     |
+| **布局控制**   | ⭐⭐⭐⭐⭐ | ⭐⭐⭐     |
+| **推荐指数**   | ⭐⭐⭐⭐⭐ | ⭐⭐⭐     |
 
 ### 外循环模式的优势
 
@@ -171,6 +178,7 @@ components/
 ### 使用示例
 
 #### 网格布局
+
 ```vue
 <template>
   <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -185,6 +193,7 @@ components/
 ```
 
 #### 列表布局
+
 ```vue
 <template>
   <div class="space-y-4">
@@ -199,6 +208,7 @@ components/
 ```
 
 #### 横向滚动布局
+
 ```vue
 <template>
   <div class="flex gap-4 overflow-x-auto pb-4">
@@ -226,8 +236,8 @@ components/
 <!-- 媒体组件 -->
 <MediaCard :item="movie" :is-movie="true" />
 <MediaListItem :item="movie" :is-movie="true" />
-<MediaPageHeader 
-  :backdrop_path="movie.backdrop_path" 
+<MediaPageHeader
+  :backdrop_path="movie.backdrop_path"
   :title="movie.title"
   :back-to="'/movies'"
 />
@@ -320,35 +330,35 @@ components/
 
 #### Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `currentPage` | `Number` | - | 当前页码 (必填) |
-| `totalPages` | `Number` | - | 总页数 (必填) |
-| `totalResults` | `Number` | `0` | 总结果数 |
-| `scrollToTop` | `Boolean` | `true` | 是否自动滚动到顶部 |
-| `showFirstLast` | `Boolean` | `false` | 是否显示首页/末页按钮 |
-| `showQuickJump` | `Boolean` | `false` | 是否显示快速跳转 |
-| `showPageSize` | `Boolean` | `false` | 是否显示每页条数选择 |
-| `pageSize` | `Number` | `20` | 当前每页条数 |
-| `pageSizeOptions` | `Array` | `[10, 20, 50, 100]` | 每页条数选项 |
-| `maxVisiblePages` | `Number` | `7` | 最大显示页码数量 |
+| 属性              | 类型      | 默认值              | 说明                  |
+| ----------------- | --------- | ------------------- | --------------------- |
+| `currentPage`     | `Number`  | -                   | 当前页码 (必填)       |
+| `totalPages`      | `Number`  | -                   | 总页数 (必填)         |
+| `totalResults`    | `Number`  | `0`                 | 总结果数              |
+| `scrollToTop`     | `Boolean` | `true`              | 是否自动滚动到顶部    |
+| `showFirstLast`   | `Boolean` | `false`             | 是否显示首页/末页按钮 |
+| `showQuickJump`   | `Boolean` | `false`             | 是否显示快速跳转      |
+| `showPageSize`    | `Boolean` | `false`             | 是否显示每页条数选择  |
+| `pageSize`        | `Number`  | `20`                | 当前每页条数          |
+| `pageSizeOptions` | `Array`   | `[10, 20, 50, 100]` | 每页条数选项          |
+| `maxVisiblePages` | `Number`  | `7`                 | 最大显示页码数量      |
 
 #### Events
 
-| 事件名 | 参数 | 说明 |
-|--------|------|------|
-| `page-change` | `(page: number)` | 页码变化时触发 |
+| 事件名             | 参数                 | 说明               |
+| ------------------ | -------------------- | ------------------ |
+| `page-change`      | `(page: number)`     | 页码变化时触发     |
 | `page-size-change` | `(pageSize: number)` | 每页条数变化时触发 |
 
 #### 插槽
 
-| 插槽名 | 作用域参数 | 说明 |
-|--------|------------|------|
-| `first-text` | - | 首页按钮文本 |
-| `prev-text` | - | 上一页按钮文本 |
-| `next-text` | - | 下一页按钮文本 |
-| `last-text` | - | 末页按钮文本 |
-| `summary` | `{ current, total, totalResults }` | 统计信息 |
+| 插槽名       | 作用域参数                         | 说明           |
+| ------------ | ---------------------------------- | -------------- |
+| `first-text` | -                                  | 首页按钮文本   |
+| `prev-text`  | -                                  | 上一页按钮文本 |
+| `next-text`  | -                                  | 下一页按钮文本 |
+| `last-text`  | -                                  | 末页按钮文本   |
+| `summary`    | `{ current, total, totalResults }` | 统计信息       |
 
 #### 移动端适配
 
@@ -391,13 +401,13 @@ components/
 
 ```javascript
 // 页面跳转处理
-const handlePageChange = (page) => {
+const handlePageChange = page => {
   currentPage.value = page
   // 组件会自动处理滚动到顶部
 }
 
 // 每页条数变化处理
-const handlePageSizeChange = (newPageSize) => {
+const handlePageSizeChange = newPageSize => {
   pageSize.value = newPageSize
   currentPage.value = 1 // 重置到第一页
   // 重新获取数据
@@ -411,19 +421,16 @@ const handlePageSizeChange = (newPageSize) => {
 #### 基础使用
 
 ```vue
-<MediaCard
-  :item="movie"
-  :is-movie="true"
-/>
+<MediaCard :item="movie" :is-movie="true" />
 ```
 
 #### Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `item` | `Object` | - | 媒体项目数据 (必填) |
-| `is-movie` | `Boolean` | `false` | 是否为电影类型 |
-| `status` | `String` | - | 状态标识 (upcoming, on-air 等) |
+| 属性       | 类型      | 默认值  | 说明                           |
+| ---------- | --------- | ------- | ------------------------------ |
+| `item`     | `Object`  | -       | 媒体项目数据 (必填)            |
+| `is-movie` | `Boolean` | `false` | 是否为电影类型                 |
+| `status`   | `String`  | -       | 状态标识 (upcoming, on-air 等) |
 
 ### SkeletonGrid 骨架屏网格组件
 
@@ -432,20 +439,16 @@ const handlePageSizeChange = (newPageSize) => {
 #### 基础使用
 
 ```vue
-<SkeletonGrid 
-  :count="12"
-  variant="movie"
-  :cols="{ sm: 2, md: 4, lg: 6 }"
-/>
+<SkeletonGrid :count="12" variant="movie" :cols="{ sm: 2, md: 4, lg: 6 }" />
 ```
 
 #### Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `count` | `Number` | `6` | 骨架卡片数量 |
-| `variant` | `String` | `movie` | 变体类型 (movie, tv, actor) |
-| `cols` | `Object` | `{ sm: 2, md: 3, lg: 4 }` | 响应式列数配置 |
+| 属性      | 类型     | 默认值                    | 说明                        |
+| --------- | -------- | ------------------------- | --------------------------- |
+| `count`   | `Number` | `6`                       | 骨架卡片数量                |
+| `variant` | `String` | `movie`                   | 变体类型 (movie, tv, actor) |
+| `cols`    | `Object` | `{ sm: 2, md: 3, lg: 4 }` | 响应式列数配置              |
 
 ### MediaPageHeader 媒体页面头部组件
 
@@ -454,8 +457,8 @@ const handlePageSizeChange = (newPageSize) => {
 #### 基础使用
 
 ```vue
-<MediaPageHeader 
-  :backdrop_path="movie.backdrop_path" 
+<MediaPageHeader
+  :backdrop_path="movie.backdrop_path"
   :title="movie.title"
   :back-to="'/movies'"
 />
@@ -463,11 +466,11 @@ const handlePageSizeChange = (newPageSize) => {
 
 #### Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `backdrop_path` | `String` | - | 背景图片路径 |
-| `title` | `String` | - | 页面标题 |
-| `back-to` | `String` | - | 返回链接 |
+| 属性            | 类型     | 默认值 | 说明         |
+| --------------- | -------- | ------ | ------------ |
+| `backdrop_path` | `String` | -      | 背景图片路径 |
+| `title`         | `String` | -      | 页面标题     |
+| `back-to`       | `String` | -      | 返回链接     |
 
 ### SkeletonList 骨架屏列表组件
 
@@ -476,17 +479,14 @@ const handlePageSizeChange = (newPageSize) => {
 #### 基础使用
 
 ```vue
-<SkeletonList 
-  :count="15"
-  variant="actor"
-/>
+<SkeletonList :count="15" variant="actor" />
 ```
 
 #### Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `count` | `Number` | `10` | 骨架项数量 |
+| 属性      | 类型     | 默认值    | 说明                        |
+| --------- | -------- | --------- | --------------------------- |
+| `count`   | `Number` | `10`      | 骨架项数量                  |
 | `variant` | `String` | `default` | 变体类型 (actor, movie, tv) |
 
 ### SkeletonLoadingState 简单加载状态组件
@@ -501,8 +501,8 @@ const handlePageSizeChange = (newPageSize) => {
 
 #### Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
+| 属性      | 类型     | 默认值      | 说明         |
+| --------- | -------- | ----------- | ------------ |
 | `message` | `String` | `加载中...` | 加载提示信息 |
 
 ### MediaRating 媒体评分组件
@@ -517,11 +517,11 @@ const handlePageSizeChange = (newPageSize) => {
 
 #### Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `score` | `Number` | - | 评分分数 (0-10) |
-| `showText` | `Boolean` | `true` | 是否显示文字评分 |
-| `size` | `String` | `medium` | 组件尺寸 (small, medium, large) |
+| 属性       | 类型      | 默认值   | 说明                            |
+| ---------- | --------- | -------- | ------------------------------- |
+| `score`    | `Number`  | -        | 评分分数 (0-10)                 |
+| `showText` | `Boolean` | `true`   | 是否显示文字评分                |
+| `size`     | `String`  | `medium` | 组件尺寸 (small, medium, large) |
 
 ### SearchBox 搜索框组件
 
@@ -556,24 +556,24 @@ const handlePageSizeChange = (newPageSize) => {
 
 #### Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `modelValue` | `String` | `''` | 搜索关键词（v-model） |
-| `placeholder` | `String` | `'搜索电影、电视剧、演员...'` | 输入框占位符 |
-| `inputClass` | `String` | 默认样式类 | 输入框样式类 |
-| `showSearchButton` | `Boolean` | `true` | 是否显示搜索按钮 |
-| `showSuggestions` | `Boolean` | `true` | 是否显示搜索建议 |
-| `debounceDelay` | `Number` | `300` | 防抖延迟时间（毫秒） |
-| `suggestionLimit` | `Number` | `5` | 建议数量限制 |
+| 属性               | 类型      | 默认值                        | 说明                  |
+| ------------------ | --------- | ----------------------------- | --------------------- |
+| `modelValue`       | `String`  | `''`                          | 搜索关键词（v-model） |
+| `placeholder`      | `String`  | `'搜索电影、电视剧、演员...'` | 输入框占位符          |
+| `inputClass`       | `String`  | 默认样式类                    | 输入框样式类          |
+| `showSearchButton` | `Boolean` | `true`                        | 是否显示搜索按钮      |
+| `showSuggestions`  | `Boolean` | `true`                        | 是否显示搜索建议      |
+| `debounceDelay`    | `Number`  | `300`                         | 防抖延迟时间（毫秒）  |
+| `suggestionLimit`  | `Number`  | `5`                           | 建议数量限制          |
 
 #### Events
 
-| 事件名 | 参数 | 说明 |
-|--------|------|------|
-| `update:modelValue` | `(value: string)` | 搜索关键词更新 |
-| `search` | `(query: string)` | 执行搜索 |
-| `suggestion-select` | `(suggestion: object)` | 选择搜索建议 |
-| `view-all-results` | `(query: string)` | 查看所有搜索结果 |
+| 事件名              | 参数                   | 说明             |
+| ------------------- | ---------------------- | ---------------- |
+| `update:modelValue` | `(value: string)`      | 搜索关键词更新   |
+| `search`            | `(query: string)`      | 执行搜索         |
+| `suggestion-select` | `(suggestion: object)` | 选择搜索建议     |
+| `view-all-results`  | `(query: string)`      | 查看所有搜索结果 |
 
 #### 功能特性
 
@@ -601,30 +601,30 @@ const handlePageSizeChange = (newPageSize) => {
 
 #### Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
+| 属性              | 类型      | 默认值  | 说明         |
+| ----------------- | --------- | ------- | ------------ |
 | `showSuggestions` | `Boolean` | `false` | 是否显示建议 |
-| `suggestions` | `Array` | `[]` | 建议数据数组 |
-| `totalResults` | `Number` | `0` | 总结果数 |
+| `suggestions`     | `Array`   | `[]`    | 建议数据数组 |
+| `totalResults`    | `Number`  | `0`     | 总结果数     |
 
 #### Events
 
-| 事件名 | 参数 | 说明 |
-|--------|------|------|
-| `select-suggestion` | `(suggestion: object)` | 选择建议项 |
-| `view-all-results` | `(query: string)` | 查看所有结果 |
+| 事件名              | 参数                   | 说明         |
+| ------------------- | ---------------------- | ------------ |
+| `select-suggestion` | `(suggestion: object)` | 选择建议项   |
+| `view-all-results`  | `(query: string)`      | 查看所有结果 |
 
 #### 建议数据结构
 
 ```typescript
 interface SearchSuggestion {
   id: number
-  title?: string          // 电影/电视剧标题
-  name?: string           // 演员姓名
+  title?: string // 电影/电视剧标题
+  name?: string // 演员姓名
   media_type: 'movie' | 'tv' | 'person'
-  poster_path?: string    // 海报路径
-  profile_path?: string   // 头像路径
-  release_date?: string   // 发布日期
+  poster_path?: string // 海报路径
+  profile_path?: string // 头像路径
+  release_date?: string // 发布日期
   first_air_date?: string // 首播日期
   known_for_department?: string // 演员部门
 }
@@ -643,6 +643,7 @@ interface SearchSuggestion {
 根据项目中的实际使用情况，以下是各组件的使用频率：
 
 ### 高频使用组件
+
 - **MediaCard** - 在首页、发现页、详情页等广泛使用
 - **SkeletonGrid** - 在首页、发现页等数据加载时使用
 - **CommonPagination** - 在演员列表页、发现页等分页场景使用
@@ -650,6 +651,7 @@ interface SearchSuggestion {
 - **SearchBox** - 在头部导航和搜索页面使用
 
 ### 中频使用组件
+
 - **MediaPageHeader** - 在详情页子页面中使用
 - **SkeletonList** - 在演职员页面使用
 - **SkeletonLoadingState** - 在详情页和演员详情页使用
@@ -657,55 +659,61 @@ interface SearchSuggestion {
 - **SearchSuggestions** - 在搜索框下方显示建议
 
 ### 低频使用组件
+
 - **MediaRating** - 在 MediaCard 内部使用
 - **SkeletonListItem** - 在发现页列表视图加载时使用
 
 ## 组件开发规范
 
 ### 1. 文件命名
+
 - 使用 PascalCase 命名组件文件
 - 文件名应该与组件名一致
 - 目录名使用 PascalCase
 
 ### 2. 组件结构
+
 ```vue
 <template>
   <!-- 模板内容 -->
 </template>
 
 <script setup>
-// 导入依赖
-import { ref, computed } from 'vue'
+  // 导入依赖
+  import { ref, computed } from 'vue'
 
-// Props 定义
-const props = defineProps({
-  // props 定义
-})
+  // Props 定义
+  const props = defineProps({
+    // props 定义
+  })
 
-// Emits 定义
-const emit = defineEmits([
-  // events 定义
-])
+  // Emits 定义
+  const emit = defineEmits([
+    // events 定义
+  ])
 
-// 组件逻辑
+  // 组件逻辑
 </script>
 
 <style scoped>
-/* 组件样式 */
+  /* 组件样式 */
 </style>
 ```
 
 ### 3. Props 规范
+
 - 使用 `defineProps` 定义 props
 - 为每个 prop 提供类型和默认值
 - 添加 JSDoc 注释说明用途
 
 ### 4. 事件规范
+
 - 使用 `defineEmits` 定义事件
 - 事件名使用 kebab-case
 - 提供事件参数的类型说明
 
 ### 5. 样式规范
+
 - 使用 `scoped` 样式避免污染
 - 优先使用 Tailwind CSS 类
 - 复杂样式使用 CSS 变量
@@ -713,6 +721,7 @@ const emit = defineEmits([
 ## 未来规划
 
 ### 计划新增组件
+
 - **UiButton** - 通用按钮组件
 - **UiModal** - 模态框组件
 - **UiTooltip** - 工具提示组件
@@ -722,8 +731,9 @@ const emit = defineEmits([
 - **CommonBreadcrumb** - 面包屑导航组件
 
 ### 组件优化计划
+
 - 完善组件的 TypeScript 类型定义
 - 添加组件的单元测试
 - 优化组件的性能表现
 - 增强组件的可访问性
-- 完善组件的文档说明 
+- 完善组件的文档说明

@@ -13,4 +13,4 @@ export * from './releaseTypes'
 export * from './languages'
 
 // 排序选项相关常量
-export * from './sortOptions' 
+export * from './sortOptions'

@@ -15,6 +15,7 @@ pnpm run dev
 ## 📚 开发指南
 
 **⚠️ 重要提示**: 在编写代码之前，请始终查看 [docs/common-patterns.md](./docs/common-patterns.md) 了解：
+
 - 包管理器使用方式 (pnpm)
 - PhotoSwipe 集成模式
 - API 请求模式
@@ -28,6 +29,42 @@ pnpm run dev
 - **样式**: Tailwind CSS
 - **包管理器**: pnpm
 - **图片画廊**: PhotoSwipe 5.x
+
+## 🎯 代码质量工具
+
+本项目配置了完整的代码质量工具链，确保代码风格一致和高质量：
+
+### 工具配置
+
+- **Prettier**: 代码格式化
+- **ESLint**: JavaScript/TypeScript 代码检查
+- **Stylelint**: CSS/SCSS 代码检查
+
+### 快速使用
+
+```bash
+# 格式化代码
+pnpm format
+
+# 检查并修复代码问题
+pnpm lint:fix
+
+# 检查并修复样式问题
+pnpm stylelint:fix
+
+# 检查所有代码质量
+pnpm format:check && pnpm lint && pnpm stylelint
+```
+
+### 编辑器配置
+
+项目包含 VSCode 工作区配置，确保团队成员有一致的开发体验：
+
+- 自动格式化（保存时）
+- 实时错误提示
+- 自动修复功能
+
+**详细配置说明**: 查看 [docs/code-quality-tools.md](./docs/code-quality-tools.md)
 
 ## 📁 项目结构
 
@@ -75,6 +112,7 @@ my-nuxt-movie/
 │   ├── common-patterns.md  # 通用模式和最佳实践
 │   ├── components.md       # 组件文档
 │   ├── code-standards.md   # 代码规范
+│   ├── code-quality-tools.md # 代码质量工具配置
 │   └── api-typescript-improvements.md # API TypeScript 改进
 ├── 📁 pages/                # Nuxt 页面
 │   ├── 📁 actors/          # 演员相关页面
@@ -111,6 +149,9 @@ my-nuxt-movie/
 │   ├── common.ts           # 通用工具函数
 │   ├── department.ts       # 部门翻译工具
 │   └── image.ts            # 图片处理工具
+├── 📁 .vscode/             # VSCode 工作区配置
+│   ├── settings.json       # 编辑器设置
+│   └── extensions.json     # 推荐扩展
 ├── 📄 app.vue              # 应用根组件
 ├── 📄 nuxt.config.ts       # Nuxt 配置文件
 ├── 📄 package.json         # 项目依赖配置
@@ -123,6 +164,7 @@ my-nuxt-movie/
 ## 🔗 有用链接
 
 - [常用模式和最佳实践](./docs/common-patterns.md)
+- [代码质量工具配置](./docs/code-quality-tools.md)
 - [API 文档](./docs/api.md)
 - [组件库](./docs/components.md)
 - [API 类型定义](./types/apiType/README.md)

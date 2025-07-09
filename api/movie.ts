@@ -9,7 +9,7 @@ import type {
   CreditsResponse,
   VideosResponse,
   ImagesResponse,
-  MovieRatingResponse
+  MovieRatingResponse,
 } from '~/types/apiType'
 
 /**
@@ -21,7 +21,7 @@ export const getPopularMovies = (page = 1) => {
   return useHttp<MoviePaginatedResponse>({
     url: '/movie/popular',
     method: 'GET',
-    params: { page }
+    params: { page },
   })
 }
 
@@ -34,7 +34,7 @@ export const getNowPlayingMovies = (page = 1) => {
   return useHttp<MoviePaginatedResponse>({
     url: '/movie/now_playing',
     method: 'GET',
-    params: { page }
+    params: { page },
   })
 }
 
@@ -47,7 +47,7 @@ export const getUpcomingMovies = (page = 1) => {
   return useHttp<MoviePaginatedResponse>({
     url: '/movie/upcoming',
     method: 'GET',
-    params: { page }
+    params: { page },
   })
 }
 
@@ -60,7 +60,7 @@ export const getTopRatedMovies = (page = 1) => {
   return useHttp<MoviePaginatedResponse>({
     url: '/movie/top_rated',
     method: 'GET',
-    params: { page }
+    params: { page },
   })
 }
 
@@ -72,7 +72,7 @@ export const getTopRatedMovies = (page = 1) => {
 export const getMovieDetail = (id: number) => {
   return useHttp<MovieDetail>({
     url: `/movie/${id}`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -86,7 +86,7 @@ export const getSimilarMovies = (id: number, page = 1) => {
   return useHttp<MoviePaginatedResponse>({
     url: `/movie/${id}/similar`,
     method: 'GET',
-    params: { page }
+    params: { page },
   })
 }
 
@@ -100,7 +100,7 @@ export const getMovieRecommendations = (id: number, page = 1) => {
   return useHttp<MoviePaginatedResponse>({
     url: `/movie/${id}/recommendations`,
     method: 'GET',
-    params: { page }
+    params: { page },
   })
 }
 
@@ -112,7 +112,7 @@ export const getMovieRecommendations = (id: number, page = 1) => {
 export const getMovieCredits = (id: number) => {
   return useHttp<CreditsResponse>({
     url: `/movie/${id}/credits`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -124,7 +124,7 @@ export const getMovieCredits = (id: number) => {
 export const getMovieVideos = (id: number) => {
   return useHttp<VideosResponse>({
     url: `/movie/${id}/videos`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -136,7 +136,7 @@ export const getMovieVideos = (id: number) => {
 export const getMovieImages = (id: number) => {
   return useHttp<ImagesResponse>({
     url: `/movie/${id}/images`,
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -150,6 +150,6 @@ export const rateMovie = (id: number, rating: number) => {
   return useHttp<MovieRatingResponse>({
     url: `/movie/${id}/rating`,
     method: 'POST',
-    params: { value: rating }
+    params: { value: rating },
   })
-} 
+}

@@ -7,7 +7,7 @@ import type {
   TrendingResponse,
   TrendingParams,
   TrendingMediaType,
-  TrendingTimeWindow
+  TrendingTimeWindow,
 } from '~/types/apiType'
 
 /**
@@ -19,7 +19,7 @@ export const getAllTrending = (params: TrendingParams = {}) => {
   return useHttp<TrendingResponse>({
     url: '/trending/all/day',
     method: 'GET',
-    params
+    params,
   })
 }
 
@@ -32,7 +32,7 @@ export const getMovieTrending = (page = 1) => {
   return useHttp<TrendingResponse>({
     url: '/trending/movie/day',
     method: 'GET',
-    params: { page }
+    params: { page },
   })
 }
 
@@ -45,7 +45,7 @@ export const getTvTrending = (page = 1) => {
   return useHttp<TrendingResponse>({
     url: '/trending/tv/day',
     method: 'GET',
-    params: { page }
+    params: { page },
   })
 }
 
@@ -58,7 +58,7 @@ export const getPersonTrending = (page = 1) => {
   return useHttp<TrendingResponse>({
     url: '/trending/person/day',
     method: 'GET',
-    params: { page }
+    params: { page },
   })
 }
 
@@ -68,11 +68,14 @@ export const getPersonTrending = (page = 1) => {
  * @param page 页码，默认1
  * @returns 周趋势列表
  */
-export const getWeeklyTrending = (mediaType: TrendingMediaType = 'all', page = 1) => {
+export const getWeeklyTrending = (
+  mediaType: TrendingMediaType = 'all',
+  page = 1
+) => {
   return useHttp<TrendingResponse>({
     url: `/trending/${mediaType}/week`,
     method: 'GET',
-    params: { page }
+    params: { page },
   })
 }
 
@@ -83,10 +86,14 @@ export const getWeeklyTrending = (mediaType: TrendingMediaType = 'all', page = 1
  * @param page 页码，默认1
  * @returns 趋势内容列表
  */
-export const getTrending = (mediaType: TrendingMediaType, timeWindow: TrendingTimeWindow, page = 1) => {
+export const getTrending = (
+  mediaType: TrendingMediaType,
+  timeWindow: TrendingTimeWindow,
+  page = 1
+) => {
   return useHttp<TrendingResponse>({
     url: `/trending/${mediaType}/${timeWindow}`,
     method: 'GET',
-    params: { page }
+    params: { page },
   })
-} 
+}

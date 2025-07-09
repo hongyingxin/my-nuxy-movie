@@ -274,8 +274,4 @@ export interface SearchStats {
 
 // ==================== 导出类型 ====================
 
-export type {
-  MovieItem,
-  TvShowItem,
-  PersonItem
-} 
+export type { MovieItem, TvShowItem, PersonItem }

@@ -49,7 +49,7 @@ export interface InfiniteScrollReturn {
 
 /**
  * 无限滚动组合式函数
- * 
+ *
  * @param loadCallback 加载数据的回调函数，接收页码参数
  * @param totalItems 总数据量，支持数字或响应式引用
  * @param options 配置选项
@@ -70,21 +70,22 @@ export function useInfiniteScroll(
     root = null,
     debounceDelay = 100,
     enableScrollListener = true,
-    scrollThreshold = 200
+    scrollThreshold = 200,
   } = options
 
   // 响应式状态
-  const currentPage = ref(1)                    // 当前页码
-  const isLoading = ref(false)                  // 是否正在加载
-  const hasMore = ref(true)                     // 是否还有更多数据
+  const currentPage = ref(1) // 当前页码
+  const isLoading = ref(false) // 是否正在加载
+  const hasMore = ref(true) // 是否还有更多数据
   const observerTarget = ref<HTMLElement | null>(null) // 观察器目标元素
 
   // 内部状态和实例
-  let observer: IntersectionObserver | null = null        // Intersection Observer 实例
-  let scrollListener: (() => void) | null = null          // 滚动事件监听器
+  let observer: IntersectionObserver | null = null // Intersection Observer 实例
+  let scrollListener: (() => void) | null = null // 滚动事件监听器
 
   // 将 totalItems 转换为响应式引用，支持数字和响应式引用两种类型
-  const totalItemsRef = typeof totalItems === 'number' ? ref(totalItems) : totalItems
+  const totalItemsRef =
+    typeof totalItems === 'number' ? ref(totalItems) : totalItems
 
   /**
    * 计算是否还有更多数据
@@ -113,7 +114,7 @@ export function useInfiniteScroll(
 
       // 调用加载回调函数
       await loadCallback(currentPage.value + 1)
-      
+
       // 更新页码并检查是否还有更多数据
       currentPage.value++
       checkHasMore()
@@ -189,17 +190,25 @@ export function useInfiniteScroll(
       if (!hasMore.value || isLoading.value || !enabled) return
 
       // 确定滚动容器（支持自定义容器或默认使用 window）
-      const scrollElement = root ? 
-        (typeof root === 'string' ? document.querySelector(root) : root) : 
-        window
+      const scrollElement = root
+        ? typeof root === 'string'
+          ? document.querySelector(root)
+          : root
+        : window
 
       if (!scrollElement) return
 
       // 计算滚动位置
       const isWindow = scrollElement === window
-      const scrollTop = isWindow ? window.pageYOffset : (scrollElement as Element).scrollTop
-      const scrollHeight = isWindow ? document.documentElement.scrollHeight : (scrollElement as Element).scrollHeight
-      const clientHeight = isWindow ? window.innerHeight : (scrollElement as Element).clientHeight
+      const scrollTop = isWindow
+        ? window.pageYOffset
+        : (scrollElement as Element).scrollTop
+      const scrollHeight = isWindow
+        ? document.documentElement.scrollHeight
+        : (scrollElement as Element).scrollHeight
+      const clientHeight = isWindow
+        ? window.innerHeight
+        : (scrollElement as Element).clientHeight
 
       // 检查是否接近底部，触发加载
       if (scrollTop + clientHeight >= scrollHeight - scrollThreshold) {
@@ -208,13 +217,17 @@ export function useInfiniteScroll(
     }
 
     // 添加滚动事件监听器
-    const scrollElement = root ? 
-      (typeof root === 'string' ? document.querySelector(root) : window) : 
-      window
+    const scrollElement = root
+      ? typeof root === 'string'
+        ? document.querySelector(root)
+        : window
+      : window
 
     if (scrollElement) {
       // 使用 passive: true 提高性能
-      scrollElement.addEventListener('scroll', scrollListener, { passive: true })
+      scrollElement.addEventListener('scroll', scrollListener, {
+        passive: true,
+      })
     }
   }
 
@@ -224,9 +237,11 @@ export function useInfiniteScroll(
    */
   const cleanupScrollListener = () => {
     if (scrollListener) {
-      const scrollElement = root ? 
-        (typeof root === 'string' ? document.querySelector(root) : window) : 
-        window
+      const scrollElement = root
+        ? typeof root === 'string'
+          ? document.querySelector(root)
+          : window
+        : window
 
       if (scrollElement) {
         scrollElement.removeEventListener('scroll', scrollListener)
@@ -249,8 +264,8 @@ export function useInfiniteScroll(
 
     // 创建新的 Intersection Observer
     observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
+      entries => {
+        entries.forEach(entry => {
           // 当目标元素可见且有更多数据且未在加载时，触发加载
           if (entry.isIntersecting && hasMore.value && !isLoading.value) {
             debouncedLoadMore()
@@ -258,9 +273,13 @@ export function useInfiniteScroll(
         })
       },
       {
-        root: root ? (typeof root === 'string' ? document.querySelector(root) : root) : null,
+        root: root
+          ? typeof root === 'string'
+            ? document.querySelector(root)
+            : root
+          : null,
         rootMargin: getDynamicRootMargin(),
-        threshold: Array.isArray(threshold) ? threshold : [threshold] // 支持多个阈值
+        threshold: Array.isArray(threshold) ? threshold : [threshold], // 支持多个阈值
       }
     )
 
@@ -287,7 +306,7 @@ export function useInfiniteScroll(
       observer.disconnect()
       observer = null
     }
-    
+
     // 清理滚动监听器
     cleanupScrollListener()
   })
@@ -301,6 +320,6 @@ export function useInfiniteScroll(
     loadMore,
     reset,
     setHasMore,
-    setCurrentPage
+    setCurrentPage,
   }
-} 
+}

@@ -2,13 +2,13 @@
  * 电影 API 类型定义
  */
 
-import type { 
-  MovieItem, 
-  MoviePaginatedResponse, 
-  CreditsResponse, 
-  VideosResponse, 
+import type {
+  MovieItem,
+  MoviePaginatedResponse,
+  CreditsResponse,
+  VideosResponse,
   ImagesResponse,
-  ExternalIds 
+  ExternalIds,
 } from './common'
 
 // ==================== 电影详情类型 ====================
@@ -211,9 +211,11 @@ export interface MovieChangesResponse {
 export interface MovieAccountStates {
   id: number
   favorite: boolean
-  rated: {
-    value: number
-  } | false
+  rated:
+    | {
+        value: number
+      }
+    | false
   watchlist: boolean
 }
 
@@ -258,5 +260,5 @@ export type {
   CreditsResponse,
   VideosResponse,
   ImagesResponse,
-  ExternalIds
-} 
+  ExternalIds,
+}

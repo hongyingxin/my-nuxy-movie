@@ -7,7 +7,7 @@ import type {
   MovieGenreResponse,
   TvGenreResponse,
   MovieDiscoverResponse,
-  TvShowDiscoverResponse
+  TvShowDiscoverResponse,
 } from '~/types/apiType'
 
 /**
@@ -17,7 +17,7 @@ import type {
 export const getMovieGenres = () => {
   return useHttp<MovieGenreResponse>({
     url: '/genre/movie/list',
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -28,7 +28,7 @@ export const getMovieGenres = () => {
 export const getTvGenres = () => {
   return useHttp<TvGenreResponse>({
     url: '/genre/tv/list',
-    method: 'GET'
+    method: 'GET',
   })
 }
 
@@ -42,10 +42,10 @@ export const getMoviesByGenre = (genreId: number, page = 1) => {
   return useHttp<MovieDiscoverResponse>({
     url: '/discover/movie',
     method: 'GET',
-    params: { 
+    params: {
       with_genres: genreId,
-      page 
-    }
+      page,
+    },
   })
 }
 
@@ -59,9 +59,9 @@ export const getTvShowsByGenre = (genreId: number, page = 1) => {
   return useHttp<TvShowDiscoverResponse>({
     url: '/discover/tv',
     method: 'GET',
-    params: { 
+    params: {
       with_genres: genreId,
-      page 
-    }
+      page,
+    },
   })
-} 
+}

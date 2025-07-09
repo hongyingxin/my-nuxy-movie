@@ -2,13 +2,13 @@
  * 演员 API 类型定义
  */
 
-import type { 
-  PersonItem, 
-  PersonPaginatedResponse, 
+import type {
+  PersonItem,
+  PersonPaginatedResponse,
   PersonDetail,
   PersonImagesResponse,
   ExternalIds,
-  MediaType
+  MediaType,
 } from './common'
 
 // ==================== 演员作品类型 ====================
@@ -310,5 +310,5 @@ export type {
   PersonDetail,
   PersonImagesResponse,
   ExternalIds,
-  MediaType
-} 
+  MediaType,
+}

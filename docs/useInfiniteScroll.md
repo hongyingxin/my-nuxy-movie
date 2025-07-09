@@ -11,7 +11,7 @@
     <div v-for="item in currentItems" :key="item.id">
       {{ item.name }}
     </div>
-    
+
     <!-- 无限滚动指示器 -->
     <div v-if="hasMore" ref="observerTarget" class="text-center py-4">
       <div v-if="isLoading">加载中...</div>
@@ -21,32 +21,26 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+  import { computed } from 'vue'
 
-// 使用无限滚动
-const {
-  currentPage,
-  isLoading,
-  hasMore,
-  observerTarget,
-  loadMore,
-  reset
-} = useInfiniteScroll(
-  async (page) => {
-    // 加载数据的逻辑
-    await fetchData(page)
-  },
-  totalItems, // 总数据量（支持数字或响应式引用）
-  {
-    pageSize: 20,
-    rootMargin: '100px' // 或使用函数动态计算
-  }
-)
+  // 使用无限滚动
+  const { currentPage, isLoading, hasMore, observerTarget, loadMore, reset } =
+    useInfiniteScroll(
+      async page => {
+        // 加载数据的逻辑
+        await fetchData(page)
+      },
+      totalItems, // 总数据量（支持数字或响应式引用）
+      {
+        pageSize: 20,
+        rootMargin: '100px', // 或使用函数动态计算
+      }
+    )
 
-// 计算当前显示的数据
-const currentItems = computed(() => {
-  return allItems.value.slice(0, currentPage.value * 20)
-})
+  // 计算当前显示的数据
+  const currentItems = computed(() => {
+    return allItems.value.slice(0, currentPage.value * 20)
+  })
 </script>
 ```
 
@@ -55,25 +49,28 @@ const currentItems = computed(() => {
 ### useInfiniteScroll(loadCallback, totalItems, options)
 
 #### loadCallback: (page: number) => Promise<void> | void
+
 加载数据的回调函数，接收页码参数。
 
 #### totalItems: number | Ref<number>
+
 总数据量，用于计算是否还有更多数据。支持数字或响应式引用，当使用响应式引用时，会自动监听变化并重新计算。
 
 #### options: InfiniteScrollOptions
+
 配置选项：
 
 ```typescript
 interface InfiniteScrollOptions {
-  pageSize?: number                    // 每页加载数量，默认 20
+  pageSize?: number // 每页加载数量，默认 20
   rootMargin?: string | (() => string) // 提前加载距离，默认 '100px'，支持函数动态计算
-  threshold?: number | number[]        // 触发阈值，默认 0.1，支持数组设置多个阈值
-  enabled?: boolean                    // 是否启用，默认 true
-  loadDelay?: number                   // 加载延迟（ms），默认 300
-  root?: string | Element | null       // 自定义根元素
-  debounceDelay?: number               // 防抖延迟（ms），默认 100，用于防止快速滚动时重复触发
-  enableScrollListener?: boolean       // 是否启用滚动事件监听作为备用方案，默认 true
-  scrollThreshold?: number             // 滚动触发阈值（距离底部多少像素时触发），默认 200
+  threshold?: number | number[] // 触发阈值，默认 0.1，支持数组设置多个阈值
+  enabled?: boolean // 是否启用，默认 true
+  loadDelay?: number // 加载延迟（ms），默认 300
+  root?: string | Element | null // 自定义根元素
+  debounceDelay?: number // 防抖延迟（ms），默认 100，用于防止快速滚动时重复触发
+  enableScrollListener?: boolean // 是否启用滚动事件监听作为备用方案，默认 true
+  scrollThreshold?: number // 滚动触发阈值（距离底部多少像素时触发），默认 200
 }
 ```
 
@@ -81,12 +78,12 @@ interface InfiniteScrollOptions {
 
 ```typescript
 interface InfiniteScrollReturn {
-  currentPage: Ref<number>           // 当前页码
-  isLoading: Ref<boolean>           // 是否正在加载
-  hasMore: Ref<boolean>             // 是否还有更多数据
+  currentPage: Ref<number> // 当前页码
+  isLoading: Ref<boolean> // 是否正在加载
+  hasMore: Ref<boolean> // 是否还有更多数据
   observerTarget: Ref<HTMLElement | null> // 观察器目标元素
-  loadMore: () => Promise<void>     // 手动加载更多
-  reset: () => void                 // 重置分页
+  loadMore: () => Promise<void> // 手动加载更多
+  reset: () => void // 重置分页
   setHasMore: (value: boolean) => void // 设置是否有更多数据
   setCurrentPage: (page: number) => void // 设置当前页码
 }
@@ -103,10 +100,10 @@ const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
   loadData,
   totalCount,
   {
-    debounceDelay: 50,           // 50ms 防抖延迟，快速响应
-    enableScrollListener: true,  // 启用滚动监听作为备用
-    scrollThreshold: 150,        // 距离底部 150px 时触发
-    threshold: [0, 0.1, 0.3, 0.5, 1.0] // 多个阈值，提高触发灵敏度
+    debounceDelay: 50, // 50ms 防抖延迟，快速响应
+    enableScrollListener: true, // 启用滚动监听作为备用
+    scrollThreshold: 150, // 距离底部 150px 时触发
+    threshold: [0, 0.1, 0.3, 0.5, 1.0], // 多个阈值，提高触发灵敏度
   }
 )
 ```
@@ -173,16 +170,19 @@ Intersection Observer 检测到元素可见
 #### 🛡️ **实际场景分析**
 
 **场景1：正常滚动**
+
 - Intersection Observer 正常工作
 - 滚动监听器也会触发，但被防抖机制"合并"
 - 结果：只执行一次 `loadMore()`
 
 **场景2：快速滚动**
+
 - Intersection Observer 可能"错过"触发
 - 滚动监听器作为备用方案触发
 - 结果：确保不会遗漏加载
 
 **场景3：Intersection Observer 失效**
+
 - 某些浏览器或特定情况下 IO 可能不工作
 - 滚动监听器确保功能正常
 - 结果：功能依然可用
@@ -206,13 +206,13 @@ const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
       const isMobile = window.innerWidth <= 768
       const connection = navigator.connection
       const isSlowNetwork = connection && connection.effectiveType === '2g'
-      
+
       if (isMobile) {
         return isSlowNetwork ? '100px' : '50px'
       } else {
         return isSlowNetwork ? '200px' : '100px'
       }
-    }
+    },
   }
 )
 ```
@@ -229,7 +229,7 @@ const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
 )
 
 // 当 totalItems 变化时，会自动重新计算 hasMore
-watch(searchResults, (results) => {
+watch(searchResults, results => {
   totalItems.value = results.total
 })
 ```
@@ -241,11 +241,11 @@ const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
   loadData,
   totalCount,
   {
-    pageSize: 10,           // 每页 10 条
-    rootMargin: '200px',    // 提前 200px 加载
-    threshold: 0.5,         // 50% 可见时触发
-    loadDelay: 500,         // 500ms 延迟
-    enabled: true           // 启用无限滚动
+    pageSize: 10, // 每页 10 条
+    rootMargin: '200px', // 提前 200px 加载
+    threshold: 0.5, // 50% 可见时触发
+    loadDelay: 500, // 500ms 延迟
+    enabled: true, // 启用无限滚动
   }
 )
 ```
@@ -257,7 +257,7 @@ const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
   loadData,
   totalCount,
   {
-    enabled: computed(() => !isSearching.value) // 搜索时禁用
+    enabled: computed(() => !isSearching.value), // 搜索时禁用
   }
 )
 ```
@@ -288,7 +288,7 @@ const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
   loadData,
   totalCount,
   {
-    root: '.scroll-container' // 在指定容器内滚动
+    root: '.scroll-container', // 在指定容器内滚动
   }
 )
 ```
@@ -296,10 +296,11 @@ const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
 ## 实际应用场景
 
 ### 1. 图片画廊（快速滚动优化）
+
 ```javascript
 // 在 gallery.vue 中的使用
 const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
-  async (page) => {
+  async page => {
     await loadMoreImages(page)
     // 重新初始化 PhotoSwipe
     initPhotoSwipe()
@@ -312,21 +313,22 @@ const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
       const isMobile = window.innerWidth <= 768
       return isMobile ? '50px' : '100px'
     },
-    debounceDelay: 50,           // 快速响应防抖
-    enableScrollListener: true,  // 启用滚动监听备用
-    scrollThreshold: 150,        // 距离底部 150px 触发
-    threshold: [0, 0.1, 0.3, 0.5, 1.0] // 多重阈值提高灵敏度
+    debounceDelay: 50, // 快速响应防抖
+    enableScrollListener: true, // 启用滚动监听备用
+    scrollThreshold: 150, // 距离底部 150px 触发
+    threshold: [0, 0.1, 0.3, 0.5, 1.0], // 多重阈值提高灵敏度
   }
 )
 ```
 
 ### 2. 搜索结果（响应式 totalItems）
+
 ```javascript
 const searchResults = ref([])
 const totalResults = ref(0)
 
 const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
-  async (page) => {
+  async page => {
     const results = await searchAPI(query.value, page)
     searchResults.value.push(...results.items)
   },
@@ -335,7 +337,7 @@ const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
 )
 
 // 搜索时更新总数
-watch(searchQuery, async (query) => {
+watch(searchQuery, async query => {
   const results = await searchAPI(query, 1)
   totalResults.value = results.total
   searchResults.value = results.items
@@ -343,29 +345,28 @@ watch(searchQuery, async (query) => {
 ```
 
 ### 3. 商品列表
+
 ```javascript
 // 在商品列表中的使用
-const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
-  async (page) => {
-    const newProducts = await fetchProducts(page)
-    products.value.push(...newProducts)
-  },
-  totalProducts
-)
+const { observerTarget, hasMore, isLoading } = useInfiniteScroll(async page => {
+  const newProducts = await fetchProducts(page)
+  products.value.push(...newProducts)
+}, totalProducts)
 ```
 
 ### 4. 评论列表
+
 ```javascript
 // 在评论列表中的使用
 const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
-  async (page) => {
+  async page => {
     const newComments = await fetchComments(page)
     comments.value.push(...newComments)
   },
   totalComments,
   {
-    pageSize: 15,        // 评论每页 15 条
-    rootMargin: '50px'   // 评论提前加载距离较小
+    pageSize: 15, // 评论每页 15 条
+    rootMargin: '50px', // 评论提前加载距离较小
   }
 )
 ```
@@ -424,6 +425,7 @@ const { observerTarget, hasMore, isLoading } = useInfiniteScroll(
 无限滚动组合式函数使用了 `utils/common.ts` 中的工具函数：
 
 #### debounce<T>(fn: T, delay: number)
+
 防抖函数，用于防止快速滚动时重复触发加载。
 
 ```javascript
@@ -436,6 +438,7 @@ const debouncedLoad = debounce(() => {
 ```
 
 #### throttle<T>(fn: T, delay: number)
+
 节流函数，限制函数在一定时间内只能执行一次。
 
 ```javascript
@@ -448,6 +451,7 @@ const throttledScroll = throttle(() => {
 ```
 
 #### delay(ms: number)
+
 延迟执行函数，创建一个延迟执行的 Promise。
 
 ```javascript
@@ -457,4 +461,4 @@ import { delay } from '~/utils/common'
 await delay(1000) // 延迟 1 秒
 ```
 
-这些工具函数可以在项目的其他部分复用，提高代码的可维护性和复用性。 
+这些工具函数可以在项目的其他部分复用，提高代码的可维护性和复用性。

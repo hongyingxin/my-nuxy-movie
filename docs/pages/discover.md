@@ -7,12 +7,14 @@ Discover 页面是电影和电视剧的核心发现页面，提供强大的筛�
 ## 页面架构
 
 ### 路由结构
+
 ```
 /discover/movie  - 电影发现页面
 /discover/tv     - 电视剧发现页面
 ```
 
 ### 核心功能
+
 1. **智能筛选系统** - 支持多种筛选条件组合
 2. **动态排序** - 基于 TMDB API 的排序选项
 3. **分类预设** - 热门、即将上映、正在上映、高分等预设分类
@@ -22,6 +24,7 @@ Discover 页面是电影和电视剧的核心发现页面，提供强大的筛�
 ## 页面结构
 
 ### 1. 页面头部
+
 ```vue
 <!-- 动态标题和描述 -->
 <h1>{{ getPageHeaderTitle() }}</h1>
@@ -32,6 +35,7 @@ Discover 页面是电影和电视剧的核心发现页面，提供强大的筛�
 ```
 
 ### 2. 筛选侧边栏
+
 - **排序方式** - 下拉选择框
 - **分类筛选** - 多选按钮组
 - **评分筛选** - 滑块控件
@@ -41,12 +45,14 @@ Discover 页面是电影和电视剧的核心发现页面，提供强大的筛�
 - **上映类型** - 下拉选择框（仅电影）
 
 ### 3. 主要内容区域
+
 - **结果统计** - 显示找到的结果数量
 - **视图切换** - 网格视图/列表视图
 - **内容展示** - 电影/电视剧卡片或列表
 - **分页组件** - 支持页码跳转和快速跳转
 
 ### 4. 吸顶按钮
+
 - **应用筛选** - 当筛选条件变化时显示
 
 ## 页面结构树
@@ -247,12 +253,14 @@ Discover Page Component Tree
 ## 组件职责分工
 
 ### **主页面组件 (pages/discover/[type].vue)**
+
 - **状态管理**：管理筛选条件、分页状态、视图模式
 - **数据获取**：调用 API 获取媒体列表数据
 - **路由处理**：处理 URL 参数和页面跳转
 - **布局协调**：协调各个子组件的布局和交互
 
 ### **筛选侧边栏组件**
+
 - **SortSelector**：处理排序方式选择和变更
 - **GenreFilter**：处理分类筛选，支持多选
 - **RatingFilter**：处理评分范围筛选
@@ -262,6 +270,7 @@ Discover Page Component Tree
 - **ReleaseTypeFilter**：处理上映类型筛选（仅电影）
 
 ### **内容展示组件**
+
 - **ResultsStats**：显示结果统计和筛选摘要
 - **ViewToggle**：处理网格/列表视图切换
 - **GridView**：网格视图布局和 MediaCard 组件管理
@@ -269,11 +278,13 @@ Discover Page Component Tree
 - **Pagination**：处理分页逻辑和导航
 
 ### **全局组件**
+
 - **MediaCard**：媒体卡片展示，包含海报、标题、评分、分类
 - **MediaListItem**：媒体列表项展示，包含缩略图、详细信息、操作按钮
 - **Pagination**：通用分页组件，支持页码导航和快速跳转
 
 ### **工具组件**
+
 - **SkeletonGrid**：加载时的骨架屏展示
 - **LoadingSpinner**：加载动画
 - **ErrorBoundary**：错误边界处理
@@ -316,24 +327,26 @@ Discover Page Component Tree
 ### 1. 智能时间范围
 
 #### 基于分类的默认时间范围
+
 ```javascript
-const getDefaultDateRange = (sortBy) => {
+const getDefaultDateRange = sortBy => {
   switch (sortBy) {
-    case 'popularity.desc':     // 热门 - 无时间限制
+    case 'popularity.desc': // 热门 - 无时间限制
       return { startDate: null, endDate: null }
-    case 'vote_average.desc':   // 高分 - 排除太新的电影
+    case 'vote_average.desc': // 高分 - 排除太新的电影
       return { startDate: null, endDate: oneYearAgo }
-    case 'release_date.asc':    // 即将上映 - 当前到未来1年
+    case 'release_date.asc': // 即将上映 - 当前到未来1年
       return { startDate: today, endDate: oneYearLater }
-    case 'release_date.desc':   // 正在上映 - 过去2个月到当前
+    case 'release_date.desc': // 正在上映 - 过去2个月到当前
       return { startDate: twoMonthsAgo, endDate: today }
-    default:                    // 默认 - 当前年份到明年
+    default: // 默认 - 当前年份到明年
       return { startDate: null, endDate: `${currentYear + 1}-12-31` }
   }
 }
 ```
 
 #### 时间范围字段映射
+
 - `air_date.gte/lte` - 通用日期字段
 - `primary_release_date.gte/lte` - 电影首映日期
 - `release_date.gte/lte` - 电影上映日期
@@ -342,19 +355,26 @@ const getDefaultDateRange = (sortBy) => {
 ### 2. 动态页面标题
 
 #### 分类名称映射
+
 ```javascript
-const getCategoryName = (sortBy) => {
+const getCategoryName = sortBy => {
   switch (sortBy) {
-    case 'popularity.desc': return '热门'
-    case 'release_date.asc': return '即将上映'
-    case 'release_date.desc': return '正在上映'
-    case 'vote_average.desc': return '高分'
-    default: return '最新'
+    case 'popularity.desc':
+      return '热门'
+    case 'release_date.asc':
+      return '即将上映'
+    case 'release_date.desc':
+      return '正在上映'
+    case 'vote_average.desc':
+      return '高分'
+    default:
+      return '最新'
   }
 }
 ```
 
 #### 标题生成规则
+
 - 基础格式：`${分类名称}${媒体类型}`
 - 包含地区：`${地区名称}${分类名称}${媒体类型}`
 - 包含上映类型：`${地区名称}${上映类型}${分类名称}${媒体类型}`
@@ -362,33 +382,35 @@ const getCategoryName = (sortBy) => {
 ### 3. 筛选条件管理
 
 #### 筛选条件结构
+
 ```javascript
 const filters = {
-  sort_by: 'release_date.desc',           // 排序方式
-  with_genres: [28, 12],                  // 分类ID数组
-  'vote_average.gte': 7,                  // 最低评分
-  'air_date.gte': '2024-01-01',          // 开始日期
-  'air_date.lte': '2024-12-31',          // 结束日期
-  with_original_language: 'zh',           // 原始语言
-  region: 'CN',                           // 地区（仅电影）
-  with_release_type: '2|3'                // 上映类型（仅电影）
+  sort_by: 'release_date.desc', // 排序方式
+  with_genres: [28, 12], // 分类ID数组
+  'vote_average.gte': 7, // 最低评分
+  'air_date.gte': '2024-01-01', // 开始日期
+  'air_date.lte': '2024-12-31', // 结束日期
+  with_original_language: 'zh', // 原始语言
+  region: 'CN', // 地区（仅电影）
+  with_release_type: '2|3', // 上映类型（仅电影）
 }
 ```
 
 #### URL 参数转换
+
 ```javascript
-const filtersToQuery = (filters) => {
+const filtersToQuery = filters => {
   const query = {}
-  
+
   // 只添加非默认值的参数
   if (filters.sort_by !== defaultSort) {
     query.sort_by = filters.sort_by
   }
-  
+
   if (filters.with_genres.length > 0) {
     query.with_genres = filters.with_genres.join(',')
   }
-  
+
   // ... 其他参数转换
   return query
 }
@@ -397,26 +419,33 @@ const filtersToQuery = (filters) => {
 ### 4. 状态管理
 
 #### 响应式数据
+
 ```javascript
-const filters = ref(getInitialFilters())           // 当前筛选条件
-const initialFilters = ref(JSON.parse(JSON.stringify(filters.value)))  // 初始状态
-const hasFilterChanges = computed(() => {          // 检测变化
+const filters = ref(getInitialFilters()) // 当前筛选条件
+const initialFilters = ref(JSON.parse(JSON.stringify(filters.value))) // 初始状态
+const hasFilterChanges = computed(() => {
+  // 检测变化
   return JSON.stringify(filters.value) !== JSON.stringify(initialFilters.value)
 })
 ```
 
 #### 监听器
+
 ```javascript
 // 监听路由参数变化
-watch(() => route.query, (newQuery) => {
-  const newFilters = getInitialFilters()
-  filters.value = newFilters
-  initialFilters.value = JSON.parse(JSON.stringify(newFilters))
-  fetchData()
-}, { immediate: true })
+watch(
+  () => route.query,
+  newQuery => {
+    const newFilters = getInitialFilters()
+    filters.value = newFilters
+    initialFilters.value = JSON.parse(JSON.stringify(newFilters))
+    fetchData()
+  },
+  { immediate: true }
+)
 
 // 监听筛选条件变化
-watch(hasFilterChanges, (newValue) => {
+watch(hasFilterChanges, newValue => {
   if (newValue) {
     // 设置观察器检测应用按钮可见性
     setupApplyButtonObserver()
@@ -433,6 +462,7 @@ watch(hasFilterChanges, (newValue) => {
 Discover 页面支持通过主导航的不同分类进入，每个分类都有其特定的筛选参数预设。这些预设参数确保了用户在不同入口点获得最相关的内容。
 
 **电影分类预设**包括：
+
 - **最新电影**：无特殊参数，按默认排序显示最新添加的电影
 - **热门电影**：按人气降序排序，无时间限制，展示最受欢迎的电影
 - **即将上映**：按上映日期升序排序，时间范围从当前日期到未来一年
@@ -440,6 +470,7 @@ Discover 页面支持通过主导航的不同分类进入，每个分类都有�
 - **高分电影**：按评分降序排序，最低评分7分，排除太新的电影以确保评分可靠性
 
 **电视剧分类预设**包括：
+
 - **最新剧集**：无特殊参数，按默认排序显示最新添加的电视剧
 - **热门剧集**：按人气降序排序，展示最受欢迎的电视剧
 - **正在播出**：筛选播出状态为"正在播出"的剧集
@@ -463,11 +494,13 @@ Discover 页面支持通过主导航的不同分类进入，每个分类都有�
 TMDB API 为电影和电视剧提供了不同的日期字段，这些字段反映了不同媒体类型的发布特点。
 
 **电影日期字段**：
+
 - `primary_release_date`：首映日期，表示电影在原始国家的首映日期
 - `release_date`：上映日期，表示在指定地区的上映日期，需要配合 region 参数使用
 - `air_date`：通用日期字段，提供兼容性支持
 
 **电视剧日期字段**：
+
 - `first_air_date`：首播日期，表示电视剧在原始国家的首播日期
 - `air_date`：播出日期，通用的播出日期字段
 
@@ -476,11 +509,13 @@ TMDB API 为电影和电视剧提供了不同的日期字段，这些字段反�
 电影和电视剧的日期处理逻辑存在显著差异，这反映了两种媒体类型的发布模式不同。电影通常有明确的首映日期和地区上映日期，而电视剧的播出模式更加灵活。
 
 **电影日期特点**：
+
 - 首映日期通常是全球统一的
 - 不同地区的上映日期可能不同
 - 需要指定地区参数才能使用上映日期筛选
 
 **电视剧日期特点**：
+
 - 首播日期通常是全球统一的
 - 播出日期更加灵活，可能跨越多天
 - 支持按播出状态筛选
@@ -502,6 +537,7 @@ TMDB API 为电影和电视剧提供了不同的日期字段，这些字段反�
 电影和电视剧在 TMDB API 中支持不同的筛选参数，这些差异反映了两种媒体类型的不同特点。
 
 **电影特有参数**：
+
 - **地区筛选**：可以指定特定地区，影响上映日期的筛选结果
 - **上映类型筛选**：支持首映、影院上映、数字发行、实体发行、电视播出等不同类型
 - **时长筛选**：可以设置电影的最短和最长时长
@@ -510,6 +546,7 @@ TMDB API 为电影和电视剧提供了不同的日期字段，这些字段反�
 - **视频内容筛选**：可以选择是否包含视频内容
 
 **电视剧特有参数**：
+
 - **原产国筛选**：可以按电视剧的原产国进行筛选
 - **播出状态筛选**：支持正在播出、计划中、制作中、已结束、已取消、试播等状态
 - **类型筛选**：支持剧本剧、纪录片、新闻、真人秀、脱口秀、迷你剧等类型
@@ -542,6 +579,7 @@ TMDB API 为电影和电视剧提供了不同的日期字段，这些字段反�
 当用户应用筛选条件时，系统需要将内部的筛选状态转换为 URL 参数。这个过程确保了筛选条件可以被分享和书签保存。
 
 **参数转换逻辑**：
+
 - 只转换非默认值的参数，避免 URL 过长
 - 根据媒体类型处理不同的参数
 - 确保参数格式符合 TMDB API 的要求
@@ -577,6 +615,7 @@ TMDB API 为电影和电视剧提供了不同的日期字段，这些字段反�
 #### **重置到默认值**
 
 用户可以通过重置按钮将所有筛选条件恢复到默认状态。这个过程会：
+
 - 重新计算默认的筛选条件
 - 更新内部状态
 - 更新 URL 参数
@@ -597,6 +636,7 @@ TMDB API 为电影和电视剧提供了不同的日期字段，这些字段反�
 通过分析 TMDB 官方网站的页面结构，我们可以发现其采用了清晰的分类体系，每个分类都有其特定的时间范围和筛选逻辑。
 
 #### **电影分类结构**
+
 TMDB 官方网站的电影分类主要包括：
 
 1. **Popular Movies（热门电影）**
@@ -624,6 +664,7 @@ TMDB 官方网站的电影分类主要包括：
    - 筛选逻辑：排除太新的电影以确保评分可靠性
 
 #### **电视剧分类结构**
+
 TMDB 官方网站的电视剧分类主要包括：
 
 1. **Popular TV Shows（热门电视剧）**
@@ -675,12 +716,14 @@ TMDB 官方网站的电视剧分类主要包括：
 #### **时间范围的具体实现**
 
 **电影时间范围**：
+
 - 热门：无时间限制
 - 正在上映：过去 2 个月到当前日期
 - 即将上映：当前日期到未来 1 年
 - 高分：排除 1 年内的新电影
 
 **电视剧时间范围**：
+
 - 热门：无时间限制
 - 正在播出：使用播出状态筛选
 - 即将播出：当前日期到未来 6 个月
@@ -693,24 +736,46 @@ TMDB 官方网站的电视剧分类主要包括：
 我们的项目已经实现了基于 TMDB 官方分类的时间范围逻辑，具体体现在：
 
 **智能时间范围计算**：
+
 ```javascript
 const getDefaultDateRange = () => {
   const sortBy = route.query.sort_by
-  
+
   if (sortBy === 'popularity.desc') {
     // 热门：无时间限制
     return { startDate: null, endDate: null }
   } else if (sortBy === 'vote_average.desc') {
     // 高分：排除太新的内容（评分不足）
-    const oneYearAgo = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate()).toISOString().split('T')[0]
+    const oneYearAgo = new Date(
+      now.getFullYear() - 1,
+      now.getMonth(),
+      now.getDate()
+    )
+      .toISOString()
+      .split('T')[0]
     return { startDate: null, endDate: oneYearAgo }
   } else if (sortBy === 'release_date.asc' || sortBy === 'first_air_date.asc') {
     // 即将上映/播出：当前日期到未来一年
-    const oneYearLater = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate()).toISOString().split('T')[0]
+    const oneYearLater = new Date(
+      now.getFullYear() + 1,
+      now.getMonth(),
+      now.getDate()
+    )
+      .toISOString()
+      .split('T')[0]
     return { startDate: today, endDate: oneYearLater }
-  } else if (sortBy === 'release_date.desc' || sortBy === 'first_air_date.desc') {
+  } else if (
+    sortBy === 'release_date.desc' ||
+    sortBy === 'first_air_date.desc'
+  ) {
     // 正在上映/播出：过去2个月到当前日期
-    const twoMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 2, now.getDate()).toISOString().split('T')[0]
+    const twoMonthsAgo = new Date(
+      now.getFullYear(),
+      now.getMonth() - 2,
+      now.getDate()
+    )
+      .toISOString()
+      .split('T')[0]
     return { startDate: twoMonthsAgo, endDate: today }
   } else {
     // 默认：当前年份到明年
@@ -775,16 +840,19 @@ const getDefaultDateRange = () => {
 Discover API 是 TMDB 提供的最强大的筛选接口，支持电影和电视剧的复杂筛选。我们的项目基于这个接口构建了完整的发现功能。
 
 **接口地址**：
+
 - 电影：`/discover/movie`
 - 电视剧：`/discover/tv`
 
 **核心特点**：
+
 - 支持超过 30 种筛选条件
 - 可以替代多个特定接口（如 `/movie/popular`、`/movie/now_playing` 等）
 - 提供灵活的排序和分页功能
 - 支持复杂的组合筛选
 
 **默认参数**：
+
 - `sort_by`: `popularity.desc` - 默认按人气降序排序
 - `page`: `1` - 默认第一页
 - 用户传入的参数会覆盖默认值
@@ -804,12 +872,14 @@ Discover API 是 TMDB 提供的最强大的筛选接口，支持电影和电视�
 #### **分类筛选方法**
 
 **根据分类获取电影**：
+
 - 方法：`getMoviesByGenre(genreId, page, additionalParams)`
 - 功能：获取指定分类的电影列表
 - 参数：分类ID、页码、额外筛选参数
 - 特点：支持额外的筛选条件组合
 
 **根据分类获取电视剧**：
+
 - 方法：`getTvShowsByGenre(genreId, page, additionalParams)`
 - 功能：获取指定分类的电视剧列表
 - 参数：分类ID、页码、额外筛选参数
@@ -818,12 +888,14 @@ Discover API 是 TMDB 提供的最强大的筛选接口，支持电影和电视�
 #### **评分筛选方法**
 
 **获取高分电影**：
+
 - 方法：`getHighRatedMovies(page, minRating)`
 - 默认最低评分：7.0 分
 - 最少投票数：100 票
 - 排序方式：评分降序
 
 **获取高分电视剧**：
+
 - 方法：`getHighRatedTvShows(page, minRating)`
 - 默认最低评分：7.0 分
 - 最少投票数：50 票
@@ -832,21 +904,25 @@ Discover API 是 TMDB 提供的最强大的筛选接口，支持电影和电视�
 #### **时间筛选方法**
 
 **获取最新电影**：
+
 - 方法：`getLatestMovies(page)`
 - 筛选条件：首映日期小于等于今天
 - 排序方式：首映日期降序
 
 **获取最新电视剧**：
+
 - 方法：`getLatestTvShows(page)`
 - 筛选条件：首播日期小于等于今天
 - 排序方式：首播日期降序
 
 **获取即将上映电影**：
+
 - 方法：`getUpcomingMovies(page)`
 - 筛选条件：首映日期大于等于今天
 - 排序方式：首映日期升序
 
 **获取即将播出电视剧**：
+
 - 方法：`getUpcomingTvShows(page)`
 - 筛选条件：首播日期大于等于今天
 - 排序方式：首播日期升序
@@ -859,11 +935,13 @@ Discover API 是 TMDB 提供的最强大的筛选接口，支持电影和电视�
 定义了所有可能的筛选参数，包括基础参数、分类筛选、评分筛选、日期筛选、语言筛选、地区筛选等。
 
 **响应类型**：
+
 - `DiscoverResponse<T>`：通用响应类型
 - `MovieDiscoverResponse`：电影响应类型
 - `TvShowDiscoverResponse`：电视剧响应类型
 
 **排序选项类型**：
+
 - `SortOption`：排序选项接口（定义在 `types/apiType/sortOptions.ts`）
 - `MOVIE_SORT_OPTIONS`：电影排序选项（定义在 `constants/sortOptions.ts`）
 - `TV_SORT_OPTIONS`：电视剧排序选项（定义在 `constants/sortOptions.ts`）
@@ -879,6 +957,7 @@ Discover API 是 TMDB 提供的最强大的筛选接口，支持电影和电视�
 #### **共同支持的筛选条件**
 
 电影和电视剧都支持的筛选条件包括：
+
 - 基础参数：页码、排序方式
 - 分类筛选：包含/排除分类
 - 评分筛选：评分范围、投票数
@@ -891,6 +970,7 @@ Discover API 是 TMDB 提供的最强大的筛选接口，支持电影和电视�
 #### **电影专用筛选条件**
 
 电影特有的筛选条件包括：
+
 - **日期筛选**：首映日期、上映日期
 - **地区筛选**：指定地区，影响上映日期
 - **上映类型**：首映、影院上映、数字发行等
@@ -902,6 +982,7 @@ Discover API 是 TMDB 提供的最强大的筛选接口，支持电影和电视�
 #### **电视剧专用筛选条件**
 
 电视剧特有的筛选条件包括：
+
 - **日期筛选**：首播日期、播出日期
 - **原产国筛选**：电视剧的原产国
 - **播出状态**：正在播出、计划中、制作中等
@@ -913,26 +994,29 @@ Discover API 是 TMDB 提供的最强大的筛选接口，支持电影和电视�
 #### **基础使用**
 
 **获取热门电影**：
+
 ```javascript
 const popularMovies = discoverMedia('movie', {
   sort_by: 'popularity.desc',
-  page: 1
+  page: 1,
 })
 ```
 
 **获取高分电视剧**：
+
 ```javascript
 const highRatedTvShows = discoverMedia('tv', {
   'vote_average.gte': 8.0,
   'vote_count.gte': 100,
   sort_by: 'vote_average.desc',
-  page: 1
+  page: 1,
 })
 ```
 
 #### **复杂筛选**
 
 **获取2023年评分7分以上的动作电影**：
+
 ```javascript
 const actionMovies = discoverMedia('movie', {
   with_genres: '28', // 动作片
@@ -940,32 +1024,35 @@ const actionMovies = discoverMedia('movie', {
   'primary_release_date.gte': '2023-01-01',
   'primary_release_date.lte': '2023-12-31',
   sort_by: 'vote_average.desc',
-  page: 1
+  page: 1,
 })
 ```
 
 **获取正在播出的高分电视剧**：
+
 ```javascript
 const onAirTvShows = discoverMedia('tv', {
   with_status: '0', // 正在播出
   'vote_average.gte': 8.0,
   'vote_count.gte': 100,
   sort_by: 'vote_average.desc',
-  page: 1
+  page: 1,
 })
 ```
 
 #### **便捷方法使用**
 
 **获取特定分类的电影**：
+
 ```javascript
 const actionMovies = getMoviesByGenre(28, 1, {
   'vote_average.gte': 7.0,
-  sort_by: 'popularity.desc'
+  sort_by: 'popularity.desc',
 })
 ```
 
 **获取高分电影**：
+
 ```javascript
 const highRatedMovies = getHighRatedMovies(1, 8.0)
 ```
@@ -998,6 +1085,7 @@ const highRatedMovies = getHighRatedMovies(1, 8.0)
 #### **新筛选条件支持**
 
 API 设计支持轻松添加新的筛选条件：
+
 - 在 `DiscoverParams` 接口中添加新参数
 - 在筛选器组件中添加对应的 UI 控件
 - 在参数转换逻辑中处理新参数
@@ -1005,6 +1093,7 @@ API 设计支持轻松添加新的筛选条件：
 #### **新排序方式支持**
 
 支持添加新的排序方式：
+
 - 在排序选项中添加新的排序方式
 - 确保 TMDB API 支持该排序方式
 - 更新排序选项的类型定义
@@ -1012,6 +1101,7 @@ API 设计支持轻松添加新的筛选条件：
 #### **新媒体类型支持**
 
 设计支持扩展到其他媒体类型：
+
 - 通用的 `discoverMedia` 接口
 - 类型安全的参数处理
 - 可扩展的响应类型
@@ -1032,18 +1122,21 @@ API 设计支持轻松添加新的筛选条件：
 ## 用户体验设计
 
 ### 1. 筛选流程
+
 1. **进入页面** - 根据 URL 参数或默认值初始化筛选条件
 2. **调整筛选** - 用户修改筛选条件，实时显示变化状态
 3. **应用筛选** - 点击应用按钮，更新 URL 并重新获取数据
 4. **重置筛选** - 一键重置所有筛选条件
 
 ### 2. 视觉反馈
+
 - **筛选变化** - 应用按钮高亮显示
 - **加载状态** - 骨架屏和加载动画
 - **空状态** - 无结果时的友好提示
 - **错误状态** - 加载失败时的重试选项
 
 ### 3. 交互优化
+
 - **防抖处理** - 避免频繁的 API 请求
 - **缓存机制** - 缓存筛选结果
 - **渐进增强** - 支持无 JavaScript 的基础功能
@@ -1053,6 +1146,7 @@ API 设计支持轻松添加新的筛选条件：
 ### 1. 页面间跳转关系
 
 #### **主要跳转路径**
+
 ```
 首页 (/)
 ├── 发现页面 (/discover/movie, /discover/tv)
@@ -1070,6 +1164,7 @@ API 设计支持轻松添加新的筛选条件：
 ```
 
 #### **导航层级结构**
+
 ```
 Level 1: 主导航 (Header)
 ├── 首页
@@ -1105,15 +1200,19 @@ Level 3: 详情页内部导航
 ### 2. 组件跳转设计
 
 #### **MediaCard 组件跳转**
+
 ```javascript
 // 跳转到详情页
 const navigateToDetail = () => {
-  const route = props.isMovie ? `/movie/${props.item.id}` : `/tv/${props.item.id}`
+  const route = props.isMovie
+    ? `/movie/${props.item.id}`
+    : `/tv/${props.item.id}`
   navigateTo(route)
 }
 ```
 
 #### **MediaListItem 组件跳转**
+
 ```javascript
 // 跳转到详情页
 const navigateToDetail = () => {
@@ -1123,6 +1222,7 @@ const navigateToDetail = () => {
 ```
 
 #### **MediaPersonCard 组件跳转**
+
 ```javascript
 // 跳转到演员详情页
 const navigateToDetail = () => {
@@ -1131,8 +1231,9 @@ const navigateToDetail = () => {
 ```
 
 #### **MediaPageHeader 组件返回**
+
 ```vue
-<NuxtLink 
+<NuxtLink
   :to="backTo"
   class="inline-flex items-center px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium mb-6 transition-all duration-200 backdrop-blur-sm group"
 >
@@ -1146,15 +1247,16 @@ const navigateToDetail = () => {
 ### 3. 页面跳转实现
 
 #### **发现页面内部跳转**
+
 ```javascript
 // 页面跳转处理
-const changePage = (page) => {
+const changePage = page => {
   if (page < 1 || page > (list.value?.data.value?.total_pages || 1)) return
-  
+
   // 构建新的查询参数，保持筛选条件
   const filterQuery = filtersToQuery(filters.value)
   const newQuery = { ...filterQuery }
-  
+
   if (page === 1) {
     // 第1页时移除 page 参数
     delete newQuery.page
@@ -1162,74 +1264,88 @@ const changePage = (page) => {
     // 其他页面添加 page 参数
     newQuery.page = page
   }
-  
+
   // 导航到新页面
-  navigateTo({
-    query: newQuery
-  }, { replace: true })
+  navigateTo(
+    {
+      query: newQuery,
+    },
+    { replace: true }
+  )
 }
 
 // 应用筛选
 const applyFilters = async () => {
   // 更新初始状态
   initialFilters.value = JSON.parse(JSON.stringify(filters.value))
-  
+
   // 构建新的查询参数
   const filterQuery = filtersToQuery(filters.value)
   const newQuery = { ...filterQuery }
-  
+
   // 重置到第一页
   delete newQuery.page
-  
-  navigateTo({
-    query: newQuery
-  }, { replace: true })
+
+  navigateTo(
+    {
+      query: newQuery,
+    },
+    { replace: true }
+  )
 }
 ```
 
 #### **搜索页面跳转**
+
 ```javascript
 // 处理页面跳转
-const handlePageChange = (page) => {
+const handlePageChange = page => {
   if (page < 1 || page > totalPages.value) return
-  
+
   const newQuery = { ...route.query }
-  
+
   if (page === 1) {
     delete newQuery.page
   } else {
     newQuery.page = page
   }
-  
-  navigateTo({
-    query: newQuery
-  }, { replace: true })
+
+  navigateTo(
+    {
+      query: newQuery,
+    },
+    { replace: true }
+  )
 }
 ```
 
 #### **演员页面跳转**
+
 ```javascript
 // 页面跳转处理
-const handlePageChange = (page) => {
+const handlePageChange = page => {
   if (page < 1 || page > (actors.value?.data.value?.total_pages || 1)) return
-  
+
   // 更新 URL 参数
   const newQuery = { ...route.query }
-  
+
   if (page === 1) {
     delete newQuery.page
   } else {
     newQuery.page = page
   }
-  
+
   // 导航到新页面
-  navigateTo({
-    query: newQuery
-  }, { replace: true })
+  navigateTo(
+    {
+      query: newQuery,
+    },
+    { replace: true }
+  )
 }
 
 // 导航到演员详情页
-const navigateToActor = (actorId) => {
+const navigateToActor = actorId => {
   navigateTo(`/actors/${actorId}`)
 }
 ```
@@ -1237,37 +1353,43 @@ const navigateToActor = (actorId) => {
 ### 4. 页面状态保持
 
 #### **URL 参数保持**
+
 ```javascript
 // 保持筛选条件在 URL 中
-const filtersToQuery = (filters) => {
+const filtersToQuery = filters => {
   const query = {}
-  
+
   // 只添加非默认值的参数
   if (filters.sort_by !== defaultSort) {
     query.sort_by = filters.sort_by
   }
-  
+
   if (filters.with_genres.length > 0) {
     query.with_genres = filters.with_genres.join(',')
   }
-  
+
   if (filters['vote_average.gte'] > 0) {
     query['vote_average.gte'] = filters['vote_average.gte']
   }
-  
+
   // ... 其他参数转换
   return query
 }
 ```
 
 #### **页面状态恢复**
+
 ```javascript
 // 从 URL 参数恢复页面状态
 const getInitialFilters = () => {
   return {
     sort_by: route.query.sort_by || defaultSort,
-    with_genres: route.query.with_genres ? route.query.with_genres.split(',').map(Number) : [],
-    'vote_average.gte': route.query['vote_average.gte'] ? parseFloat(route.query['vote_average.gte']) : 0,
+    with_genres: route.query.with_genres
+      ? route.query.with_genres.split(',').map(Number)
+      : [],
+    'vote_average.gte': route.query['vote_average.gte']
+      ? parseFloat(route.query['vote_average.gte'])
+      : 0,
     // ... 其他参数恢复
   }
 }
@@ -1276,6 +1398,7 @@ const getInitialFilters = () => {
 ### 5. 移动端导航优化
 
 #### **移动端菜单**
+
 ```vue
 <!-- 移动端菜单 -->
 <div v-if="isMobileMenuOpen" class="md:hidden border-t border-gray-200 py-4">
@@ -1305,17 +1428,19 @@ const getInitialFilters = () => {
 ### 6. 错误处理
 
 #### **404 页面处理**
+
 ```javascript
 // 处理不存在的媒体
 if (!detail.data.value) {
   throw createError({
     statusCode: 404,
-    statusMessage: `${mediaTypeText.value}不存在`
+    statusMessage: `${mediaTypeText.value}不存在`,
   })
 }
 ```
 
 #### **错误边界**
+
 ```vue
 <template>
   <div v-if="error" class="min-h-screen flex items-center justify-center">
@@ -1323,7 +1448,7 @@ if (!detail.data.value) {
       <div class="text-red-600 text-6xl mb-4">😞</div>
       <h2 class="text-2xl font-bold text-gray-800 mb-2">页面加载失败</h2>
       <p class="text-gray-600 mb-4">{{ error.message }}</p>
-      <button 
+      <button
         @click="handleError"
         class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
       >
@@ -1337,6 +1462,7 @@ if (!detail.data.value) {
 ## 技术实现
 
 ### 1. 组件结构
+
 ```
 pages/discover/[type].vue
 ├── 页面头部 (动态标题、筛选按钮)
@@ -1346,24 +1472,36 @@ pages/discover/[type].vue
 ```
 
 ### 2. 关键方法
+
 ```javascript
 // 初始化筛选条件
-const getInitialFilters = () => { /* ... */ }
+const getInitialFilters = () => {
+  /* ... */
+}
 
 // 应用筛选
-const applyFilters = async () => { /* ... */ }
+const applyFilters = async () => {
+  /* ... */
+}
 
 // 重置筛选
-const resetFilters = () => { /* ... */ }
+const resetFilters = () => {
+  /* ... */
+}
 
 // 获取数据
-const fetchData = async () => { /* ... */ }
+const fetchData = async () => {
+  /* ... */
+}
 
 // 页面跳转
-const changePage = (page) => { /* ... */ }
+const changePage = page => {
+  /* ... */
+}
 ```
 
 ### 3. 计算属性
+
 ```javascript
 // 排序选项
 const sortOptions = computed(() => {
@@ -1384,16 +1522,19 @@ const genres = computed(() => {
 ## 性能优化
 
 ### 1. 数据获取
+
 - **按需加载** - 只在需要时获取数据
 - **分页加载** - 支持大量数据的分页显示
 - **缓存策略** - 缓存分类数据和筛选结果
 
 ### 2. 渲染优化
+
 - **虚拟滚动** - 大量数据时的性能优化
 - **懒加载** - 图片和组件的懒加载
 - **防抖处理** - 用户输入时的性能优化
 
 ### 3. 内存管理
+
 - **组件卸载** - 及时清理监听器和定时器
 - **数据清理** - 避免内存泄漏
 - **缓存清理** - 定期清理过期缓存
@@ -1401,22 +1542,24 @@ const genres = computed(() => {
 ## 扩展性设计
 
 ### 1. 新筛选条件
+
 - **评分范围** - 支持最高评分筛选
 - **时长筛选** - 支持电影时长范围
 - **关键词筛选** - 支持关键词搜索
 - **演员筛选** - 支持特定演员筛选
 
 ### 2. 新排序方式
+
 - **票房排序** - 按票房收入排序
 - **收藏排序** - 按收藏数量排序
 - **评论排序** - 按评论数量排序
 
 ### 3. 新视图模式
+
 - **时间线视图** - 按时间线展示
 - **地图视图** - 按地区展示
 - **网络视图** - 按关联关系展示
 
-
 ## 总结
 
-Discover 页面是一个功能强大且复杂的页面，通过合理的架构设计和用户体验优化，为用户提供了优秀的电影和电视剧发现体验。该页面的设计充分考虑了可扩展性、性能和可维护性，为后续功能扩展奠定了良好的基础。 
+Discover 页面是一个功能强大且复杂的页面，通过合理的架构设计和用户体验优化，为用户提供了优秀的电影和电视剧发现体验。该页面的设计充分考虑了可扩展性、性能和可维护性，为后续功能扩展奠定了良好的基础。

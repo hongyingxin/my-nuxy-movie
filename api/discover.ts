@@ -7,7 +7,7 @@ import type {
   DiscoverParams,
   MovieDiscoverResponse,
   TvShowDiscoverResponse,
-  MediaType
+  MediaType,
 } from '~/types/apiType'
 
 // 导入排序选项常量
@@ -33,8 +33,8 @@ export const discoverMedia = (type: MediaType, params: DiscoverParams = {}) => {
       sort_by: 'popularity.desc',
       page: 1,
       // 用户传入的参数会覆盖默认值
-      ...params
-    }
+      ...params,
+    },
   })
 }
 
@@ -47,11 +47,15 @@ export const discoverMedia = (type: MediaType, params: DiscoverParams = {}) => {
  * @param additionalParams 额外筛选参数
  * @returns 分类电影列表
  */
-export const getMoviesByGenre = (genreId: number, page = 1, additionalParams: Partial<DiscoverParams> = {}) => {
+export const getMoviesByGenre = (
+  genreId: number,
+  page = 1,
+  additionalParams: Partial<DiscoverParams> = {}
+) => {
   return discoverMedia('movie', {
     with_genres: genreId,
     page,
-    ...additionalParams
+    ...additionalParams,
   })
 }
 
@@ -62,11 +66,15 @@ export const getMoviesByGenre = (genreId: number, page = 1, additionalParams: Pa
  * @param additionalParams 额外筛选参数
  * @returns 分类电视剧列表
  */
-export const getTvShowsByGenre = (genreId: number, page = 1, additionalParams: Partial<DiscoverParams> = {}) => {
+export const getTvShowsByGenre = (
+  genreId: number,
+  page = 1,
+  additionalParams: Partial<DiscoverParams> = {}
+) => {
   return discoverMedia('tv', {
     with_genres: genreId,
     page,
-    ...additionalParams
+    ...additionalParams,
   })
 }
 
@@ -81,7 +89,7 @@ export const getHighRatedMovies = (page = 1, minRating = 7.0) => {
     'vote_average.gte': minRating,
     'vote_count.gte': 100,
     sort_by: 'vote_average.desc',
-    page
+    page,
   })
 }
 
@@ -96,7 +104,7 @@ export const getHighRatedTvShows = (page = 1, minRating = 7.0) => {
     'vote_average.gte': minRating,
     'vote_count.gte': 50,
     sort_by: 'vote_average.desc',
-    page
+    page,
   })
 }
 
@@ -110,7 +118,7 @@ export const getLatestMovies = (page = 1) => {
   return discoverMedia('movie', {
     'primary_release_date.lte': today,
     sort_by: 'primary_release_date.desc',
-    page
+    page,
   })
 }
 
@@ -124,7 +132,7 @@ export const getLatestTvShows = (page = 1) => {
   return discoverMedia('tv', {
     'first_air_date.lte': today,
     sort_by: 'first_air_date.desc',
-    page
+    page,
   })
 }
 
@@ -138,7 +146,7 @@ export const getUpcomingMovies = (page = 1) => {
   return discoverMedia('movie', {
     'primary_release_date.gte': today,
     sort_by: 'primary_release_date.asc',
-    page
+    page,
   })
 }
 
@@ -152,7 +160,7 @@ export const getUpcomingTvShows = (page = 1) => {
   return discoverMedia('tv', {
     'first_air_date.gte': today,
     sort_by: 'first_air_date.asc',
-    page
+    page,
   })
 }
 
@@ -181,9 +189,9 @@ export const FILTER_COMPARISON = {
     'without_keywords',
     'with_companies',
     'with_people',
-    'include_adult'
+    'include_adult',
   ],
-  
+
   // 电影专用筛选条件
   movie_only: [
     'primary_release_date.gte',
@@ -196,9 +204,9 @@ export const FILTER_COMPARISON = {
     'certification.gte',
     'certification.lte',
     'include_video',
-    'year'
+    'year',
   ],
-  
+
   // 电视剧专用筛选条件
   tv_only: [
     'first_air_date.gte',
@@ -208,6 +216,6 @@ export const FILTER_COMPARISON = {
     'with_status',
     'with_type',
     'air_date.gte',
-    'air_date.lte'
-  ]
-} 
+    'air_date.lte',
+  ],
+}
