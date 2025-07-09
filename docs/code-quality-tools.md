@@ -273,6 +273,16 @@ pnpm stylelint
 pnpm stylelint:fix
 ```
 
+### 5. 错误解决
+
+```bash
+Using Tailwind CSS from ~/assets/css/tailwind.css
+
+ERROR  Cannot start nuxt:  Could not load @nuxtjs/stylelint-module. Is it installed?
+```
+
+原因是`vite-plugin-stylelint`的兼容性问题，需要降级到`vite-plugin-stylelint@5.0.0`
+
 ## 编辑器集成
 
 ### VSCode 配置
