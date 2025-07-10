@@ -39,7 +39,7 @@ export default defineNuxtConfig({
     // tmdb 图片提供了不同尺寸的图片，所以 nuxtImg 意义不大，此处主要是学习 nuxtImg 的用法
     // nuxt image 文档 https://image.nuxtjs.org.cn/
     provider: 'ipx',
-    // domains: ['image.tmdb.org'],
+    domains: ['image.tmdb.org'],
     format: ['webp', 'avif', 'jpeg', 'jpg'],
     quality: 80,
     screens: {
@@ -50,5 +50,10 @@ export default defineNuxtConfig({
       xl: 1280,
       xxl: 1536,
     },
+  },
+
+  // Vercel 部署优化
+  nitro: {
+    preset: 'vercel',
   },
 })

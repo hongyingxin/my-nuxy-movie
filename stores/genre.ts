@@ -12,7 +12,6 @@ export const useGenreStore = defineStore('genre', {
 
   actions: {
     async initializeGenres() {
-      console.log('-------------initializeGenres', this)
       if (this.initialized) return
 
       try {
@@ -20,13 +19,20 @@ export const useGenreStore = defineStore('genre', {
           getMovieGenres(),
           getTvGenres(),
         ])
-        if (movieGenresRes && tvGenresRes) {
-          this.movieGenres = movieGenresRes.data.value.genres || []
-          this.tvGenres = tvGenresRes.data.value.genres || []
-        }
+
+        // 安全地访问数据，处理AsyncData的返回值
+        const movieGenres = movieGenresRes?.data?.value?.genres || []
+        const tvGenres = tvGenresRes?.data?.value?.genres || []
+
+        this.movieGenres = movieGenres
+        this.tvGenres = tvGenres
+        this.initialized = true
       } catch (error) {
         console.error('Failed to initialize genres:', error)
-        throw error
+        // 不要重新抛出错误，避免阻塞应用启动
+        this.movieGenres = []
+        this.tvGenres = []
+        this.initialized = false
       }
     },
   },
