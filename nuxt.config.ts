@@ -38,8 +38,8 @@ export default defineNuxtConfig({
     // ipx 处理器 需要 domains 配合，但 tmdb 可能限制了域名
     // tmdb 图片提供了不同尺寸的图片，所以 nuxtImg 意义不大，此处主要是学习 nuxtImg 的用法
     // nuxt image 文档 https://image.nuxtjs.org.cn/
-    provider: 'ipx',
-    domains: ['image.tmdb.org'],
+    // provider: 'ipx',
+    // domains: ['image.tmdb.org'],
     format: ['webp', 'avif', 'jpeg', 'jpg'],
     quality: 80,
     screens: {
