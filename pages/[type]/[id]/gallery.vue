@@ -1,4 +1,4 @@
-<!-- 
+<!--
   图片集页面
   type: movie, tv
   id: 电影或者电视剧的id
@@ -11,7 +11,7 @@
       <!-- 页面标题 -->
       <MediaPageHeader
         :backdrop_path="detail.data.value?.backdrop_path"
-        :title="`${detail.data.value?.title || detail.data.value?.name} 的图片集`"
+        :title="`${detail.data.value?.title || detail.data.value?.name} ${$t('detail.photos')}`"
         :back-to="`/${mediaType}/${mediaId}`"
       />
 
@@ -20,7 +20,9 @@
         <div
           class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"
         />
-        <p class="text-gray-600">加载图片中...</p>
+        <p class="text-gray-600">
+          {{ $t('detail.loadingDetails', { type: $t('detail.photos') }) }}
+        </p>
       </div>
 
       <div v-else-if="images.data.value" class="space-y-8">

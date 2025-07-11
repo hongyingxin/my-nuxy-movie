@@ -25,13 +25,15 @@
                   class="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium"
                 >
                   {{
-                    currentHeroItem.media_type === 'movie' ? '电影' : '电视剧'
+                    currentHeroItem.media_type === 'movie'
+                      ? $t('home.movie')
+                      : $t('home.tvShow')
                   }}
                 </span>
                 <span
                   class="bg-yellow-500 text-black px-3 py-1 rounded-full text-sm font-medium"
                 >
-                  🔥 今日热门
+                  {{ $t('home.todayTrending') }}
                 </span>
               </div>
 
@@ -66,7 +68,7 @@
                   class="flex items-center bg-white/20 px-3 py-1 rounded-full backdrop-blur-sm"
                 >
                   <span class="text-sm"
-                    >🌟
+                    >🌟 {{ $t('home.popularity') }}:
                     {{ currentHeroItem.popularity?.toFixed(0) || 'N/A' }}</span
                   >
                 </div>
@@ -83,7 +85,7 @@
                       d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"
                     />
                   </svg>
-                  立即观看
+                  {{ $t('home.watchNow') }}
                 </button>
                 <!-- 了解更多按钮 -->
                 <button
@@ -102,7 +104,7 @@
                       d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                     />
                   </svg>
-                  了解更多
+                  {{ $t('home.learnMore') }}
                 </button>
                 <!-- 收藏按钮 -->
                 <button
@@ -194,7 +196,7 @@
         v-else
         class="h-full bg-gray-300 animate-pulse flex items-center justify-center"
       >
-        <div class="text-gray-500 text-xl">加载精彩内容中...</div>
+        <div class="text-gray-500 text-xl">{{ $t('home.loadingContent') }}</div>
       </div>
     </section>
 
@@ -204,9 +206,11 @@
       <section class="mb-12">
         <!-- 区域标题和操作按钮 -->
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold text-gray-800">热门电影</h2>
+          <h2 class="text-2xl font-bold text-gray-800">
+            {{ $t('home.popularMovies') }}
+          </h2>
           <button class="text-red-600 hover:text-red-700 font-semibold">
-            查看更多 →
+            {{ $t('home.viewMore') }}
           </button>
         </div>
 
@@ -236,9 +240,11 @@
       <section class="mb-12">
         <!-- 区域标题和操作按钮 -->
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold text-gray-800">热门电视剧</h2>
+          <h2 class="text-2xl font-bold text-gray-800">
+            {{ $t('home.popularTvShows') }}
+          </h2>
           <button class="text-red-600 hover:text-red-700 font-semibold">
-            查看更多 →
+            {{ $t('home.viewMore') }}
           </button>
         </div>
 
@@ -268,9 +274,11 @@
       <section class="mb-12">
         <!-- 区域标题和操作按钮 -->
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold text-gray-800">最新动态</h2>
+          <h2 class="text-2xl font-bold text-gray-800">
+            {{ $t('home.latestUpdates') }}
+          </h2>
           <button class="text-red-600 hover:text-red-700 font-semibold">
-            查看更多 →
+            {{ $t('home.viewMore') }}
           </button>
         </div>
 
@@ -318,17 +326,21 @@
   // API 导入 - 趋势内容接口
   import { getAllTrending } from '~/api/trending'
   // API 导入 - 分类接口
+  import { useI18n } from 'vue-i18n'
+
+  // 获取 i18n 实例
+  const { t } = useI18n()
 
   // SEO 配置 - 设置页面标题和描述
-  useHead({
-    title: 'Nuxt Movie - 发现精彩电影',
+  useHead(() => ({
+    title: t('home.pageTitle'),
     meta: [
       {
         name: 'description',
-        content: '发现最新最热门的电影和电视剧，获取详细信息和评分',
+        content: t('home.pageDescription'),
       },
     ],
-  })
+  }))
 
   // ==================== 数据获取 ====================
   // 获取热门电影数据

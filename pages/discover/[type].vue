@@ -36,7 +36,7 @@
                 d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"
               />
             </svg>
-            <span>筛选</span>
+            <span>{{ $t('discover.filter') }}</span>
           </button>
         </div>
       </div>
@@ -49,7 +49,9 @@
           v-if="showFilters"
           class="lg:w-80 bg-white rounded-lg shadow-sm border p-6"
         >
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">筛选条件</h3>
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">
+            {{ $t('discover.filterConditions') }}
+          </h3>
 
           <!-- 应用筛选按钮 - 移到顶部 -->
           <div v-if="hasFilterChanges" class="mb-4">
@@ -58,7 +60,7 @@
               class="w-full px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
               @click="applyFilters"
             >
-              应用筛选
+              {{ $t('discover.applyFilters') }}
             </button>
           </div>
 
@@ -66,9 +68,9 @@
           <div class="space-y-6">
             <!-- 排序 -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2"
-                >排序方式</label
-              >
+              <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                $t('discover.sortBy')
+              }}</label>
               <select
                 v-model="filters.sort_by"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
@@ -85,9 +87,9 @@
 
             <!-- 分类筛选 -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2"
-                >分类</label
-              >
+              <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                $t('discover.genres')
+              }}</label>
               <div class="flex flex-wrap gap-2">
                 <button
                   v-for="genre in genres"
@@ -107,9 +109,9 @@
 
             <!-- 评分筛选 -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2"
-                >最低评分</label
-              >
+              <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                $t('discover.minRating')
+              }}</label>
               <div class="flex items-center space-x-2">
                 <input
                   v-model="filters['vote_average.gte']"
@@ -128,40 +130,42 @@
             <!-- 年份筛选 -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
-                {{ isMovie ? '发行时间' : '播出时间' }}
+                {{
+                  isMovie ? $t('discover.releaseDate') : $t('discover.airDate')
+                }}
               </label>
               <div class="grid grid-cols-2 gap-2">
                 <input
                   type="date"
                   :value="getStartDate()"
-                  placeholder="开始日期"
+                  :placeholder="$t('discover.startDatePlaceholder')"
                   class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                   @input="updateStartDate($event.target.value)"
                 />
                 <input
                   type="date"
                   :value="getEndDate()"
-                  placeholder="结束日期"
+                  :placeholder="$t('discover.endDatePlaceholder')"
                   class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                   @input="updateEndDate($event.target.value)"
                 />
               </div>
               <p class="text-xs text-gray-500 mt-1">
-                {{ filterDescription }}
+                {{ $t('discover.filterDescription') }}
                 <span
                   v-if="filters.sort_by === 'popularity.desc'"
                   class="block mt-1 text-blue-600"
                 >
-                  💡 热门内容默认包含未来内容，确保内容新鲜度
+                  {{ $t('discover.popularityNote') }}
                 </span>
               </p>
             </div>
 
             <!-- 语言筛选 -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2"
-                >语言</label
-              >
+              <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                $t('discover.language')
+              }}</label>
               <select
                 v-model="filters.with_original_language"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
@@ -178,9 +182,9 @@
 
             <!-- 地区筛选 (仅电影) -->
             <div v-if="isMovie">
-              <label class="block text-sm font-medium text-gray-700 mb-2"
-                >地区</label
-              >
+              <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                $t('discover.region')
+              }}</label>
               <select
                 v-model="filters.region"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
@@ -194,15 +198,15 @@
                 </option>
               </select>
               <p class="text-xs text-gray-500 mt-1">
-                选择地区会影响上映日期的排序
+                {{ $t('discover.regionNote') }}
               </p>
             </div>
 
             <!-- 上映类型筛选 (仅电影) -->
             <div v-if="isMovie">
-              <label class="block text-sm font-medium text-gray-700 mb-2"
-                >上映类型</label
-              >
+              <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                $t('discover.releaseType')
+              }}</label>
               <select
                 v-model="filters.with_release_type"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
@@ -216,7 +220,7 @@
                 </option>
               </select>
               <p class="text-xs text-gray-500 mt-1">
-                选择上映类型会影响日期排序
+                {{ $t('discover.regionNote') }}
               </p>
             </div>
           </div>
@@ -227,7 +231,7 @@
               class="w-full px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
               @click="resetFilters"
             >
-              重置筛选
+              {{ $t('common.clear') }}
             </button>
           </div>
         </div>
@@ -237,7 +241,7 @@
           <!-- 结果统计 -->
           <div class="flex items-center justify-between mb-6">
             <p class="text-gray-600">
-              找到 <span class="font-semibold">{{ totalResults }}</span> 个结果
+              {{ $t('search.foundResults', { count: totalResults }) }}
             </p>
 
             <!-- 视图切换 -->
@@ -348,7 +352,7 @@
           class="w-full px-6 py-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-lg font-medium"
           @click="applyFilters"
         >
-          应用筛选
+          {{ $t('discover.applyFilters') }}
         </button>
       </div>
     </div>
@@ -373,6 +377,7 @@
     MOVIE_SORT_OPTIONS,
     TV_SORT_OPTIONS,
   } from '~/constants'
+
   const route = useRoute()
   const type = route.params.type
 
@@ -680,13 +685,6 @@
   // 计算属性：是否为电影类型
   const isMovie = computed(() => type === 'movie')
 
-  // 计算属性：筛选说明文字
-  const filterDescription = computed(() => {
-    return isMovie.value
-      ? '筛选指定发行时间范围内的电影'
-      : '筛选指定播出时间范围内的电视剧'
-  })
-
   // 检测筛选条件是否有变化
   const hasFilterChanges = computed(() => {
     return (
@@ -747,7 +745,7 @@
   })
 
   // SEO 配置
-  useHead({
+  useHead(() => ({
     title: pageTitle,
     meta: [
       {
@@ -755,7 +753,7 @@
         content: pageDescription.value,
       },
     ],
-  })
+  }))
 
   // ==================== 方法 ====================
   const toggleFilters = () => {

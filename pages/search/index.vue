@@ -7,7 +7,7 @@
         <div class="max-w-2xl mx-auto relative">
           <SearchBox
             v-model="searchQuery"
-            placeholder="搜索电影、电视剧、演员..."
+            :placeholder="$t('search.placeholder')"
             :show-search-button="true"
             :input-class="'w-full px-4 py-3 pl-12 pr-20 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-lg'"
             @search="handleSearch"
@@ -21,7 +21,7 @@
           <div class="flex flex-wrap items-center gap-4 text-sm">
             <!-- 媒体类型过滤器 -->
             <div class="flex items-center space-x-2">
-              <span class="text-gray-600">类型:</span>
+              <span class="text-gray-600">{{ $t('search.type') }}</span>
               <div class="flex space-x-1">
                 <button
                   v-for="type in mediaTypes"
@@ -41,12 +41,12 @@
 
             <!-- 年份过滤器 -->
             <div class="flex items-center space-x-2">
-              <span class="text-gray-600">年份:</span>
+              <span class="text-gray-600">{{ $t('search.year') }}</span>
               <select
                 v-model="selectedYear"
                 class="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
               >
-                <option value="">全部年份</option>
+                <option value="">{{ $t('search.allYears') }}</option>
                 <option v-for="year in years" :key="year" :value="year">
                   {{ year }}
                 </option>
@@ -61,7 +61,9 @@
                   type="checkbox"
                   class="rounded border-gray-300 text-red-600 focus:ring-red-500"
                 />
-                <span class="text-gray-600">包含成人内容</span>
+                <span class="text-gray-600">{{
+                  $t('search.includeAdult')
+                }}</span>
               </label>
             </div>
 
@@ -70,7 +72,7 @@
               class="px-3 py-1 text-gray-500 hover:text-gray-700 underline"
               @click="clearFilters"
             >
-              清除过滤器
+              {{ $t('search.clearFilters') }}
             </button>
           </div>
         </div>
@@ -84,7 +86,7 @@
         <div
           class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"
         />
-        <p class="mt-2 text-gray-600">搜索中...</p>
+        <p class="mt-2 text-gray-600">{{ $t('search.searching') }}</p>
       </div>
 
       <!-- 错误状态 -->
@@ -109,7 +111,7 @@
           class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
           @click="handleSearch"
         >
-          重试
+          {{ $t('common.retry') }}
         </button>
       </div>
 
@@ -118,11 +120,13 @@
         <!-- 搜索结果统计 -->
         <div class="mb-6">
           <h2 class="text-2xl font-bold text-gray-900 mb-2">
-            搜索结果: "{{ searchQuery }}"
+            {{ $t('search.results') }}: "{{ searchQuery }}"
           </h2>
           <p class="text-gray-600">
-            找到 {{ totalResults }} 个结果
-            <span v-if="totalPages > 1">，共 {{ totalPages }} 页</span>
+            {{ $t('search.foundResults', { count: totalResults }) }}
+            <span v-if="totalPages > 1">{{
+              $t('search.totalPages', { pages: totalPages })
+            }}</span>
           </p>
         </div>
 
@@ -143,8 +147,8 @@
               />
             </svg>
           </div>
-          <p class="text-gray-600 mb-4">没有找到相关结果</p>
-          <p class="text-sm text-gray-500">尝试使用不同的关键词或调整过滤器</p>
+          <p class="text-gray-600 mb-4">{{ $t('search.noResults') }}</p>
+          <p class="text-sm text-gray-500">{{ $t('search.tryDifferent') }}</p>
         </div>
 
         <!-- 搜索结果列表 -->
@@ -255,8 +259,10 @@
             />
           </svg>
         </div>
-        <h3 class="text-lg font-medium text-gray-900 mb-2">开始搜索</h3>
-        <p class="text-gray-600">输入关键词搜索电影、电视剧或演员</p>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">
+          {{ $t('search.startSearch') }}
+        </h3>
+        <p class="text-gray-600">{{ $t('search.enterKeywords') }}</p>
       </div>
     </div>
   </div>
@@ -266,10 +272,14 @@
   // ==================== 页面元信息 ====================
   // ==================== API 导入 ====================
   import { advancedMultiSearch } from '~/api/search'
+  import { useI18n } from 'vue-i18n'
+
+  // 获取 i18n 实例
+  const { t } = useI18n()
 
   definePageMeta({
-    title: '搜索',
-    description: '搜索电影、电视剧和演员',
+    title: 'search.title',
+    description: 'search.enterKeywords',
   })
 
   // ==================== 响应式数据 ====================
@@ -296,9 +306,9 @@
 
   // ==================== 常量定义 ====================
   const mediaTypes = [
-    { value: 'movie', label: '电影' },
-    { value: 'tv', label: '电视剧' },
-    { value: 'person', label: '演员' },
+    { value: 'movie', label: t('media.movies') },
+    { value: 'tv', label: t('media.tvShows') },
+    { value: 'person', label: t('media.actors') },
   ]
 
   const years = computed(() => {
@@ -337,7 +347,7 @@
     try {
       await performSearch()
     } catch (err) {
-      error.value = '搜索失败，请重试'
+      error.value = t('search.searchFailed')
       console.error('Search error:', err)
     } finally {
       isLoading.value = false

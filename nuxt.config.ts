@@ -22,7 +22,46 @@ export default defineNuxtConfig({
     'pinia-plugin-persistedstate/nuxt',
     '@nuxt/eslint',
     '@nuxtjs/stylelint-module',
+    '@nuxtjs/i18n',
   ],
+
+  // i18n 模块配置
+  i18n: {
+    // 语言列表
+    locales: [
+      {
+        code: 'en',
+        name: 'English',
+        iso: 'en-US',
+        file: 'en.ts',
+      },
+      {
+        code: 'zh',
+        name: '中文',
+        iso: 'zh-CN',
+        file: 'zh.ts',
+      },
+    ],
+    // 默认语言
+    defaultLocale: 'en',
+    // 懒加载
+    lazy: true,
+    // 这是一个相对路径，指向包含翻译文件的目录。可以与懒加载选项（lazy option）配合使用，也可以不使用懒加载。路径解析规则：这个路径是相对于项目根目录下的 restructureDir 目录来解析的（restructureDir 默认值是 'i18n'）。
+    langDir: '../language',
+    // 策略
+    strategy: 'no_prefix',
+    // 检测浏览器语言
+    detectBrowserLanguage: {
+      // 使用 cookie
+      useCookie: true,
+      // 重定向的 cookie 键名
+      cookieKey: 'i18n_redirected',
+      // 重定向
+      alwaysRedirect: true,
+      // 回退语言
+      fallbackLocale: 'en',
+    },
+  },
 
   // CSS
   css: [
@@ -55,5 +94,14 @@ export default defineNuxtConfig({
   // Vercel 部署优化
   nitro: {
     preset: 'vercel',
+  },
+  // 第三方包自动导入
+  imports: {
+    presets: [
+      {
+        from: 'vue-i18n',
+        imports: ['useI18n'],
+      },
+    ],
   },
 })

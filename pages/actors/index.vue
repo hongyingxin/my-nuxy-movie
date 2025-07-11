@@ -1,4 +1,4 @@
-<!-- 
+<!--
   演员列表页面
   url: /actors
   展示热门演员列表，支持分页加载
@@ -9,9 +9,9 @@
       <!-- 页面标题 -->
       <div class="mb-8">
         <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
-          热门演员
+          {{ $t('actors.title') }}
         </h1>
-        <p class="text-gray-600">发现最受欢迎的演员和明星</p>
+        <p class="text-gray-600">{{ $t('actors.description') }}</p>
       </div>
 
       <!-- 加载状态 -->
@@ -70,7 +70,9 @@
                       d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                     />
                   </svg>
-                  <span class="text-sm font-medium">查看详情</span>
+                  <span class="text-sm font-medium">{{
+                    $t('common.view')
+                  }}</span>
                 </div>
               </div>
             </div>
@@ -86,7 +88,9 @@
 
               <!-- 代表作 -->
               <div class="space-y-1">
-                <p class="text-xs text-gray-500">代表作：</p>
+                <p class="text-xs text-gray-500">
+                  {{ $t('actors.knownFor') }}：
+                </p>
                 <div class="flex flex-wrap gap-1">
                   <span
                     v-for="work in actor.known_for?.slice(0, 2)"
@@ -145,13 +149,15 @@
       <!-- 错误状态 -->
       <div v-else-if="actors?.error.value" class="text-center py-12">
         <div class="text-red-600 text-6xl mb-4">😞</div>
-        <h2 class="text-2xl font-bold text-gray-800 mb-2">加载失败</h2>
-        <p class="text-gray-600 mb-4">无法获取演员列表，请稍后重试</p>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">
+          {{ $t('error.serverError') }}
+        </h2>
+        <p class="text-gray-600 mb-4">{{ $t('actors.loadingActors') }}</p>
         <button
           class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
           @click="actors.refresh"
         >
-          重新加载
+          {{ $t('common.retry') }}
         </button>
       </div>
     </div>
@@ -161,17 +167,21 @@
 <script setup>
   // API 导入
   import { getPopularPeople } from '~/api/person'
+  import { useI18n } from 'vue-i18n'
+
+  // 获取 i18n 实例
+  const { t } = useI18n()
 
   // SEO 配置
-  useHead({
-    title: '热门演员 - Nuxt Movie',
+  useHead(() => ({
+    title: `${t('actors.title')} - Nuxt Movie`,
     meta: [
       {
         name: 'description',
-        content: '发现最受欢迎的演员和明星，查看他们的代表作品和详细信息',
+        content: t('actors.description'),
       },
     ],
-  })
+  }))
 
   // 路由实例
   const route = useRoute()

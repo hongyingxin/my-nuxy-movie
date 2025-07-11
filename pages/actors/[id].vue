@@ -1,4 +1,4 @@
-<!-- 
+<!--
   演员详情页面 - 左右结构版本
   采用左右布局，去掉大海报，作品固定一行可滚动
   id: 演员的id
@@ -9,7 +9,7 @@
     <!-- 加载状态 -->
     <SkeletonLoadingState
       v-if="detail.pending.value"
-      message="加载演员详情中..."
+      :message="$t('actors.loadingActors')"
     />
 
     <!-- 演员详情内容 -->
@@ -81,14 +81,18 @@
                     <div class="text-2xl font-bold text-gray-800">
                       {{ common.getGenderText(detail.data.value.gender) }}
                     </div>
-                    <div class="text-sm text-gray-500">性别</div>
+                    <div class="text-sm text-gray-500">
+                      {{ $t('actors.gender') }}
+                    </div>
                   </div>
                   <div class="w-px h-8 bg-gray-300" />
                   <div class="text-center">
                     <div class="text-2xl font-bold text-gray-800">
                       {{ credits.data.value?.cast?.length || 0 }}
                     </div>
-                    <div class="text-sm text-gray-500">作品数量</div>
+                    <div class="text-sm text-gray-500">
+                      {{ $t('actors.filmography') }}
+                    </div>
                   </div>
                 </div>
 
@@ -100,7 +104,9 @@
                     <div class="text-3xl font-bold mb-1">
                       {{ detail.data.value.popularity.toFixed(0) }}
                     </div>
-                    <p class="text-red-100 text-sm">人气指数</p>
+                    <p class="text-red-100 text-sm">
+                      {{ $t('actors.popularity') }}
+                    </p>
                   </div>
                 </div>
 
@@ -122,7 +128,7 @@
                         d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                       />
                     </svg>
-                    收藏演员
+                    {{ $t('actors.addToFavorites') }}
                   </button>
                   <button
                     class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
@@ -140,7 +146,7 @@
                         d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
                       />
                     </svg>
-                    分享
+                    {{ $t('common.share') }}
                   </button>
                 </div>
               </div>
@@ -164,7 +170,7 @@
                     d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                详细信息
+                {{ $t('actors.title') }}
               </h3>
               <div class="space-y-4">
                 <div
@@ -185,7 +191,9 @@
                     />
                   </svg>
                   <div>
-                    <span class="text-gray-600 text-sm">生日</span>
+                    <span class="text-gray-600 text-sm">{{
+                      $t('actors.birthDate')
+                    }}</span>
                     <p class="text-gray-800 font-medium">
                       {{ common.formatDate(detail.data.value.birthday) }}
                     </p>
@@ -215,7 +223,9 @@
                     />
                   </svg>
                   <div>
-                    <span class="text-gray-600 text-sm">出生地</span>
+                    <span class="text-gray-600 text-sm">{{
+                      $t('actors.birthPlace')
+                    }}</span>
                     <p class="text-gray-800 font-medium">
                       {{ detail.data.value.place_of_birth }}
                     </p>
@@ -236,7 +246,9 @@
                     />
                   </svg>
                   <div>
-                    <span class="text-gray-600 text-sm">职业</span>
+                    <span class="text-gray-600 text-sm">{{
+                      $t('actors.occupation')
+                    }}</span>
                     <p class="text-gray-800 font-medium">
                       {{ detail.data.value.known_for_department }}
                     </p>
@@ -257,7 +269,9 @@
                     />
                   </svg>
                   <div>
-                    <span class="text-gray-600 text-sm">性别</span>
+                    <span class="text-gray-600 text-sm">{{
+                      $t('actors.gender')
+                    }}</span>
                     <p class="text-gray-800 font-medium">
                       {{ common.getGenderText(detail.data.value.gender) }}
                     </p>
@@ -277,7 +291,9 @@
                     />
                   </svg>
                   <div>
-                    <span class="text-gray-600 text-sm">IMDb</span>
+                    <span class="text-gray-600 text-sm">{{
+                      $t('actors.imdb')
+                    }}</span>
                     <a
                       :href="`https://www.imdb.com/name/${detail.data.value.imdb_id}`"
                       target="_blank"
@@ -297,7 +313,9 @@
             <section class="mb-8">
               <div class="flex items-center gap-3 mb-6">
                 <div class="w-1 h-8 bg-red-600 rounded-full" />
-                <h2 class="text-3xl font-bold text-gray-800">简介</h2>
+                <h2 class="text-3xl font-bold text-gray-800">
+                  {{ $t('actors.biography') }}
+                </h2>
               </div>
               <div class="bg-white rounded-2xl shadow-lg p-8">
                 <p class="text-gray-700 leading-relaxed text-lg">
@@ -311,7 +329,9 @@
               <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-3">
                   <div class="w-1 h-8 bg-red-600 rounded-full" />
-                  <h2 class="text-3xl font-bold text-gray-800">作品</h2>
+                  <h2 class="text-3xl font-bold text-gray-800">
+                    {{ $t('actors.filmography') }}
+                  </h2>
                 </div>
                 <div class="flex gap-2">
                   <button
@@ -448,9 +468,9 @@
                               d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"
                             />
                           </svg>
-                          <span class="text-white text-sm font-medium"
-                            >查看详情</span
-                          >
+                          <span class="text-white text-sm font-medium">{{
+                            $t('actors.viewDetails')
+                          }}</span>
                         </div>
                       </div>
                     </div>
@@ -521,7 +541,9 @@
             >
               <div class="flex items-center gap-3 mb-8">
                 <div class="w-1 h-8 bg-red-600 rounded-full" />
-                <h2 class="text-3xl font-bold text-gray-800">职业生涯时间轴</h2>
+                <h2 class="text-3xl font-bold text-gray-800">
+                  {{ $t('actors.careerTimeline') }}
+                </h2>
               </div>
 
               <div class="bg-white rounded-2xl shadow-lg p-8">
@@ -661,13 +683,17 @@
     >
       <div class="text-center">
         <div class="text-red-600 text-6xl mb-4">😞</div>
-        <h2 class="text-2xl font-bold text-gray-800 mb-2">加载失败</h2>
-        <p class="text-gray-600 mb-4">无法获取演员详情，请稍后重试</p>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">
+          {{ $t('actors.loadFailed') }}
+        </h2>
+        <p class="text-gray-600 mb-4">
+          {{ $t('actors.failedToLoadActorDetails') }}
+        </p>
         <button
           class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
           @click="detail.refresh"
         >
-          重新加载
+          {{ $t('actors.reload') }}
         </button>
       </div>
     </div>

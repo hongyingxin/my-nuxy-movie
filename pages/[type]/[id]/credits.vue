@@ -1,4 +1,4 @@
-<!-- 
+<!--
   演职员页面
   type: movie, tv
   id: 电影或者电视剧的id
@@ -10,7 +10,7 @@
       <!-- 页面标题 -->
       <MediaPageHeader
         :backdrop_path="detail.data.value?.backdrop_path"
-        :title="`${detail.data.value?.title || detail.data.value?.name} 的演职员`"
+        :title="`${detail.data.value?.title || detail.data.value?.name} ${$t('detail.cast')}`"
         :back-to="`/${mediaType}/${mediaId}`"
       />
 
@@ -20,13 +20,17 @@
       >
         <!-- 左侧：演员列表骨架屏 -->
         <div class="lg:col-span-3">
-          <h2 class="text-2xl font-bold text-gray-800 mb-6">演员</h2>
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">
+            {{ $t('detail.cast') }}
+          </h2>
           <SkeletonList :count="15" variant="actor" />
         </div>
 
         <!-- 右侧：剧组成员骨架屏 -->
         <div class="lg:col-span-1">
-          <h2 class="text-2xl font-bold text-gray-800 mb-6">剧组</h2>
+          <h2 class="text-2xl font-bold text-gray-800 mb-6">
+            {{ $t('detail.crew') }}
+          </h2>
           <div class="space-y-6">
             <div v-for="n in 3" :key="n" class="animate-pulse">
               <div class="bg-gray-300 h-5 rounded w-20 mb-3" />
@@ -53,7 +57,7 @@
         <!-- 左侧：演员列表 -->
         <div class="lg:col-span-3">
           <h2 class="text-2xl font-bold text-gray-800 mb-6">
-            演员 ({{ credits.data.value.cast?.length || 0 }})
+            {{ $t('detail.cast') }} ({{ credits.data.value.cast?.length || 0 }})
           </h2>
           <div class="bg-white rounded-lg shadow-sm">
             <div
@@ -87,7 +91,7 @@
         <!-- 右侧：剧组成员 -->
         <div class="lg:col-span-1">
           <h2 class="text-2xl font-bold text-gray-800 mb-6">
-            剧组 ({{ credits.data.value.crew?.length || 0 }})
+            {{ $t('detail.crew') }} ({{ credits.data.value.crew?.length || 0 }})
           </h2>
 
           <!-- 按部门分组显示 -->
@@ -116,13 +120,17 @@
 
       <div v-else-if="credits.error.value" class="text-center py-12">
         <div class="text-red-600 text-6xl mb-4">😞</div>
-        <h2 class="text-2xl font-bold text-gray-800 mb-2">加载失败</h2>
-        <p class="text-gray-600 mb-4">无法获取演职员信息，请稍后重试</p>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">
+          {{ $t('detail.loadingFailed') }}
+        </h2>
+        <p class="text-gray-600 mb-4">
+          {{ $t('detail.loadingFailedMessage') }}
+        </p>
         <button
           class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
           @click="credits.refresh"
         >
-          重新加载
+          {{ $t('detail.reload') }}
         </button>
       </div>
     </div>
@@ -132,6 +140,9 @@
 <script setup>
   // API 导入
   import { getDetail, getCredits } from '~/api/detail'
+  import { useI18n } from 'vue-i18n'
+
+  const { t } = useI18n()
 
   const route = useRoute()
   // 从路由参数中提取 type 和 id
@@ -152,14 +163,14 @@
   // SEO 配置
   useHead(() => ({
     title: detail.data.value
-      ? `${detail.data.value.title || detail.data.value.name} 的演职员 - Nuxt Movie`
-      : '演职员 - Nuxt Movie',
+      ? `${detail.data.value.title || detail.data.value.name} ${t('detail.cast')}`
+      : t('detail.cast'),
     meta: [
       {
         name: 'description',
         content: detail.data.value
-          ? `${detail.data.value.title || detail.data.value.name} 的完整演职员名单`
-          : '查看完整的演职员名单',
+          ? `${detail.data.value.title || detail.data.value.name} ${t('detail.cast')}`
+          : t('detail.cast'),
       },
     ],
   }))
@@ -178,21 +189,21 @@
     }, {})
   })
 
-  // 翻译部门名称
+  // 翻译部门名称（多语言）
   const translateDepartment = department => {
     const departmentMap = {
-      Production: '制作',
-      Directing: '导演',
-      Writing: '编剧',
-      Sound: '音效',
-      Camera: '摄影',
-      Editing: '剪辑',
-      Art: '美术',
-      'Costume & Make-Up': '服装化妆',
-      'Visual Effects': '视觉效果',
-      Lighting: '灯光',
-      Creator: '创作',
-      Actors: '演员',
+      Production: t('department.Production'),
+      Directing: t('department.Directing'),
+      Writing: t('department.Writing'),
+      Sound: t('department.Sound'),
+      Camera: t('department.Camera'),
+      Editing: t('department.Editing'),
+      Art: t('department.Art'),
+      'Costume & Make-Up': t('department.CostumeMakeUp'),
+      'Visual Effects': t('department.VisualEffects'),
+      Lighting: t('department.Lighting'),
+      Creator: t('department.Creator'),
+      Actors: t('department.Actors'),
     }
     return departmentMap[department] || department
   }

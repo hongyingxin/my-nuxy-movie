@@ -18,5 +18,8 @@ export default withNuxt(
       '*.local',
       'public/**',
     ],
+    rules: {
+      'no-unused-vars': 'error',
+    },
   }
 )

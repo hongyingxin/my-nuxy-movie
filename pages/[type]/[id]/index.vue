@@ -1,4 +1,4 @@
-<!-- 
+<!--
   电影和电视剧的详情页
   type: movie, tv
   id: 电影或者电视剧的id
@@ -9,7 +9,7 @@
     <!-- 加载状态 -->
     <SkeletonLoadingState
       v-if="detail.pending.value"
-      :message="`加载${mediaTypeText}详情中...`"
+      :message="$t('detail.loadingDetails', { type: mediaTypeText })"
     />
 
     <!-- 详情内容 -->
@@ -108,7 +108,8 @@
                     <span class="text-gray-300 ml-1">/10</span>
                   </div>
                   <div class="text-gray-300">
-                    {{ detail.data.value.vote_count }} 人评分
+                    {{ detail.data.value.vote_count }}
+                    {{ $t('detail.peopleRated') }}
                   </div>
                 </div>
 
@@ -138,7 +139,7 @@
                         d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"
                       />
                     </svg>
-                    观看预告片
+                    {{ $t('detail.watchTrailer') }}
                   </button>
                   <button
                     class="bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-lg font-semibold transition-colors backdrop-blur-sm flex items-center gap-2"
@@ -156,7 +157,7 @@
                         d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                       />
                     </svg>
-                    收藏
+                    {{ $t('detail.addToFavorites') }}
                   </button>
                 </div>
               </div>
@@ -172,21 +173,25 @@
           <div class="lg:col-span-2">
             <!-- 简介 -->
             <section class="mb-8">
-              <h2 class="text-2xl font-bold text-gray-800 mb-4">简介</h2>
+              <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                {{ $t('detail.overview') }}
+              </h2>
               <p class="text-gray-700 leading-relaxed">
-                {{ detail.data.value.overview || '暂无简介' }}
+                {{ detail.data.value.overview || $t('detail.overview') }}
               </p>
             </section>
 
             <!-- 演职员 -->
             <section v-if="credits.data.value" class="mb-8">
               <div class="flex items-center justify-between mb-4">
-                <h2 class="text-2xl font-bold text-gray-800">演职员</h2>
+                <h2 class="text-2xl font-bold text-gray-800">
+                  {{ $t('detail.cast') }}
+                </h2>
                 <NuxtLink
                   :to="`/${mediaType}/${mediaId}/credits`"
                   class="text-red-600 hover:text-red-700 flex items-center"
                 >
-                  查看全部
+                  {{ $t('detail.viewAll') }}
                   <svg
                     class="w-5 h-5 ml-1"
                     fill="none"
@@ -226,7 +231,9 @@
 
             <!-- 媒体 -->
             <section v-if="images.data.value && activeMediaTab" class="mb-8">
-              <h2 class="text-2xl font-bold text-gray-800 mb-4">媒体</h2>
+              <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                {{ $t('detail.photos') }}
+              </h2>
 
               <!-- 标签页 -->
               <div class="border-b border-gray-200 mb-6">
@@ -334,7 +341,7 @@
                   :to="`/${mediaType}/${mediaId}/gallery`"
                   class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                 >
-                  查看全部图片
+                  {{ $t('detail.viewAllImages') }}
                   <svg
                     class="ml-2 -mr-1 h-5 w-5"
                     xmlns="http://www.w3.org/2000/svg"
@@ -354,7 +361,7 @@
             <!-- 相似内容 -->
             <section v-if="similar.data.value?.results?.length" class="mb-8">
               <h2 class="text-2xl font-bold text-gray-800 mb-4">
-                相似{{ mediaTypeText }}
+                {{ $t('detail.similar') }}{{ mediaTypeText }}
               </h2>
               <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 <MediaCard
@@ -371,16 +378,22 @@
           <div class="lg:col-span-1">
             <!-- 详细信息 -->
             <section class="bg-white rounded-lg shadow-md p-6 mb-6">
-              <h3 class="text-lg font-bold text-gray-800 mb-4">详细信息</h3>
+              <h3 class="text-lg font-bold text-gray-800 mb-4">
+                {{ $t('detail.details') }}
+              </h3>
               <div class="space-y-3">
                 <div>
-                  <span class="text-gray-600 text-sm">状态：</span>
+                  <span class="text-gray-600 text-sm"
+                    >{{ $t('detail.status') }}：</span
+                  >
                   <span class="text-gray-800">{{
                     detail.data.value.status
                   }}</span>
                 </div>
                 <div>
-                  <span class="text-gray-600 text-sm">原始语言：</span>
+                  <span class="text-gray-600 text-sm"
+                    >{{ $t('detail.originalLanguage') }}：</span
+                  >
                   <span class="text-gray-800">{{
                     detail.data.value.original_language?.toUpperCase()
                   }}</span>
@@ -389,19 +402,25 @@
                 <!-- 电影特有信息 -->
                 <template v-if="!isTv">
                   <div>
-                    <span class="text-gray-600 text-sm">预算：</span>
+                    <span class="text-gray-600 text-sm"
+                      >{{ $t('detail.budget') }}：</span
+                    >
                     <span class="text-gray-800">{{
                       common.formatBudget(detail.data.value.budget)
                     }}</span>
                   </div>
                   <div>
-                    <span class="text-gray-600 text-sm">票房：</span>
+                    <span class="text-gray-600 text-sm"
+                      >{{ $t('detail.revenue') }}：</span
+                    >
                     <span class="text-gray-800">{{
                       common.formatBudget(detail.data.value.revenue)
                     }}</span>
                   </div>
                   <div>
-                    <span class="text-gray-600 text-sm">发行日期：</span>
+                    <span class="text-gray-600 text-sm"
+                      >{{ $t('detail.releaseDate') }}：</span
+                    >
                     <span class="text-gray-800">{{
                       common.formatDate(detail.data.value.release_date)
                     }}</span>
@@ -411,25 +430,35 @@
                 <!-- 电视剧特有信息 -->
                 <template v-else>
                   <div>
-                    <span class="text-gray-600 text-sm">季数：</span>
+                    <span class="text-gray-600 text-sm"
+                      >{{ $t('detail.seasons') }}：</span
+                    >
                     <span class="text-gray-800"
-                      >{{ detail.data.value.number_of_seasons }} 季</span
+                      >{{ detail.data.value.number_of_seasons }}
+                      {{ $t('detail.seasons') }}</span
                     >
                   </div>
                   <div>
-                    <span class="text-gray-600 text-sm">集数：</span>
+                    <span class="text-gray-600 text-sm"
+                      >{{ $t('detail.episodes') }}：</span
+                    >
                     <span class="text-gray-800"
-                      >{{ detail.data.value.number_of_episodes }} 集</span
+                      >{{ detail.data.value.number_of_episodes }}
+                      {{ $t('detail.episodes') }}</span
                     >
                   </div>
                   <div>
-                    <span class="text-gray-600 text-sm">首播日期：</span>
+                    <span class="text-gray-600 text-sm"
+                      >{{ $t('detail.firstAirDate') }}：</span
+                    >
                     <span class="text-gray-800">{{
                       common.formatDate(detail.data.value.first_air_date)
                     }}</span>
                   </div>
                   <div v-if="detail.data.value.last_air_date">
-                    <span class="text-gray-600 text-sm">最后播出：</span>
+                    <span class="text-gray-600 text-sm"
+                      >{{ $t('detail.lastAirDate') }}：</span
+                    >
                     <span class="text-gray-800">{{
                       common.formatDate(detail.data.value.last_air_date)
                     }}</span>
@@ -437,7 +466,9 @@
                 </template>
 
                 <div>
-                  <span class="text-gray-600 text-sm">制作公司：</span>
+                  <span class="text-gray-600 text-sm"
+                    >{{ $t('detail.productionCompanies') }}：</span
+                  >
                   <div class="mt-1">
                     <span
                       v-for="company in detail.data.value.production_companies"
@@ -453,7 +484,9 @@
 
             <!-- 评分 -->
             <section class="bg-white rounded-lg shadow-md p-6 mb-6">
-              <h3 class="text-lg font-bold text-gray-800 mb-4">评分</h3>
+              <h3 class="text-lg font-bold text-gray-800 mb-4">
+                {{ $t('detail.rating') }}
+              </h3>
               <div class="text-center">
                 <div class="text-4xl font-bold text-red-600 mb-2">
                   {{ detail.data.value.vote_average?.toFixed(1) }}
@@ -475,7 +508,11 @@
                   </div>
                 </div>
                 <p class="text-gray-600 text-sm">
-                  基于 {{ detail.data.value.vote_count }} 个评分
+                  {{
+                    $t('detail.basedOnRatings', {
+                      count: detail.data.value.vote_count,
+                    })
+                  }}
                 </p>
               </div>
             </section>
@@ -485,7 +522,9 @@
               v-if="!isTv && detail.data.value.keywords?.keywords?.length"
               class="bg-white rounded-lg shadow-md p-6"
             >
-              <h3 class="text-lg font-bold text-gray-800 mb-4">关键词</h3>
+              <h3 class="text-lg font-bold text-gray-800 mb-4">
+                {{ $t('detail.keywords') }}
+              </h3>
               <div class="flex flex-wrap gap-2">
                 <span
                   v-for="keyword in detail.data.value.keywords.keywords.slice(
@@ -505,7 +544,9 @@
               v-if="isTv && detail.data.value.seasons?.length"
               class="bg-white rounded-lg shadow-md p-6"
             >
-              <h3 class="text-lg font-bold text-gray-800 mb-4">季数</h3>
+              <h3 class="text-lg font-bold text-gray-800 mb-4">
+                {{ $t('detail.seasons') }}
+              </h3>
               <div class="space-y-3">
                 <div
                   v-for="season in detail.data.value.seasons.slice(0, 5)"
@@ -520,7 +561,7 @@
                   <div class="flex-1">
                     <p class="font-medium text-gray-800">{{ season.name }}</p>
                     <p class="text-sm text-gray-600">
-                      {{ season.episode_count }} 集
+                      {{ season.episode_count }} {{ $t('detail.episodes') }}
                     </p>
                   </div>
                 </div>
@@ -538,15 +579,17 @@
     >
       <div class="text-center">
         <div class="text-red-600 text-6xl mb-4">😞</div>
-        <h2 class="text-2xl font-bold text-gray-800 mb-2">加载失败</h2>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">
+          {{ $t('detail.loadingFailed') }}
+        </h2>
         <p class="text-gray-600 mb-4">
-          无法获取{{ mediaTypeText }}详情，请稍后重试
+          {{ $t('detail.loadingFailedDetails', { type: mediaTypeText }) }}
         </p>
         <button
           class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
           @click="refresh"
         >
-          重新加载
+          {{ $t('detail.reload') }}
         </button>
       </div>
     </div>
@@ -563,6 +606,10 @@
     getSimilar,
     getImages,
   } from '~/api/detail'
+  import { useI18n } from 'vue-i18n'
+
+  // 获取 i18n 实例
+  const { t } = useI18n()
 
   const route = useRoute()
   const mediaType = route.params.type // 'movie' 或 'tv'
@@ -601,9 +648,9 @@
   // 媒体标签页状态
   const activeMediaTab = ref('backdrops')
   const mediaTabs = [
-    { id: 'backdrops', name: '剧照' },
-    { id: 'posters', name: '海报' },
-    { id: 'videos', name: '视频' },
+    { id: 'backdrops', name: t('detail.backdrops') },
+    { id: 'posters', name: t('detail.posters') },
+    { id: 'videos', name: t('detail.videos') },
   ]
 
   // 监听数据加载完成，设置默认标签页
@@ -657,10 +704,10 @@
   // 工具函数
   const getRuntimeOrSeasons = () => {
     if (isTv.value) {
-      return `${detail.data.value.number_of_seasons} 季`
+      return `${detail.data.value.number_of_seasons} ${t('detail.seasons')}`
     } else {
       const minutes = detail.data.value.runtime
-      if (!minutes) return '未知'
+      if (!minutes) return t('detail.unknown')
       const hours = Math.floor(minutes / 60)
       const mins = minutes % 60
       return `${hours}h ${mins}m`

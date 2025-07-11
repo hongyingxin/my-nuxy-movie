@@ -104,6 +104,11 @@
             />
           </div>
 
+          <!-- 语言切换器 -->
+          <div class="hidden md:block">
+            <CommonLanguageSwitcher variant="simple" />
+          </div>
+
           <!-- 主题切换按钮 -->
           <button
             class="hidden md:block p-2 text-gray-600 hover:text-red-600 transition-colors"
@@ -232,6 +237,14 @@
             >
               {{ item.label }}
             </NuxtLink>
+          </div>
+
+          <!-- 移动端语言切换 -->
+          <div class="border-t border-gray-200 pt-4">
+            <div class="px-3 py-2">
+              <div class="text-sm text-gray-500 mb-2">语言设置</div>
+              <CommonLanguageSwitcher variant="buttons" />
+            </div>
           </div>
 
           <!-- 移动端用户菜单 -->
