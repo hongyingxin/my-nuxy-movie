@@ -1,4 +1,4 @@
-<!-- 
+<!--
   电影和电视剧的列表页
   url: /discover/movie
   url: /discover/tv
@@ -167,7 +167,7 @@
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
               >
                 <option
-                  v-for="option in LANGUAGE_OPTIONS"
+                  v-for="option in CONTENT_LANGUAGE_OPTIONS"
                   :key="option.value"
                   :value="option.value"
                 >
@@ -366,7 +366,7 @@
   import {
     REGION_OPTIONS,
     RELEASE_TYPE_OPTIONS,
-    LANGUAGE_OPTIONS,
+    CONTENT_LANGUAGE_OPTIONS, // 使用更明确的命名
     getRegionName,
     getReleaseTypeName,
     isTheatricalRelease,

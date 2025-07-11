@@ -199,9 +199,10 @@ my-nuxt-movie/
 
 ## 🔗 有用链接
 
-- [常用模式和最佳实践](./docs/common-patterns.md)
-- [代码质量工具配置](./docs/code-quality-tools.md)
-- [API 文档](./docs/api.md)
-- [组件库](./docs/components.md)
-- [API 类型定义](./types/apiType/README.md)
-- [API TypeScript 改进](./docs/api-typescript-improvements.md)
+- [📖 完整文档目录](./docs/README.md) - 所有文档的索引和分类
+- [🎯 常用模式和最佳实践](./docs/common-patterns.md) - 必读的开发指南
+- [🌐 语言配置详解](./docs/languages.md) - TMDB API 语言配置说明
+- [🔧 代码质量工具配置](./docs/code-quality-tools.md) - 工具链配置
+- [🧩 组件库](./docs/components.md) - 组件使用文档
+- [📝 API 类型定义](./types/apiType/README.md) - TypeScript 类型说明
+- [⚡ API TypeScript 改进](./docs/api-typescript-improvements.md) - API 优化方案

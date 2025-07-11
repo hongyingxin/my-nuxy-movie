@@ -122,3 +122,16 @@ export const rateMedia = (mediaType: MediaType, id: number, rating: number) => {
     params: { value: rating },
   })
 }
+
+/**
+ * 获取 TMDB 支持的语言配置列表
+ * @returns 语言配置列表
+ */
+export const getLanguagesConfiguration = () => {
+  return useHttp<
+    Array<{ iso_639_1: string; english_name: string; name: string }>
+  >({
+    url: '/configuration/languages',
+    method: 'GET',
+  })
+}
