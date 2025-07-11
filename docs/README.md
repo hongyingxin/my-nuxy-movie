@@ -21,6 +21,10 @@
 - [**API TypeScript 改进**](./api-typescript-improvements.md) - API 接口类型定义改进方案
 - [**页面文档**](./pages/) - 各个页面的实现文档和 API 对比分析
 
+### 🌐 国际化
+
+- [**i18n 多语言集成指南**](./i18n-guide.md) - Nuxt i18n 完整集成教程，包含问题解决方案
+
 ### 🎨 UI/UX
 
 - [**骨架屏设计**](./skeleton-screen.md) - 加载状态的骨架屏实现
