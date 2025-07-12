@@ -33,6 +33,7 @@
    - Nuxt 相关问题 → [Nuxt 官方文档](https://nuxt.com/docs)
    - Vue 3 相关问题 → [Vue 3 官方文档](https://vuejs.org/guide/)
    - TypeScript 相关问题 → [TypeScript 官方文档](https://www.typescriptlang.org/docs/)
+   - **i18n 文档**: 参考 [Nuxt i18n 官方文档](https://i18n.nuxtjs.org/) 进行多语言配置
 5. **检查现有实现** - 查看项目中是否有类似的解决方案
 6. **提供精准方案** - 基于文档和项目规范给出准确的解决方案
 
@@ -48,10 +49,19 @@
 - 组合式函数放在 `composables/` 目录
 - 工具函数放在 `utils/` 目录
 - 组件放在 `components/` 目录
+- 所有翻译内容放在 `language/` 目录下，按功能模块组织
 
 ## 编写代码前
 始终检查 `docs/common-patterns.md` 中的现有模式，避免重复实现解决方案。遇到框架相关问题时，主动查阅官方文档确保解决方案的准确性。
 
 如果有多种解决方案，让我选择后再进行编写。
 
-https://i18n.nuxtjs.org/
+
+## 代码提交规范
+- 自动帮我选择提交类型，并填写提交信息。
+- **提交工具**: 使用 `czg` 进行可视化交互式提交
+- **提交规范**: 遵循 `commitlint.config.cjs` 中定义的提交规范
+- **提交命令**: 使用 `pnpm commit` 或 `npx czg` 进行标准化提交
+- **提交类型**: 严格按照 commitlint 配置的类型进行提交
+- **提交信息**: 使用中文描述，格式为 `type: 简短描述`
+- **提交前检查**: 确保通过 ESLint、Prettier、Stylelint 等代码质量检查
