@@ -1,38 +1,9 @@
+import { UI_LOCALES } from '~/constants/languages'
+
 export const useLanguageStore = defineStore('language', {
   state: () => ({
     currentLocale: 'zh-CN' as string,
-    locales: [
-      {
-        code: 'en-US',
-        name: 'English',
-        iso: 'en-US',
-        flag: '🇺🇸',
-      },
-      {
-        code: 'zh-CN',
-        name: '中文',
-        iso: 'zh-CN',
-        flag: '🇨🇳',
-      },
-      {
-        code: 'ja-JP',
-        name: '日本語',
-        iso: 'ja-JP',
-        flag: '🇯🇵',
-      },
-      {
-        code: 'ko-KR',
-        name: '한국어',
-        iso: 'ko-KR',
-        flag: '🇰🇷',
-      },
-      {
-        code: 'ar-SA',
-        name: 'العربية',
-        iso: 'ar-SA',
-        flag: '🇸🇦',
-      },
-    ],
+    locales: UI_LOCALES,
   }),
 
   getters: {

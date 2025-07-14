@@ -3,23 +3,19 @@
  * 明确区分界面语言和内容筛选语言
  */
 
+import type { UILanguageCode, UILocale } from '~/types/language'
+
 // ==================== 界面语言配置 ====================
 /**
  * 界面语言选项（用于 TMDB API 的 language 参数）
  * 影响返回数据的语言（标题翻译、简介翻译等）
  */
-export const UI_LANGUAGE_OPTIONS = [
-  { value: 'zh-CN', label: '中文（简体）' },
-  { value: 'zh-TW', label: '中文（繁体）' },
-  { value: 'en-US', label: 'English' },
-  { value: 'ja-JP', label: '日本語' },
-  { value: 'ko-KR', label: '한국어' },
-]
 
 /**
  * 默认界面语言
  */
-export const DEFAULT_UI_LANGUAGE = 'zh-CN'
+export const DEFAULT_UI_LANGUAGE: UILanguageCode =
+  (process.env.DEFAULT_UI_LANGUAGE as UILanguageCode) || 'zh-CN'
 
 // ==================== 内容筛选语言配置 ====================
 /**
@@ -73,6 +69,17 @@ export const LANGUAGE_NAMES = CONTENT_LANGUAGE_NAMES
  */
 export const LANGUAGE_OPTIONS = CONTENT_LANGUAGE_OPTIONS
 
+/**
+ * 界面语言详细配置（用于 Pinia store、i18n、语言切换等）
+ */
+export const UI_LOCALES: UILocale[] = [
+  { code: 'en-US', name: 'English', iso: 'en-US', flag: '🇺🇸' },
+  { code: 'zh-CN', name: '中文', iso: 'zh-CN', flag: '🇨🇳' },
+  { code: 'ja-JP', name: '日本語', iso: 'ja-JP', flag: '🇯🇵' },
+  { code: 'ko-KR', name: '한국어', iso: 'ko-KR', flag: '🇰🇷' },
+  { code: 'ar-SA', name: 'العربية', iso: 'ar-SA', flag: '🇸🇦' },
+]
+
 // ==================== 工具函数 ====================
 /**
  * 获取内容语言名称
@@ -89,8 +96,8 @@ export const getContentLanguageName = (code: string): string => {
  * @returns 语言名称，如果不存在则返回原代码
  */
 export const getUILanguageName = (code: string): string => {
-  const option = UI_LANGUAGE_OPTIONS.find(opt => opt.value === code)
-  return option?.label || code
+  const option = UI_LOCALES.find(opt => opt.code === code)
+  return option?.name || code
 }
 
 /**
