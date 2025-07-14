@@ -208,4 +208,14 @@ export default {
     page: '第',
     of: '页，共',
   },
+
+  // 语言
+  languages: {
+    en: '英语',
+    zh: '中文',
+    ja: '日语',
+    ko: '韩语',
+    ar: '阿拉伯语',
+    other: '其他',
+  },
 }

@@ -212,4 +212,13 @@ export default {
     page: 'Page',
     of: 'of',
   },
+
+  languages: {
+    en: 'English',
+    zh: 'Chinese',
+    ja: 'Japanese',
+    ko: 'Korean',
+    ar: 'Arabic',
+    other: 'Other',
+  },
 }

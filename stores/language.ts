@@ -14,31 +14,24 @@ export const useLanguageStore = defineStore('language', {
         iso: 'zh-CN',
         flag: '🇨🇳',
       },
-      // 为将来扩展预留的语言选项
-      // {
-      //   code: 'ja',
-      //   name: '日本語',
-      //   iso: 'ja-JP',
-      //   flag: '🇯🇵',
-      // },
-      // {
-      //   code: 'ko',
-      //   name: '한국어',
-      //   iso: 'ko-KR',
-      //   flag: '🇰🇷',
-      // },
-      // {
-      //   code: 'es',
-      //   name: 'Español',
-      //   iso: 'es-ES',
-      //   flag: '🇪🇸',
-      // },
-      // {
-      //   code: 'fr',
-      //   name: 'Français',
-      //   iso: 'fr-FR',
-      //   flag: '🇫🇷',
-      // },
+      {
+        code: 'ja',
+        name: '日本語',
+        iso: 'ja-JP',
+        flag: '🇯🇵',
+      },
+      {
+        code: 'ko',
+        name: '한국어',
+        iso: 'ko-KR',
+        flag: '🇰🇷',
+      },
+      {
+        code: 'ar',
+        name: 'العربية',
+        iso: 'ar-SA',
+        flag: '🇸🇦',
+      },
     ],
   }),
 
@@ -102,6 +95,7 @@ export const useLanguageStore = defineStore('language', {
      */
     initialize() {
       // 从 i18n 获取当前语言
+      console.log('initialize', this.currentLocale, this.locales)
       this.syncFromI18n()
     },
   },

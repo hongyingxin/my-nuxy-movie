@@ -29,18 +29,11 @@ export default defineNuxtConfig({
   i18n: {
     // 语言列表
     locales: [
-      {
-        code: 'en',
-        name: 'English',
-        iso: 'en-US',
-        file: 'en.ts',
-      },
-      {
-        code: 'zh',
-        name: '中文',
-        iso: 'zh-CN',
-        file: 'zh.ts',
-      },
+      { code: 'en', name: 'English', iso: 'en-US', file: 'en.ts' },
+      { code: 'zh', name: '中文', iso: 'zh-CN', file: 'zh.ts' },
+      { code: 'ja', name: '日本語', iso: 'ja-JP', file: 'ja.ts' },
+      { code: 'ko', name: '한국어', iso: 'ko-KR', file: 'ko.ts' },
+      { code: 'ar', name: 'العربية', iso: 'ar-SA', file: 'ar.ts' },
     ],
     // 默认语言
     defaultLocale: 'en',

@@ -37,7 +37,7 @@
                 class="text-gray-700 hover:text-red-600 font-medium transition-colors relative group"
                 active-class="text-red-600"
               >
-                {{ menu.label }}
+                {{ t(menu.label) }}
                 <div
                   class="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 transition-all group-hover:w-full"
                 />
@@ -46,7 +46,7 @@
                 <button
                   class="text-gray-700 hover:text-red-600 font-medium transition-colors flex items-center space-x-1"
                 >
-                  <span>{{ menu.label }}</span>
+                  <span>{{ t(menu.label) }}</span>
                   <svg
                     class="w-4 h-4 transition-transform group-hover:rotate-180"
                     fill="none"
@@ -74,10 +74,10 @@
                       >
                         <div>
                           <div class="font-medium text-gray-900">
-                            {{ item.label }}
+                            {{ t(item.label) }}
                           </div>
                           <div class="text-sm text-gray-500">
-                            {{ item.desc }}
+                            {{ item.desc ? t(item.desc) : '' }}
                           </div>
                         </div>
                       </NuxtLink>
@@ -173,13 +173,15 @@
                   :to="item.to"
                   class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors"
                 >
-                  <span class="text-sm text-gray-700">{{ item.label }}</span>
+                  <span class="text-sm text-gray-700">{{ t(item.label) }}</span>
                 </NuxtLink>
                 <hr class="my-2" />
                 <button
                   class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors w-full text-left"
                 >
-                  <span class="text-sm text-gray-700">退出登录</span>
+                  <span class="text-sm text-gray-700">{{
+                    t('user.logout')
+                  }}</span>
                 </button>
               </div>
             </div>
@@ -235,14 +237,16 @@
               class="block py-2 text-gray-700 hover:text-red-600 transition-colors"
               @click="closeMobileMenu"
             >
-              {{ item.label }}
+              {{ t(item.label) }}
             </NuxtLink>
           </div>
 
           <!-- 移动端语言切换 -->
           <div class="border-t border-gray-200 pt-4">
             <div class="px-3 py-2">
-              <div class="text-sm text-gray-500 mb-2">语言设置</div>
+              <div class="text-sm text-gray-500 mb-2">
+                {{ t('language.settings') }}
+              </div>
               <CommonLanguageSwitcher variant="buttons" />
             </div>
           </div>
@@ -257,14 +261,16 @@
                 class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors"
                 @click="closeMobileMenu"
               >
-                <span class="text-sm text-gray-700">{{ item.label }}</span>
+                <span class="text-sm text-gray-700">{{ t(item.label) }}</span>
               </NuxtLink>
               <hr class="my-2" />
               <button
                 class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors w-full text-left"
                 @click="closeMobileMenu"
               >
-                <span class="text-sm text-gray-700">退出登录</span>
+                <span class="text-sm text-gray-700">{{
+                  t('user.logout')
+                }}</span>
               </button>
             </div>
           </div>
@@ -284,6 +290,7 @@
     MOBILE_NAV_ITEMS,
     USER_MENU_ITEMS,
   } from '@/constants/navigation'
+  import { useI18n } from 'vue-i18n'
 
   // ==================== 响应式数据 ====================
   const isMobileMenuOpen = ref(false)
@@ -295,6 +302,9 @@
   const navMenus = NAV_MENUS
   const mobileNavItems = MOBILE_NAV_ITEMS
   const userMenuItems = USER_MENU_ITEMS
+
+  // i18n 实例
+  const { t } = useI18n()
 
   // ==================== 方法 ====================
   const toggleMobileMenu = () => {
