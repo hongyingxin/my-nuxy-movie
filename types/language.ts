@@ -14,3 +14,22 @@ export interface UILocale {
   iso: string
   flag: string
 }
+
+/**
+ * TMDB 支持的内容原始语言类型
+ *
+ * 用于 /configuration/languages 接口返回的语言对象，
+ * 可用于内容筛选（with_original_language 参数）等场景。
+ *
+ * @field iso_639_1      ISO 639-1 语言代码（如 'en', 'zh', 'ja'）
+ * @field english_name   语言的英文名称（如 'English', 'Chinese', 'Japanese'）
+ * @field name           语言的本地名称（如 'English', '中文', '日本語'）
+ */
+export interface TmdbLanguage {
+  /** ISO 639-1 语言代码 */
+  iso_639_1: string
+  /** 英文名称 */
+  english_name: string
+  /** 本地名称 */
+  name: string
+}

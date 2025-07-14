@@ -12,6 +12,7 @@ export default defineNuxtConfig({
       tmdbApiKey: process.env.TMDB_API_KEY,
       tmdbApiToken: process.env.TMDB_API_TOKEN,
       tmdbImageBaseUrl: process.env.TMDB_IMAGE_BASE_URL,
+      defaultUiLanguage: process.env.DEFAULT_UI_LANGUAGE,
       appName: 'My Nuxt Movie',
       appDescription: 'A modern movie discovery app built with Nuxt 3',
     },

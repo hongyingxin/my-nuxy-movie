@@ -162,22 +162,68 @@
             </div>
 
             <!-- 语言筛选 -->
-            <div>
+            <div class="relative">
               <label class="block text-sm font-medium text-gray-700 mb-2">{{
                 $t('discover.language')
               }}</label>
-              <select
-                v-model="filters.with_original_language"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+              <!-- 伪下拉框，显示当前选中项 -->
+              <button
+                type="button"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-left focus:outline-none focus:ring-2 focus:ring-red-500 flex items-center justify-between"
+                :aria-expanded="dropdownOpen"
+                @click="dropdownOpen = !dropdownOpen"
               >
-                <option
-                  v-for="option in CONTENT_LANGUAGE_OPTIONS"
-                  :key="option.value"
-                  :value="option.value"
+                <span>
+                  {{ selectedLanguageLabel }}
+                </span>
+                <svg
+                  class="w-4 h-4 ml-2 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  {{ option.label }}
-                </option>
-              </select>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              <!-- 下拉面板 -->
+              <div
+                v-show="dropdownOpen"
+                class="absolute z-20 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-64 overflow-y-auto"
+              >
+                <input
+                  v-model="languageSearch"
+                  type="text"
+                  :placeholder="$t('discover.languageSearchPlaceholder')"
+                  class="w-full px-3 py-2 border-b border-gray-200 focus:outline-none"
+                  @keydown.stop
+                />
+                <ul>
+                  <li
+                    v-for="option in filteredLanguageOptions"
+                    :key="option.value"
+                    :class="[
+                      'px-3 py-2 cursor-pointer hover:bg-red-50',
+                      filters.with_original_language === option.value
+                        ? 'bg-red-100 text-red-600 font-semibold'
+                        : '',
+                    ]"
+                    @click="selectLanguage(option.value)"
+                  >
+                    {{ option.label }}
+                  </li>
+                  <li
+                    v-if="filteredLanguageOptions.length === 0"
+                    class="px-3 py-2 text-gray-400"
+                  >
+                    {{ $t('common.noResult') || '无结果' }}
+                  </li>
+                </ul>
+              </div>
             </div>
 
             <!-- 地区筛选 (仅电影) -->
@@ -370,13 +416,15 @@
   import {
     REGION_OPTIONS,
     RELEASE_TYPE_OPTIONS,
-    CONTENT_LANGUAGE_OPTIONS, // 使用更明确的命名
     getRegionName,
     getReleaseTypeName,
     isTheatricalRelease,
     MOVIE_SORT_OPTIONS,
     TV_SORT_OPTIONS,
   } from '~/constants'
+
+  import { useGenreStore } from '~/stores/genre'
+  import { useI18n } from 'vue-i18n'
 
   const route = useRoute()
   const type = route.params.type
@@ -744,6 +792,51 @@
       : genreStore.tvGenres || []
   })
 
+  // 语言 store
+  const languageStore = useLanguageStore()
+
+  // 页面挂载时拉取 TMDB 语言列表
+  languageStore.fetchTmdbLanguages()
+
+  // 语言选项（包含“所有语言”）
+  const { t } = useI18n()
+  const languageOptions = computed(() => [
+    { value: '', label: t('discover.allLanguages') },
+    ...(Array.isArray(languageStore.getTmdbLanguages)
+      ? languageStore.getTmdbLanguages
+      : []
+    ).map(l => ({
+      value: l.iso_639_1,
+      label:
+        t('originalLanguages.' + l.iso_639_1) ||
+        l.english_name +
+          (l.name && l.name !== l.english_name ? ` / ${l.name}` : ''),
+    })),
+  ])
+
+  // 语言搜索
+  const languageSearch = ref('')
+  // 过滤后的语言选项
+  const filteredLanguageOptions = computed(() => {
+    if (!languageSearch.value.trim()) return languageOptions.value
+    const keyword = languageSearch.value.trim().toLowerCase()
+    return languageOptions.value.filter(
+      opt =>
+        opt.label.toLowerCase().includes(keyword) ||
+        opt.value.toLowerCase().includes(keyword)
+    )
+  })
+
+  // 当前选中语言的 label
+  const selectedLanguageLabel = computed(() => {
+    if (!Array.isArray(languageOptions.value)) return t('discover.allLanguages')
+    return (
+      languageOptions.value.find(
+        opt => opt.value == filters.value.with_original_language
+      )?.label || t('discover.allLanguages')
+    )
+  })
+
   // SEO 配置
   useHead(() => ({
     title: pageTitle,
@@ -989,6 +1082,38 @@
     } else {
       filters.value.with_genres.push(genreId)
     }
+  }
+
+  // 语言下拉交互
+  const dropdownOpen = ref(false)
+  // 关闭下拉（点击外部）
+  const closeDropdown = e => {
+    if (!e.target.closest('.relative')) dropdownOpen.value = false
+  }
+  onMounted(() => {
+    window.addEventListener('click', closeDropdown)
+  })
+  onUnmounted(() => {
+    window.removeEventListener('click', closeDropdown)
+  })
+  // 选中语言
+  const selectLanguage = val => {
+    console.log(val)
+    filters.value.with_original_language = val
+    dropdownOpen.value = false
+
+    // const language = languageOptions.value.find(
+    //   opt => opt.value == filters.value.with_original_language
+    // )
+    // console.log(language)
+    const language =
+      (Array.isArray(languageOptions.value)
+        ? languageOptions.value.find(
+            opt => opt.value == filters.value.with_original_language
+          )
+        : null
+      )?.label || '123'
+    console.log(language)
   }
 
   // ==================== 监听器 ====================

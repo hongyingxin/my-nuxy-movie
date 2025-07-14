@@ -14,6 +14,7 @@ import type {
   TvShowPaginatedResponse,
   MovieRatingResponse,
 } from '~/types/apiType'
+import type { TmdbLanguage } from '~/types/language'
 
 /**
  * 通用详情接口 - 支持电影和电视剧
@@ -128,9 +129,7 @@ export const rateMedia = (mediaType: MediaType, id: number, rating: number) => {
  * @returns 语言配置列表
  */
 export const getLanguagesConfiguration = () => {
-  return useHttp<
-    Array<{ iso_639_1: string; english_name: string; name: string }>
-  >({
+  return useHttp<TmdbLanguage[]>({
     url: '/configuration/languages',
     method: 'GET',
   })
