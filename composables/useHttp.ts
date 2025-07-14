@@ -2,6 +2,8 @@
 
 import type { FetchError, SearchParameters } from 'ofetch'
 import type { AsyncData, UseFetchOptions } from '#app'
+import { useNuxtApp } from '#app'
+import { useLanguageStore } from '~/stores/language'
 
 type UrlType =
   | string
@@ -35,9 +37,26 @@ export const useHttp = <T>({
   // 将 lazy 选项默认值改为了 true，避免页面切换时的阻塞（但要处理数据 loading 显示效果）
   options.lazy = options.lazy ?? true
   options.method = method
+  // 获取当前界面语言
+  let currentLanguage = 'zh-CN'
+  // 为了避免 $i18n 和 pinia store 的切换不一致
+  try {
+    const { $i18n } = useNuxtApp()
+    if ($i18n?.locale?.value) {
+      currentLanguage = $i18n.locale.value
+    } else {
+      // fallback: pinia store
+      const languageStore = useLanguageStore()
+      if (languageStore.currentLocale) {
+        currentLanguage = languageStore.currentLocale
+      }
+    }
+  } catch (e) {
+    // fallback
+    currentLanguage = 'zh-CN'
+  }
   options.params = {
-    // 后续修改，可以根据用户设置的语言，来设置语言
-    language: 'zh-CN',
+    language: currentLanguage,
     ...params,
   }
   options.baseURL = tmdbApiUrl

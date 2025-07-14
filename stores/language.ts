@@ -1,33 +1,33 @@
 export const useLanguageStore = defineStore('language', {
   state: () => ({
-    currentLocale: 'en' as string,
+    currentLocale: 'zh-CN' as string,
     locales: [
       {
-        code: 'en',
+        code: 'en-US',
         name: 'English',
         iso: 'en-US',
         flag: '🇺🇸',
       },
       {
-        code: 'zh',
+        code: 'zh-CN',
         name: '中文',
         iso: 'zh-CN',
         flag: '🇨🇳',
       },
       {
-        code: 'ja',
+        code: 'ja-JP',
         name: '日本語',
         iso: 'ja-JP',
         flag: '🇯🇵',
       },
       {
-        code: 'ko',
+        code: 'ko-KR',
         name: '한국어',
         iso: 'ko-KR',
         flag: '🇰🇷',
       },
       {
-        code: 'ar',
+        code: 'ar-SA',
         name: 'العربية',
         iso: 'ar-SA',
         flag: '🇸🇦',

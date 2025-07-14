@@ -29,14 +29,14 @@ export default defineNuxtConfig({
   i18n: {
     // 语言列表
     locales: [
-      { code: 'en', name: 'English', iso: 'en-US', file: 'en.ts' },
-      { code: 'zh', name: '中文', iso: 'zh-CN', file: 'zh.ts' },
-      { code: 'ja', name: '日本語', iso: 'ja-JP', file: 'ja.ts' },
-      { code: 'ko', name: '한국어', iso: 'ko-KR', file: 'ko.ts' },
-      { code: 'ar', name: 'العربية', iso: 'ar-SA', file: 'ar.ts' },
+      { code: 'en-US', name: 'English', iso: 'en-US', file: 'en.ts' },
+      { code: 'zh-CN', name: '中文', iso: 'zh-CN', file: 'zh.ts' },
+      { code: 'ja-JP', name: '日本語', iso: 'ja-JP', file: 'ja.ts' },
+      { code: 'ko-KR', name: '한국어', iso: 'ko-KR', file: 'ko.ts' },
+      { code: 'ar-SA', name: 'العربية', iso: 'ar-SA', file: 'ar.ts' },
     ],
     // 默认语言
-    defaultLocale: 'en',
+    defaultLocale: 'zh-CN',
     // 懒加载
     lazy: true,
     // 这是一个相对路径，指向包含翻译文件的目录。可以与懒加载选项（lazy option）配合使用，也可以不使用懒加载。路径解析规则：这个路径是相对于项目根目录下的 restructureDir 目录来解析的（restructureDir 默认值是 'i18n'）。
@@ -52,7 +52,7 @@ export default defineNuxtConfig({
       // 重定向
       alwaysRedirect: true,
       // 回退语言
-      fallbackLocale: 'en',
+      fallbackLocale: 'zh-CN',
     },
   },
 
