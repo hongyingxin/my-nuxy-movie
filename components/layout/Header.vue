@@ -29,7 +29,7 @@
           </div>
 
           <!-- 主导航菜单 -->
-          <nav class="hidden md:flex items-center space-x-8">
+          <nav class="hidden md:flex items-center space-x-8 whitespace-nowrap">
             <template v-for="menu in navMenus" :key="menu.label">
               <NuxtLink
                 v-if="!menu.dropdown"

@@ -103,6 +103,10 @@ export const useLanguageStore = defineStore('language', {
      */
     async fetchTmdbLanguages() {
       try {
+        // 如果已缓存数据，直接返回，避免重复请求
+        if (this.tmdbLanguages && this.tmdbLanguages.length > 0) {
+          return
+        }
         const res = await getLanguagesConfiguration()
         // 兼容 useHttp 返回 AsyncData 结构
         console.log('fetchTmdbLanguages-----------------', res)
