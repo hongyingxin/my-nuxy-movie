@@ -236,7 +236,7 @@
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
               >
                 <option
-                  v-for="option in REGION_OPTIONS"
+                  v-for="option in regionOptions"
                   :key="option.value"
                   :value="option.value"
                 >
@@ -405,7 +405,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
   // 路由参数
   // 'movie' 或 'tv'
 
@@ -414,9 +414,7 @@
 
   // 常量导入
   import {
-    REGION_OPTIONS,
     RELEASE_TYPE_OPTIONS,
-    getRegionName,
     getReleaseTypeName,
     isTheatricalRelease,
     MOVIE_SORT_OPTIONS,
@@ -425,6 +423,8 @@
 
   import { useGenreStore } from '~/stores/genre'
   import { useI18n } from 'vue-i18n'
+  import { useRegionStore } from '~/stores/region'
+  import { storeToRefs } from 'pinia'
 
   const route = useRoute()
   const type = route.params.type
@@ -436,6 +436,14 @@
    */
   const getDefaultSortBy = () => {
     return type === 'movie' ? 'release_date.desc' : 'first_air_date.desc'
+  }
+
+  const getRegionName = code => {
+    const i18nName = t('originalRegions.' + code)
+    if (i18nName && i18nName !== 'originalRegions.' + code) return i18nName
+    const found = regions.value?.find(r => r.value === code)
+    if (found) return found.label
+    return code
   }
 
   // ==================== 响应式数据 ====================
@@ -836,6 +844,20 @@
       )?.label || t('discover.allLanguages')
     )
   })
+
+  // ==================== 地区选项 ====================
+  const regionStore = useRegionStore()
+  const { regions } = storeToRefs(regionStore)
+  // onMounted(() => {
+  regionStore.loadRegions()
+  // })
+  const regionOptions = computed(() => [
+    { value: '', label: t('discover.allRegions') || '全球' },
+    ...(regions.value || []).map(r => ({
+      value: r.value,
+      label: getRegionName(r.value),
+    })),
+  ])
 
   // SEO 配置
   useHead(() => ({

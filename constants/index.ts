@@ -4,7 +4,7 @@
  */
 
 // 地区相关常量
-export * from './regions'
+// export * from './regions'
 
 // 上映类型相关常量
 export * from './releaseTypes'
