@@ -334,6 +334,12 @@ useHead(() => ({
 - 添加适当的注释
 - 使用 TypeScript 类型定义
 
+## 📝 **TypeScript 类型添加模式**
+
+### **3. 最佳实践**
+
+参考这个文档内容 [typescript-guide.md](./typescript-guide.md)
+
 ## 多语言（i18n）相关最佳实践
 
 - 所有语言切换都必须通过 Pinia store 的 `switchLanguage` 方法进行，不允许在组件或页面中直接操作 `$i18n`。这样可以保证 store 状态和 Nuxt i18n 状态始终同步，避免出现语言状态不一致的问题。
