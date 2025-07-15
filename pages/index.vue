@@ -325,8 +325,6 @@
   import { getPopularTvShows, getOnTheAirTvShows } from '~/api/tv'
   // API 导入 - 趋势内容接口
   import { getAllTrending } from '~/api/trending'
-  // API 导入 - 分类接口
-  import { useI18n } from 'vue-i18n'
 
   // 获取 i18n 实例
   const { t } = useI18n()
