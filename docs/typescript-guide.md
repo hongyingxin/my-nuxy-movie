@@ -4,6 +4,8 @@
 
 1. **类型文件组织**
    - 页面相关类型定义放在 `types/pages/` 目录下
+   - 公共类型定义放在 `types/common/` 目录下
+   - 接口类型定义放在 `types/apiType/` 目录下
    - 按功能模块组织类型文件
    - 类型文件命名要与页面文件名对应（如 `home.ts` 对应 `pages/index.vue`）
 
