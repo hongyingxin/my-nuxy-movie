@@ -422,7 +422,6 @@
   } from '~/constants'
 
   import { useGenreStore } from '~/stores/genre'
-  import { useI18n } from 'vue-i18n'
   import { useRegionStore } from '~/stores/region'
   import { storeToRefs } from 'pinia'
 
