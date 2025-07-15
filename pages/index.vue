@@ -318,35 +318,20 @@
   </div>
 </template>
 
-<script setup lang="ts">
-  // ==================== 页面元信息 ====================
-  // 导入 Vue 3 Composition API 核心函数
-  import { ref, computed, onMounted, onUnmounted } from 'vue'
-  // 导入 Nuxt 的 head 管理功能
-  import { useHead } from '@unhead/vue'
-
-  // ==================== API 导入 ====================
-  // 导入电影相关 API 函数
+<script setup>
+  // API 导入 - 电影相关接口
   import { getPopularMovies, getUpcomingMovies } from '~/api/movie'
-  // 导入电视剧相关 API 函数
+  // API 导入 - 电视剧相关接口
   import { getPopularTvShows, getOnTheAirTvShows } from '~/api/tv'
-  // 导入热门内容 API 函数
+  // API 导入 - 趋势内容接口
   import { getAllTrending } from '~/api/trending'
+  // API 导入 - 分类接口
+  import { useI18n } from 'vue-i18n'
 
-  // ==================== 类型导入 ====================
-  // 导入电影项目类型
-  import type { MovieItem } from '@/types/apiType/movie'
-  // 导入电视剧项目类型
-  import type { TvShowItem } from '@/types/apiType/tv'
-  // 导入热门项目类型
-  import type { TrendingItem } from '@/types/apiType/trending'
-
-  // ==================== 国际化 ====================
-  // 获取 i18n 实例用于多语言支持
+  // 获取 i18n 实例
   const { t } = useI18n()
 
-  // ==================== 页面头部配置 ====================
-  // 配置页面的 SEO 信息，包括标题和描述
+  // SEO 配置 - 设置页面标题和描述
   useHead(() => ({
     title: t('home.pageTitle'),
     meta: [
@@ -357,36 +342,34 @@
     ],
   }))
 
-  // ==================== API 数据获取 ====================
-  // 获取热门电影数据（第1页）
+  // ==================== 数据获取 ====================
+  // 获取热门电影数据
   const popularMovies = getPopularMovies(1)
-  // 获取即将上映电影数据（第1页）
+  // 获取即将上映电影数据
   const upcomingMovies = getUpcomingMovies(1)
-  // 获取热门电视剧数据（第1页）
+  // 获取热门电视剧数据
   const popularTvShows = getPopularTvShows(1)
-  // 获取正在播出电视剧数据（第1页）
+  // 获取正在播出电视剧数据
   const onTheAirTvShows = getOnTheAirTvShows(1)
-  // 获取所有热门内容数据（用于 Hero 轮播）
+  // 获取电影分类数据
+  // const movieGenres = getMovieGenres()
+  // 获取电视剧分类数据
+  // const tvGenres = getTvGenres()
+
+  // ==================== Hero 轮播相关 ====================
+  // 获取趋势内容数据（用于 Hero 轮播）
   const heroContent = getAllTrending()
+  console.log('heroContent', heroContent)
+  // 当前轮播索引
+  const currentHeroIndex = ref(0)
 
-  // ==================== 响应式数据 ====================
-  // Hero 轮播当前索引
-  const currentHeroIndex = ref<number>(0)
-  // 收藏列表（使用 Set 存储收藏项目的 ID）
-  const favorites = ref<Set<number>>(new Set())
-
-  // ==================== 计算属性 ====================
-  // 当前 Hero 轮播项目
+  // 计算当前轮播项
   const currentHeroItem = computed(() => {
     return heroContent.data.value?.results?.[currentHeroIndex.value] || {}
   })
 
-  // ==================== 轮播控制方法 ====================
-  /**
-   * 切换到下一个 Hero 轮播项目
-   * 实现循环轮播，最多显示5个项目
-   */
-  const nextHero = (): void => {
+  // 轮播控制函数 - 下一张
+  const nextHero = () => {
     if (heroContent.data.value?.results?.length) {
       currentHeroIndex.value =
         (currentHeroIndex.value + 1) %
@@ -394,11 +377,8 @@
     }
   }
 
-  /**
-   * 切换到上一个 Hero 轮播项目
-   * 实现循环轮播，最多显示5个项目
-   */
-  const prevHero = (): void => {
+  // 轮播控制函数 - 上一张
+  const prevHero = () => {
     if (heroContent.data.value?.results?.length) {
       const maxIndex = Math.min(5, heroContent.data.value.results.length) - 1
       currentHeroIndex.value =
@@ -406,19 +386,18 @@
     }
   }
 
-  // ==================== 收藏功能方法 ====================
-  /**
-   * 切换收藏状态
-   * @param item - 要切换收藏状态的项目（电影、电视剧或热门内容）
-   */
-  const toggleFavorite = (
-    item: MovieItem | TvShowItem | TrendingItem
-  ): void => {
+  // ==================== 收藏功能 ====================
+  // 收藏列表 - 使用 Set 存储收藏的 ID
+  const favorites = ref(new Set())
+
+  // 切换收藏状态
+  const toggleFavorite = item => {
     if (favorites.value.has(item.id)) {
       favorites.value.delete(item.id)
     } else {
       favorites.value.add(item.id)
     }
+    // TODO: 这里可以调用 API 同步到服务器
     console.log(
       '收藏状态切换:',
       item.title || item.name,
@@ -426,30 +405,22 @@
     )
   }
 
-  // ==================== 定时器管理 ====================
-  // Hero 轮播自动播放定时器
-  let heroInterval: ReturnType<typeof setInterval> | null = null
+  // ==================== 自动轮播 ====================
+  // 轮播定时器
+  let heroInterval = null
 
-  // ==================== 生命周期钩子 ====================
-  /**
-   * 组件挂载时的初始化
-   * 启动 Hero 轮播的自动播放功能
-   */
+  // 组件挂载时启动自动轮播
   onMounted(() => {
-    // 设置 Hero 轮播自动播放，每5秒切换一次
     heroInterval = setInterval(() => {
       if (heroContent.data.value?.results?.length) {
         currentHeroIndex.value =
           (currentHeroIndex.value + 1) %
           Math.min(5, heroContent.data.value.results.length)
       }
-    }, 5000)
+    }, 5000) // 每5秒切换一次
   })
 
-  /**
-   * 组件卸载时的清理
-   * 清除定时器以防止内存泄漏
-   */
+  // 组件卸载时清理定时器
   onUnmounted(() => {
     if (heroInterval) {
       clearInterval(heroInterval)

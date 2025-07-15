@@ -606,6 +606,7 @@
     getSimilar,
     getImages,
   } from '~/api/detail'
+  import { useI18n } from 'vue-i18n'
 
   // 获取 i18n 实例
   const { t } = useI18n()

@@ -140,6 +140,7 @@
 <script setup>
   // API 导入
   import { getDetail, getCredits } from '~/api/detail'
+  import { useI18n } from 'vue-i18n'
 
   const { t } = useI18n()
 

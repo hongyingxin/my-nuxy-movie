@@ -268,11 +268,11 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
   // ==================== 页面元信息 ====================
   // ==================== API 导入 ====================
   import { advancedMultiSearch } from '~/api/search'
-  import type { SearchResult, SearchMediaType } from '~/types/apiType/search'
+  import { useI18n } from 'vue-i18n'
 
   // 获取 i18n 实例
   const { t } = useI18n()
@@ -287,28 +287,28 @@
   const router = useRouter()
 
   // 搜索相关
-  const searchQuery = ref<string>('')
-  const currentPage = ref<number>(1)
-  const viewMode = ref<'grid' | 'list'>('grid')
+  const searchQuery = ref('')
+  const currentPage = ref(1)
+  const viewMode = ref('grid') // 'grid' | 'list'
 
   // 过滤器
-  const selectedMediaTypes = ref<SearchMediaType[]>(['movie', 'tv', 'person'])
-  const selectedYear = ref<string>('')
-  const includeAdult = ref<boolean>(false)
+  const selectedMediaTypes = ref(['movie', 'tv', 'person'])
+  const selectedYear = ref('')
+  const includeAdult = ref(false)
 
   // 搜索结果
-  const searchResults = ref<SearchResult[]>([])
-  const totalResults = ref<number>(0)
-  const totalPages = ref<number>(0)
-  const isLoading = ref<boolean>(false)
-  const error = ref<string | null>(null)
-  const hasSearched = ref<boolean>(false)
+  const searchResults = ref([])
+  const totalResults = ref(0)
+  const totalPages = ref(0)
+  const isLoading = ref(false)
+  const error = ref(null)
+  const hasSearched = ref(false)
 
   // ==================== 常量定义 ====================
   const mediaTypes = [
-    { value: 'movie' as SearchMediaType, label: t('media.movies') },
-    { value: 'tv' as SearchMediaType, label: t('media.tvShows') },
-    { value: 'person' as SearchMediaType, label: t('media.actors') },
+    { value: 'movie', label: t('media.movies') },
+    { value: 'tv', label: t('media.tvShows') },
+    { value: 'person', label: t('media.actors') },
   ]
 
   const years = computed(() => {
@@ -317,63 +317,26 @@
   })
 
   // ==================== 计算属性 ====================
-  const hasResults = computed<boolean>(() => {
+  const hasResults = computed(() => {
     return searchResults.value.length > 0
   })
 
   // 分离不同类型的搜索结果
-  const mediaResults = computed<SearchResult[]>(() => {
+  const mediaResults = computed(() => {
     return searchResults.value.filter(
       item => item.media_type === 'movie' || item.media_type === 'tv'
     )
   })
 
-  const personResults = computed<SearchResult[]>(() => {
+  const personResults = computed(() => {
     return searchResults.value.filter(item => item.media_type === 'person')
   })
-
-  // ==================== 工具函数 ====================
-  /**
-   * 安全地获取路由查询参数
-   */
-  const getQueryParam = (
-    param: string | string[] | undefined | null
-  ): string => {
-    if (Array.isArray(param)) {
-      return param[0] || ''
-    }
-    return param || ''
-  }
-
-  /**
-   * 安全地解析页码
-   */
-  const parsePageNumber = (
-    page: string | string[] | undefined | null
-  ): number => {
-    const pageStr = getQueryParam(page)
-    const parsed = parseInt(pageStr)
-    return isNaN(parsed) ? 1 : parsed
-  }
-
-  /**
-   * 安全地解析媒体类型数组
-   */
-  const parseMediaTypes = (
-    types: string | string[] | undefined | null
-  ): SearchMediaType[] => {
-    const typesStr = getQueryParam(types)
-    if (!typesStr) return ['movie', 'tv', 'person']
-
-    const parsed = typesStr.split(',') as SearchMediaType[]
-    return parsed.filter(type => ['movie', 'tv', 'person'].includes(type))
-  }
 
   // ==================== 方法 ====================
   /**
    * 处理搜索
    */
-  const handleSearch = async (): Promise<void> => {
+  const handleSearch = async () => {
     if (!searchQuery.value.trim()) return
 
     isLoading.value = true
@@ -394,17 +357,17 @@
   /**
    * 执行搜索
    */
-  const performSearch = async (): Promise<void> => {
+  const performSearch = async () => {
     const query = searchQuery.value.trim()
     if (!query) return
 
     // 更新 URL 参数
     const queryParams = {
       q: query,
-      page: currentPage.value.toString(),
+      page: currentPage.value,
       types: selectedMediaTypes.value.join(','),
       year: selectedYear.value,
-      adult: includeAdult.value.toString(),
+      adult: includeAdult.value,
     }
 
     await router.push({
@@ -419,10 +382,8 @@
         currentPage.value,
         selectedMediaTypes.value,
         {
-          year: selectedYear.value ? parseInt(selectedYear.value) : undefined,
-          first_air_date_year: selectedYear.value
-            ? parseInt(selectedYear.value)
-            : undefined,
+          year: selectedYear.value,
+          first_air_date_year: selectedYear.value,
           include_adult: includeAdult.value,
         }
       )
@@ -430,7 +391,7 @@
       // 处理搜索结果
       if (Array.isArray(result)) {
         // 多个搜索结果（分别搜索）
-        const allResults: SearchResult[] = []
+        const allResults = []
         let total = 0
 
         result.forEach((searchResult, index) => {
@@ -439,7 +400,7 @@
             const items = searchResult.data.value.results.map(item => ({
               ...item,
               media_type: type,
-            })) as SearchResult[]
+            }))
             allResults.push(...items)
             total += searchResult.data.value.total_results
           }
@@ -475,7 +436,7 @@
   /**
    * 切换媒体类型
    */
-  const toggleMediaType = (type: SearchMediaType): void => {
+  const toggleMediaType = type => {
     const index = selectedMediaTypes.value.indexOf(type)
     if (index > -1) {
       selectedMediaTypes.value.splice(index, 1)
@@ -487,7 +448,7 @@
   /**
    * 清除过滤器
    */
-  const clearFilters = (): void => {
+  const clearFilters = () => {
     selectedMediaTypes.value = ['movie', 'tv', 'person']
     selectedYear.value = ''
     includeAdult.value = false
@@ -496,7 +457,7 @@
   /**
    * 处理页码变化
    */
-  const handlePageChange = async (page: number): Promise<void> => {
+  const handlePageChange = async page => {
     currentPage.value = page
     await performSearch()
   }
@@ -504,18 +465,15 @@
   /**
    * 处理搜索建议选择
    */
-  const handleSuggestionSelect = (suggestion: {
-    title?: string
-    name?: string
-  }): void => {
-    searchQuery.value = suggestion.title || suggestion.name || ''
+  const handleSuggestionSelect = suggestion => {
+    searchQuery.value = suggestion.title || suggestion.name
     handleSearch()
   }
 
   /**
    * 处理查看所有结果
    */
-  const handleViewAllResults = (): void => {
+  const handleViewAllResults = () => {
     handleSearch()
   }
 
@@ -525,20 +483,13 @@
     const { q, page, types, year, adult } = route.query
 
     if (q) {
-      searchQuery.value = getQueryParam(
-        q as string | string[] | undefined | null
-      )
-      currentPage.value = parsePageNumber(
-        page as string | string[] | undefined | null
-      )
-      selectedMediaTypes.value = parseMediaTypes(
-        types as string | string[] | undefined | null
-      )
-      selectedYear.value = getQueryParam(
-        year as string | string[] | undefined | null
-      )
-      includeAdult.value =
-        getQueryParam(adult as string | string[] | undefined | null) === 'true'
+      searchQuery.value = q
+      currentPage.value = parseInt(page) || 1
+      selectedMediaTypes.value = types
+        ? types.split(',')
+        : ['movie', 'tv', 'person']
+      selectedYear.value = year || ''
+      includeAdult.value = adult === 'true'
 
       // 自动执行搜索
       nextTick(() => {
@@ -558,22 +509,13 @@
     () => route.query,
     newQuery => {
       if (newQuery.q && hasSearched.value) {
-        searchQuery.value = getQueryParam(
-          newQuery.q as string | string[] | undefined | null
-        )
-        currentPage.value = parsePageNumber(
-          newQuery.page as string | string[] | undefined | null
-        )
-        selectedMediaTypes.value = parseMediaTypes(
-          newQuery.types as string | string[] | undefined | null
-        )
-        selectedYear.value = getQueryParam(
-          newQuery.year as string | string[] | undefined | null
-        )
-        includeAdult.value =
-          getQueryParam(
-            newQuery.adult as string | string[] | undefined | null
-          ) === 'true'
+        searchQuery.value = newQuery.q
+        currentPage.value = parseInt(newQuery.page) || 1
+        selectedMediaTypes.value = newQuery.types
+          ? newQuery.types.split(',')
+          : ['movie', 'tv', 'person']
+        selectedYear.value = newQuery.year || ''
+        includeAdult.value = newQuery.adult === 'true'
 
         performSearch()
       }
