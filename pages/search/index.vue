@@ -268,10 +268,16 @@
   </div>
 </template>
 
-<script setup>
-  // ==================== 页面元信息 ====================
+<script setup lang="ts">
   // ==================== API 导入 ====================
   import { advancedMultiSearch } from '~/api/search'
+  import type {
+    SearchResultItem,
+    MediaTypeOption,
+    ViewMode,
+    SearchQueryParams,
+    SearchFilterParams,
+  } from '~/types/pages/search'
 
   // 获取 i18n 实例
   const { t } = useI18n()
@@ -287,47 +293,51 @@
 
   // 搜索相关
   const searchQuery = ref('')
-  const currentPage = ref(1)
-  const viewMode = ref('grid') // 'grid' | 'list'
+  const currentPage = ref<number>(1)
+  const viewMode = ref<ViewMode>('grid')
 
   // 过滤器
-  const selectedMediaTypes = ref(['movie', 'tv', 'person'])
-  const selectedYear = ref('')
-  const includeAdult = ref(false)
+  const selectedMediaTypes = ref<Array<MediaTypeOption['value']>>([
+    'movie',
+    'tv',
+    'person',
+  ])
+  const selectedYear = ref<string>('')
+  const includeAdult = ref<boolean>(false)
 
   // 搜索结果
-  const searchResults = ref([])
-  const totalResults = ref(0)
-  const totalPages = ref(0)
-  const isLoading = ref(false)
-  const error = ref(null)
-  const hasSearched = ref(false)
+  const searchResults = ref<SearchResultItem[]>([])
+  const totalResults = ref<number>(0)
+  const totalPages = ref<number>(0)
+  const isLoading = ref<boolean>(false)
+  const error = ref<string | null>(null)
+  const hasSearched = ref<boolean>(false)
 
   // ==================== 常量定义 ====================
-  const mediaTypes = [
+  const mediaTypes: MediaTypeOption[] = [
     { value: 'movie', label: t('media.movies') },
     { value: 'tv', label: t('media.tvShows') },
     { value: 'person', label: t('media.actors') },
   ]
 
-  const years = computed(() => {
+  const years = computed<number[]>(() => {
     const currentYear = new Date().getFullYear()
     return Array.from({ length: 30 }, (_, i) => currentYear - i)
   })
 
   // ==================== 计算属性 ====================
-  const hasResults = computed(() => {
+  const hasResults = computed<boolean>(() => {
     return searchResults.value.length > 0
   })
 
   // 分离不同类型的搜索结果
-  const mediaResults = computed(() => {
+  const mediaResults = computed<SearchResultItem[]>(() => {
     return searchResults.value.filter(
       item => item.media_type === 'movie' || item.media_type === 'tv'
     )
   })
 
-  const personResults = computed(() => {
+  const personResults = computed<SearchResultItem[]>(() => {
     return searchResults.value.filter(item => item.media_type === 'person')
   })
 
@@ -361,12 +371,12 @@
     if (!query) return
 
     // 更新 URL 参数
-    const queryParams = {
+    const queryParams: SearchQueryParams = {
       q: query,
-      page: currentPage.value,
+      page: currentPage.value.toString(),
       types: selectedMediaTypes.value.join(','),
       year: selectedYear.value,
-      adult: includeAdult.value,
+      adult: includeAdult.value ? 'true' : 'false',
     }
 
     await router.push({
@@ -375,22 +385,24 @@
     })
 
     try {
+      const filterParams: SearchFilterParams = {
+        mediaType: selectedMediaTypes.value[0],
+        year: selectedYear.value ? parseInt(selectedYear.value) : undefined,
+        includeAdult: includeAdult.value,
+      }
+
       // 使用高级多类型搜索
       const result = await advancedMultiSearch(
         query,
         currentPage.value,
         selectedMediaTypes.value,
-        {
-          year: selectedYear.value,
-          first_air_date_year: selectedYear.value,
-          include_adult: includeAdult.value,
-        }
+        filterParams
       )
 
       // 处理搜索结果
       if (Array.isArray(result)) {
         // 多个搜索结果（分别搜索）
-        const allResults = []
+        const allResults: SearchResultItem[] = []
         let total = 0
 
         result.forEach((searchResult, index) => {
@@ -399,7 +411,7 @@
             const items = searchResult.data.value.results.map(item => ({
               ...item,
               media_type: type,
-            }))
+            })) as SearchResultItem[]
             allResults.push(...items)
             total += searchResult.data.value.total_results
           }
@@ -435,7 +447,7 @@
   /**
    * 切换媒体类型
    */
-  const toggleMediaType = type => {
+  const toggleMediaType = (type: MediaTypeOption['value']) => {
     const index = selectedMediaTypes.value.indexOf(type)
     if (index > -1) {
       selectedMediaTypes.value.splice(index, 1)
@@ -456,7 +468,7 @@
   /**
    * 处理页码变化
    */
-  const handlePageChange = async page => {
+  const handlePageChange = async (page: number) => {
     currentPage.value = page
     await performSearch()
   }
@@ -464,8 +476,8 @@
   /**
    * 处理搜索建议选择
    */
-  const handleSuggestionSelect = suggestion => {
-    searchQuery.value = suggestion.title || suggestion.name
+  const handleSuggestionSelect = (suggestion: SearchResultItem) => {
+    searchQuery.value = suggestion.title || suggestion.name || ''
     handleSearch()
   }
 
@@ -482,12 +494,12 @@
     const { q, page, types, year, adult } = route.query
 
     if (q) {
-      searchQuery.value = q
-      currentPage.value = parseInt(page) || 1
+      searchQuery.value = q as string
+      currentPage.value = parseInt(page as string) || 1
       selectedMediaTypes.value = types
-        ? types.split(',')
+        ? ((types as string).split(',') as MediaTypeOption['value'][])
         : ['movie', 'tv', 'person']
-      selectedYear.value = year || ''
+      selectedYear.value = (year as string) || ''
       includeAdult.value = adult === 'true'
 
       // 自动执行搜索
@@ -508,12 +520,14 @@
     () => route.query,
     newQuery => {
       if (newQuery.q && hasSearched.value) {
-        searchQuery.value = newQuery.q
-        currentPage.value = parseInt(newQuery.page) || 1
+        searchQuery.value = newQuery.q as string
+        currentPage.value = parseInt(newQuery.page as string) || 1
         selectedMediaTypes.value = newQuery.types
-          ? newQuery.types.split(',')
+          ? ((newQuery.types as string).split(
+              ','
+            ) as MediaTypeOption['value'][])
           : ['movie', 'tv', 'person']
-        selectedYear.value = newQuery.year || ''
+        selectedYear.value = (newQuery.year as string) || ''
         includeAdult.value = newQuery.adult === 'true'
 
         performSearch()
