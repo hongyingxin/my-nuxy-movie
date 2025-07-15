@@ -318,13 +318,15 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
   // API 导入 - 电影相关接口
   import { getPopularMovies, getUpcomingMovies } from '~/api/movie'
   // API 导入 - 电视剧相关接口
   import { getPopularTvShows, getOnTheAirTvShows } from '~/api/tv'
   // API 导入 - 趋势内容接口
   import { getAllTrending } from '~/api/trending'
+  // 类型导入
+  import type { HomePageData, CurrentHeroItem } from '~/types/pages/home'
 
   // 获取 i18n 实例
   const { t } = useI18n()
@@ -342,27 +344,24 @@
 
   // ==================== 数据获取 ====================
   // 获取热门电影数据
-  const popularMovies = getPopularMovies(1)
+  const popularMovies = getPopularMovies(1) as HomePageData['popularMovies']
   // 获取即将上映电影数据
-  const upcomingMovies = getUpcomingMovies(1)
+  const upcomingMovies = getUpcomingMovies(1) as HomePageData['upcomingMovies']
   // 获取热门电视剧数据
-  const popularTvShows = getPopularTvShows(1)
+  const popularTvShows = getPopularTvShows(1) as HomePageData['popularTvShows']
   // 获取正在播出电视剧数据
-  const onTheAirTvShows = getOnTheAirTvShows(1)
-  // 获取电影分类数据
-  // const movieGenres = getMovieGenres()
-  // 获取电视剧分类数据
-  // const tvGenres = getTvGenres()
+  const onTheAirTvShows = getOnTheAirTvShows(
+    1
+  ) as HomePageData['onTheAirTvShows']
 
   // ==================== Hero 轮播相关 ====================
   // 获取趋势内容数据（用于 Hero 轮播）
-  const heroContent = getAllTrending()
-  console.log('heroContent', heroContent)
+  const heroContent = getAllTrending() as HomePageData['heroContent']
   // 当前轮播索引
-  const currentHeroIndex = ref(0)
+  const currentHeroIndex = ref<number>(0)
 
   // 计算当前轮播项
-  const currentHeroItem = computed(() => {
+  const currentHeroItem = computed<CurrentHeroItem>(() => {
     return heroContent.data.value?.results?.[currentHeroIndex.value] || {}
   })
 
@@ -386,10 +385,10 @@
 
   // ==================== 收藏功能 ====================
   // 收藏列表 - 使用 Set 存储收藏的 ID
-  const favorites = ref(new Set())
+  const favorites = ref<Set<number>>(new Set())
 
   // 切换收藏状态
-  const toggleFavorite = item => {
+  const toggleFavorite = (item: CurrentHeroItem) => {
     if (favorites.value.has(item.id)) {
       favorites.value.delete(item.id)
     } else {
@@ -405,7 +404,7 @@
 
   // ==================== 自动轮播 ====================
   // 轮播定时器
-  let heroInterval = null
+  let heroInterval: ReturnType<typeof setInterval> | null = null
 
   // 组件挂载时启动自动轮播
   onMounted(() => {
