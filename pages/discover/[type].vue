@@ -140,14 +140,20 @@
                   :value="getStartDate()"
                   :placeholder="$t('discover.startDatePlaceholder')"
                   class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-                  @input="updateStartDate($event.target.value)"
+                  @input="
+                    updateStartDate(($event.target as HTMLInputElement).value)
+                  "
                 />
                 <input
                   type="date"
                   :value="getEndDate()"
                   :placeholder="$t('discover.endDatePlaceholder')"
                   class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
-                  @input="updateEndDate($event.target.value)"
+                  @input="
+                    updateEndDate(
+                      ($event.target as HTMLInputElement)?.value || ''
+                    )
+                  "
                 />
               </div>
               <p class="text-xs text-gray-500 mt-1">
@@ -406,8 +412,13 @@
 </template>
 
 <script setup lang="ts">
-  // 路由参数
-  // 'movie' 或 'tv'
+  // 导入类型定义
+  import type {
+    DiscoverRouteParams,
+    DiscoverFilters,
+    DateRange,
+    FilterParams,
+  } from '~/types/pages/discover'
 
   // API 导入
   import { discoverMedia } from '~/api/discover'
@@ -427,7 +438,7 @@
   import { storeToRefs } from 'pinia'
 
   const route = useRoute()
-  const type = route.params.type
+  const type = route.params.type as DiscoverRouteParams['type']
 
   // ==================== 工具函数 ====================
 
@@ -438,7 +449,7 @@
     return type === 'movie' ? 'release_date.desc' : 'first_air_date.desc'
   }
 
-  const getRegionName = code => {
+  const getRegionName = (code: string): string => {
     const i18nName = t('originalRegions.' + code)
     if (i18nName && i18nName !== 'originalRegions.' + code) return i18nName
     const found = regions.value?.find(r => r.value === code)
@@ -447,21 +458,21 @@
   }
 
   // ==================== 响应式数据 ====================
-  const showFilters = ref(true)
-  const viewMode = ref('grid')
+  const showFilters = ref<boolean>(true)
+  const viewMode = ref<'grid' | 'list'>('grid')
 
   // 当前页码 - 从 URL 参数初始化
-  const currentPage = computed(() => {
-    const page = parseInt(route.query.page)
+  const currentPage = computed<number>(() => {
+    const page = parseInt(route.query.page as string)
     return page > 0 ? page : 1
   })
 
-  const isApplyButtonVisible = ref(true)
-  const applyFilterBtn = ref(null)
+  const isApplyButtonVisible = ref<boolean>(true)
+  const applyFilterBtn = ref<HTMLElement | null>(null)
   const list = ref()
 
   // 从 URL 参数初始化筛选条件
-  const getInitialFilters = () => {
+  const getInitialFilters = (): DiscoverFilters => {
     const currentYear = new Date().getFullYear()
     const defaultEndYear = currentYear + 1
 
@@ -470,12 +481,12 @@
     const today = now.toISOString().split('T')[0]
 
     // 计算不同分类的默认时间范围
-    const getDefaultDateRange = () => {
+    const getDefaultDateRange = (): DateRange => {
       // 从 URL 参数判断分类类型
-      const sortBy = route.query.sort_by
-      const withStatus = route.query.with_status
-      const airDateGte = route.query['air_date.gte']
-      const airDateLte = route.query['air_date.lte']
+      const sortBy = route.query.sort_by as string | undefined
+      const withStatus = route.query.with_status as string | undefined
+      const airDateGte = route.query['air_date.gte'] as string | undefined
+      const airDateLte = route.query['air_date.lte'] as string | undefined
 
       // 如果用户已经设置了具体的日期范围，直接使用
       if (airDateGte || airDateLte) {
@@ -544,41 +555,46 @@
     const dateRange = getDefaultDateRange()
 
     return {
-      sort_by: route.query.sort_by || getDefaultSortBy(),
-      with_genres: route.query.with_genres
-        ? route.query.with_genres.split(',').map(Number)
+      sort_by: (route.query.sort_by as string) || getDefaultSortBy(),
+      with_genres: (route.query.with_genres as string)
+        ? (route.query.with_genres as string).split(',').map(Number)
         : [],
-      'vote_average.gte': route.query['vote_average.gte']
-        ? parseFloat(route.query['vote_average.gte'])
+      'vote_average.gte': (route.query['vote_average.gte'] as string)
+        ? parseFloat(route.query['vote_average.gte'] as string)
         : 0,
-      'air_date.gte': route.query['air_date.gte']
-        ? route.query['air_date.gte']
+      'air_date.gte': (route.query['air_date.gte'] as string)
+        ? (route.query['air_date.gte'] as string)
         : dateRange.startDate,
-      'air_date.lte': route.query['air_date.lte']
-        ? route.query['air_date.lte']
+      'air_date.lte': (route.query['air_date.lte'] as string)
+        ? (route.query['air_date.lte'] as string)
         : dateRange.endDate,
-      'primary_release_date.gte': route.query['primary_release_date.gte']
-        ? route.query['primary_release_date.gte']
+      'primary_release_date.gte': (route.query[
+        'primary_release_date.gte'
+      ] as string)
+        ? (route.query['primary_release_date.gte'] as string)
         : dateRange.startDate,
-      'primary_release_date.lte': route.query['primary_release_date.lte']
-        ? route.query['primary_release_date.lte']
+      'primary_release_date.lte': (route.query[
+        'primary_release_date.lte'
+      ] as string)
+        ? (route.query['primary_release_date.lte'] as string)
         : dateRange.endDate,
-      'release_date.gte': route.query['release_date.gte']
-        ? route.query['release_date.gte']
+      'release_date.gte': (route.query['release_date.gte'] as string)
+        ? (route.query['release_date.gte'] as string)
         : dateRange.startDate,
-      'release_date.lte': route.query['release_date.lte']
-        ? route.query['release_date.lte']
+      'release_date.lte': (route.query['release_date.lte'] as string)
+        ? (route.query['release_date.lte'] as string)
         : dateRange.endDate,
-      'first_air_date.gte': route.query['first_air_date.gte']
-        ? route.query['first_air_date.gte']
+      'first_air_date.gte': (route.query['first_air_date.gte'] as string)
+        ? (route.query['first_air_date.gte'] as string)
         : dateRange.startDate,
-      'first_air_date.lte': route.query['first_air_date.lte']
-        ? route.query['first_air_date.lte']
+      'first_air_date.lte': (route.query['first_air_date.lte'] as string)
+        ? (route.query['first_air_date.lte'] as string)
         : dateRange.endDate,
-      with_original_language: route.query.with_original_language || '',
-      with_status: route.query.with_status || null,
-      region: route.query.region || '',
-      with_release_type: route.query.with_release_type || '',
+      with_original_language:
+        (route.query.with_original_language as string) || '',
+      with_status: (route.query.with_status as string) || null,
+      region: (route.query.region as string) || '',
+      with_release_type: (route.query.with_release_type as string) || '',
     }
   }
 
@@ -598,7 +614,8 @@
   /**
    * 根据筛选条件获取分类名称
    */
-  const getCategoryName = (sortBy, withStatus, airDateGte, airDateLte) => {
+  const getCategoryName = (params: FilterParams): string => {
+    const { sortBy, withStatus, airDateGte, airDateLte } = params
     if (withStatus === '0') {
       return '正在播出'
     } else if (airDateGte && airDateLte && airDateGte === airDateLte) {
@@ -625,7 +642,8 @@
   /**
    * 根据筛选条件获取页面描述
    */
-  const getPageDescription = (sortBy, withStatus, airDateGte, airDateLte) => {
+  const getPageDescription = (params: FilterParams): string => {
+    const { sortBy, withStatus, airDateGte, airDateLte } = params
     const isMovie = type === 'movie'
     const releaseType = filters.value.with_release_type
 
@@ -694,7 +712,7 @@
   }
 
   // 更新开始日期
-  const updateStartDate = dateString => {
+  const updateStartDate = (dateString: string) => {
     if (dateString) {
       filters.value['air_date.gte'] = dateString
       filters.value['primary_release_date.gte'] = dateString
@@ -709,13 +727,13 @@
   }
 
   // 获取结束日期
-  const getEndDate = () => {
+  const getEndDate = (): string => {
     const endDate = currentDateRange.value.endDate
     return endDate || ''
   }
 
   // 更新结束日期
-  const updateEndDate = dateString => {
+  const updateEndDate = (dateString: string) => {
     if (dateString) {
       filters.value['air_date.lte'] = dateString
       filters.value['primary_release_date.lte'] = dateString
@@ -756,12 +774,12 @@
     const airDateLte = filters.value['air_date.lte']
 
     // 使用工具函数获取分类名称
-    const categoryName = getCategoryName(
+    const categoryName = getCategoryName({
       sortBy,
       withStatus,
       airDateGte,
-      airDateLte
-    )
+      airDateLte,
+    })
     const baseTitle = getMediaTypeTitle()
 
     const region = filters.value.region
@@ -788,7 +806,12 @@
     const airDateLte = filters.value['air_date.lte']
 
     // 使用工具函数获取页面描述
-    return getPageDescription(sortBy, withStatus, airDateGte, airDateLte)
+    return getPageDescription({
+      sortBy,
+      withStatus,
+      airDateGte,
+      airDateLte,
+    })
   })
 
   // 从 store 中获取分类数据
@@ -883,12 +906,12 @@
     const airDateLte = filters.value['air_date.lte']
 
     // 使用工具函数获取分类名称和基础标题
-    const categoryName = getCategoryName(
+    const categoryName = getCategoryName({
       sortBy,
       withStatus,
       airDateGte,
-      airDateLte
-    )
+      airDateLte,
+    })
     const baseTitle = getMediaTypeTitle()
 
     return `${categoryName}${baseTitle}`
@@ -902,12 +925,19 @@
     const airDateLte = filters.value['air_date.lte']
 
     // 使用工具函数获取页面描述
-    return getPageDescription(sortBy, withStatus, airDateGte, airDateLte)
+    return getPageDescription({
+      sortBy,
+      withStatus,
+      airDateGte,
+      airDateLte,
+    })
   }
 
   // 将筛选条件转换为 URL 查询参数
-  const filtersToQuery = filterParams => {
-    const query = {}
+  const filtersToQuery = (
+    filterParams: DiscoverFilters
+  ): Record<string, string> => {
+    const query: Record<string, string> = {}
 
     const defaultSort = getDefaultSortBy()
     if (filterParams.sort_by && filterParams.sort_by !== defaultSort) {
@@ -1020,7 +1050,7 @@
   }
 
   // 页面跳转处理
-  const changePage = page => {
+  const changePage = (page: number): void => {
     if (page < 1 || page > (list.value?.data.value?.total_pages || 1)) return
 
     // 构建新的查询参数，保持筛选条件
@@ -1032,7 +1062,7 @@
       delete newQuery.page
     } else {
       // 其他页面添加 page 参数
-      newQuery.page = page
+      newQuery.page = page.toString()
     }
 
     navigateTo(
@@ -1096,7 +1126,7 @@
     }
   }
 
-  const toggleGenre = genreId => {
+  const toggleGenre = (genreId: number): void => {
     if (filters.value.with_genres.includes(genreId)) {
       filters.value.with_genres = filters.value.with_genres.filter(
         id => id !== genreId
@@ -1109,8 +1139,8 @@
   // 语言下拉交互
   const dropdownOpen = ref(false)
   // 关闭下拉（点击外部）
-  const closeDropdown = e => {
-    if (!e.target.closest('.relative')) dropdownOpen.value = false
+  const closeDropdown = (e: Event): void => {
+    if (!(e.target as Element).closest('.relative')) dropdownOpen.value = false
   }
   onMounted(() => {
     window.addEventListener('click', closeDropdown)
@@ -1119,7 +1149,7 @@
     window.removeEventListener('click', closeDropdown)
   })
   // 选中语言
-  const selectLanguage = val => {
+  const selectLanguage = (val: string): void => {
     console.log(val)
     filters.value.with_original_language = val
     dropdownOpen.value = false
