@@ -10,22 +10,12 @@ import type {
 } from '~/types/apiType'
 import type { FetchError } from 'ofetch'
 
-/**
- * HTTP 响应包装类型
- */
-export interface ResOptions<T> {
-  data: T
-  code: number
-  success: boolean
-  detail?: string
-}
-
 // ==================== 列表数据类型 ====================
 
 export type ListAsyncData =
   | AsyncData<
       MovieDiscoverResponse | TvShowDiscoverResponse,
-      FetchError<ResOptions<MovieDiscoverResponse | TvShowDiscoverResponse>>
+      FetchError<unknown>
     >
   | undefined
 

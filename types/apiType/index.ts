@@ -169,6 +169,32 @@ export type {
   SearchStats,
 } from './search'
 
+// ==================== HTTP 请求类型 ====================
+export type {
+  UrlType,
+  HttpMethod,
+  HttpStatusCode,
+  ApiResponse,
+  PaginatedApiResponse,
+  RequestParams,
+  RequestHeaders,
+  HttpRequestOptions,
+  UseHttpOptions,
+  UseHttpReturn,
+  UseHttpFunction,
+  HttpError,
+  NetworkError,
+  BusinessError,
+  RequestInterceptor,
+  HttpClientConfig,
+  ExtractResponseData,
+  ExtractHttpError,
+  RequestStatus,
+  RequestState,
+  ResOptions,
+  HttpOption,
+} from './http'
+
 // ==================== 类型别名 ====================
 
 /**

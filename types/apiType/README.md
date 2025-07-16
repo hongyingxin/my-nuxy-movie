@@ -14,6 +14,7 @@ types/apiType/
 ├── genre.ts           # 分类相关类型
 ├── trending.ts        # 趋势内容相关类型
 ├── search.ts          # 搜索相关类型
+├── http.ts            # HTTP 请求相关类型
 ├── index.ts           # 统一导出入口
 └── README.md          # 使用说明
 ```
@@ -148,6 +149,19 @@ export const getMovieDetail = (id: number) => {
 - `SearchResult` - 搜索结果
 - `SearchSuggestion` - 搜索建议
 - `SearchHistory` - 搜索历史
+
+### 9. HTTP 请求类型 (`http.ts`)
+
+HTTP 请求相关类型：
+
+- `UrlType` - URL 类型定义
+- `HttpMethod` - HTTP 方法类型
+- `ApiResponse<T>` - 通用 API 响应包装类型
+- `UseHttpOptions<T>` - useHttp 函数参数类型
+- `UseHttpReturn<T>` - useHttp 函数返回类型
+- `HttpError` / `NetworkError` / `BusinessError` - 错误类型
+- `RequestState<T>` - 请求状态类型
+- `RequestInterceptor` - 请求拦截器类型
 
 ## 🛠️ 工具类型
 
