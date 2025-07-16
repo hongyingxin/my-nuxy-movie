@@ -1,9 +1,11 @@
 import type { AsyncData } from 'nuxt/app'
 import type {
-  SearchResult,
   SearchMediaType,
   SearchFilter,
   MultiSearchResponse,
+  MovieSearchResult,
+  TvShowSearchResult,
+  PersonSearchResult,
 } from '~/types/apiType/search'
 import type { LocationQueryValue } from 'vue-router'
 
@@ -14,7 +16,10 @@ export interface MediaTypeOption {
 }
 
 // 搜索结果类型
-export type SearchResultItem = SearchResult
+export type SearchResultItem =
+  | MovieSearchResult
+  | TvShowSearchResult
+  | PersonSearchResult
 
 // 搜索页面数据
 export interface SearchPageData {

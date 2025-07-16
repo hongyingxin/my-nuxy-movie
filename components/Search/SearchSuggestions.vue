@@ -13,7 +13,11 @@
         <!-- 图片 -->
         <div class="flex-shrink-0">
           <img
-            v-if="suggestion.poster_path || suggestion.profile_path"
+            v-if="
+              suggestion.poster_path ||
+              (suggestion.media_type === 'person' &&
+                (suggestion as PersonSearchResult).profile_path)
+            "
             :src="getImageUrl(suggestion)"
             :alt="suggestion.title || suggestion.name"
             class="w-12 h-16 object-cover rounded-lg shadow-sm"
@@ -96,7 +100,10 @@
               {{ suggestion.vote_average.toFixed(1) }}
             </span>
             <span
-              v-if="suggestion.known_for_department"
+              v-if="
+                suggestion.media_type === 'person' &&
+                (suggestion as PersonSearchResult).known_for_department
+              "
               class="flex items-center"
             >
               <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -104,7 +111,7 @@
                   d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"
                 />
               </svg>
-              {{ suggestion.known_for_department }}
+              {{ (suggestion as PersonSearchResult).known_for_department }}
             </span>
           </div>
         </div>
@@ -142,7 +149,11 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+  // ==================== 导入 ====================
+  import type { SearchResultItem } from '~/types/pages/search'
+  import type { PersonSearchResult } from '~/types/apiType/search'
+
   // ==================== Props 定义 ====================
   defineProps({
     // 是否显示建议
@@ -152,7 +163,7 @@
     },
     // 搜索建议数据
     suggestions: {
-      type: Array,
+      type: Array as () => SearchResultItem[],
       default: () => [],
     },
     // 总结果数
@@ -169,9 +180,11 @@
   /**
    * 获取图片 URL
    */
-  const getImageUrl = suggestion => {
+  const getImageUrl = (suggestion: SearchResultItem) => {
     if (suggestion.media_type === 'person') {
-      return image.getProfileUrl(suggestion.profile_path)
+      return image.getProfileUrl(
+        (suggestion as PersonSearchResult).profile_path
+      )
     }
     return image.getPosterUrl(suggestion.poster_path)
   }
@@ -179,7 +192,7 @@
   /**
    * 获取类型样式类
    */
-  const getTypeClass = mediaType => {
+  const getTypeClass = (mediaType: SearchResultItem['media_type']) => {
     switch (mediaType) {
       case 'movie':
         return 'bg-blue-50 text-blue-700 border border-blue-200'
@@ -195,7 +208,7 @@
   /**
    * 获取类型标签
    */
-  const getTypeLabel = mediaType => {
+  const getTypeLabel = (mediaType: SearchResultItem['media_type']) => {
     switch (mediaType) {
       case 'movie':
         return '电影'
@@ -211,7 +224,7 @@
   /**
    * 获取年份
    */
-  const getYear = dateString => {
+  const getYear = (dateString: string | null | undefined) => {
     if (!dateString) return ''
     return dateString.split('-')[0]
   }
@@ -219,7 +232,7 @@
   /**
    * 选择建议
    */
-  const selectSuggestion = suggestion => {
+  const selectSuggestion = (suggestion: SearchResultItem) => {
     emit('select-suggestion', suggestion)
   }
 

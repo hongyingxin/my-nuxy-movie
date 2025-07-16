@@ -53,9 +53,10 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
   // ==================== API 导入 ====================
   import { getSearchSuggestions } from '~/api/search'
+  import type { SearchResultItem } from '~/types/pages/search'
 
   // ==================== Props 定义 ====================
   const props = defineProps({
@@ -107,18 +108,19 @@
 
   // ==================== 响应式数据 ====================
   const localQuery = ref(props.modelValue)
-  const searchSuggestions = ref([])
-  const suggestionsTotalResults = ref(0)
+  const searchSuggestions = ref<SearchResultItem[]>([])
+  const suggestionsTotalResults = ref<number>(0)
 
   // ==================== 防抖搜索函数 ====================
-  const debouncedSearch = common.debounce(async query => {
+  const debouncedSearch = common.debounce(async (query: string) => {
     try {
       const result = await getSearchSuggestions(query, props.suggestionLimit)
       if (result.data.value) {
+        // 直接使用类型断言，因为 API 返回的数据已经包含了所需字段
         searchSuggestions.value = result.data.value.results.slice(
           0,
           props.suggestionLimit
-        )
+        ) as SearchResultItem[]
         suggestionsTotalResults.value = result.data.value.total_results
       }
     } catch (error) {
@@ -180,8 +182,8 @@
   /**
    * 处理建议选择
    */
-  const handleSuggestionSelect = suggestion => {
-    localQuery.value = suggestion.title || suggestion.name
+  const handleSuggestionSelect = (suggestion: SearchResultItem) => {
+    localQuery.value = suggestion.title || suggestion.name || ''
     emit('update:modelValue', localQuery.value)
     emit('suggestion-select', suggestion)
 

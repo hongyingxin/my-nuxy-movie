@@ -433,7 +433,8 @@
             selectedMediaTypes.value.includes(item.media_type)
           )
 
-          searchResults.value = filteredResults
+          // 直接使用类型断言，因为 API 返回的数据已经包含了所需字段
+          searchResults.value = filteredResults as SearchResultItem[]
           totalResults.value = result.data.value.total_results
           totalPages.value = result.data.value.total_pages
         }
