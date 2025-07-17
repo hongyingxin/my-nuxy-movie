@@ -134,7 +134,7 @@
                         ? detail.data.value.number_of_episodes
                         : 0
                     }}
-                    集
+                    {{ $t('detail.episodes') }}
                   </span>
                 </div>
 
@@ -674,7 +674,9 @@
   // 判断是否为电视剧
   const isTv = computed(() => mediaType === 'tv')
   // 获取媒体类型的中文描述
-  const mediaTypeText = computed(() => (isTv.value ? '电视剧' : '电影'))
+  const mediaTypeText = computed(() =>
+    isTv.value ? t('detail.tvShow') : t('detail.movie')
+  )
   //  ==================== 类型守卫函数 ====================
   // 判断是否为电影详情
   const isMovie = (

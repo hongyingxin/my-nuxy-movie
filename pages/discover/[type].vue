@@ -226,7 +226,7 @@
                     v-if="filteredLanguageOptions.length === 0"
                     class="px-3 py-2 text-gray-400"
                   >
-                    {{ $t('common.noResult') || '无结果' }}
+                    {{ $t('common.noResult') }}
                   </li>
                 </ul>
               </div>
@@ -608,7 +608,7 @@
    * 获取媒体类型的基础标题
    */
   const getMediaTypeTitle = () => {
-    return type === 'movie' ? '电影' : '电视剧'
+    return type === 'movie' ? t('discover.movieType') : t('discover.tvType')
   }
 
   /**
@@ -617,25 +617,25 @@
   const getCategoryName = (params: FilterParams): string => {
     const { sortBy, withStatus, airDateGte, airDateLte } = params
     if (withStatus === '0') {
-      return '正在播出'
+      return t('discover.airing')
     } else if (airDateGte && airDateLte && airDateGte === airDateLte) {
-      return '今日播出'
+      return t('discover.today')
     } else if (sortBy === 'popularity.desc') {
-      return '热门'
+      return t('discover.popular')
     } else if (
       sortBy === 'release_date.asc' ||
       sortBy === 'first_air_date.asc'
     ) {
-      return '即将上映'
+      return t('discover.upcoming')
     } else if (
       sortBy === 'release_date.desc' ||
       sortBy === 'first_air_date.desc'
     ) {
-      return '正在上映'
+      return t('discover.nowPlaying')
     } else if (sortBy === 'vote_average.desc') {
-      return '高分'
+      return t('discover.topRated')
     } else {
-      return '最新'
+      return t('discover.latest')
     }
   }
 
@@ -648,41 +648,33 @@
     const releaseType = filters.value.with_release_type
 
     if (withStatus === '0') {
-      return isMovie
-        ? '发现正在上映的电影，影院观影指南'
-        : '发现正在播出的电视剧，当前热门剧集'
+      return isMovie ? t('discover.airingMovie') : t('discover.airingTv')
     } else if (airDateGte && airDateLte && airDateGte === airDateLte) {
-      return isMovie ? '发现今天上映的电影' : '发现今天播出的电视剧'
+      return isMovie ? t('discover.todayMovie') : t('discover.todayTv')
     } else if (sortBy === 'popularity.desc') {
-      return isMovie
-        ? '发现最热门的电影，包含近期和即将上映的佳作'
-        : '发现最热门的电视剧，包含近期和即将播出的精品'
+      return isMovie ? t('discover.popularMovie') : t('discover.popularTv')
     } else if (
       sortBy === 'release_date.asc' ||
       sortBy === 'first_air_date.asc'
     ) {
       if (isMovie && isTheatricalRelease(releaseType)) {
-        return '发现即将在影院上映的电影，提前了解新片信息'
+        return t('discover.upcomingTheatricalMovie')
       }
-      return isMovie
-        ? '发现即将上映的电影，提前了解新片信息'
-        : '发现即将播出的电视剧，提前了解新剧信息'
+      return isMovie ? t('discover.upcomingMovie') : t('discover.upcomingTv')
     } else if (
       sortBy === 'release_date.desc' ||
       sortBy === 'first_air_date.desc'
     ) {
       if (isMovie && isTheatricalRelease(releaseType)) {
-        return '发现正在影院上映的电影，影院观影指南'
+        return t('discover.nowPlayingTheatricalMovie')
       }
       return isMovie
-        ? '发现正在上映的电影，影院观影指南'
-        : '发现正在播出的电视剧，当前热门剧集'
+        ? t('discover.nowPlayingMovie')
+        : t('discover.nowPlayingTv')
     } else if (sortBy === 'vote_average.desc') {
-      return isMovie
-        ? '发现评分最高的电影，经典佳作推荐'
-        : '发现评分最高的电视剧，精品剧集推荐'
+      return isMovie ? t('discover.topRatedMovie') : t('discover.topRatedTv')
     } else {
-      return isMovie ? '探索最新上映的电影' : '探索最新播出的电视剧'
+      return isMovie ? t('discover.latestMovie') : t('discover.latestTv')
     }
   }
 

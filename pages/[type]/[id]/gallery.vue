@@ -120,27 +120,35 @@
             <div
               class="animate-spin rounded-full h-6 w-6 border-b-2 border-red-600"
             />
-            <span class="text-gray-600">加载更多图片中...</span>
+            <span class="text-gray-600">{{
+              $t('detail.loadingMorePhotos')
+            }}</span>
           </div>
-          <div v-else class="text-gray-500 text-sm">滚动到底部加载更多</div>
+          <div v-else class="text-gray-500 text-sm">
+            {{ $t('detail.scrollToLoadMore') }}
+          </div>
         </div>
 
         <!-- 已加载完所有图片 -->
         <div v-else class="text-center py-8">
-          <div class="text-gray-500 text-sm">🎉 已加载完所有图片</div>
+          <div class="text-gray-500 text-sm">
+            🎉 {{ $t('detail.allPhotosLoaded') }}
+          </div>
         </div>
       </div>
 
       <!-- 错误状态 -->
       <div v-else-if="images.error.value" class="text-center py-12">
         <div class="text-red-600 text-6xl mb-4">😞</div>
-        <h2 class="text-2xl font-bold text-gray-800 mb-2">加载失败</h2>
-        <p class="text-gray-600 mb-4">无法获取图片信息，请稍后重试</p>
+        <h2 class="text-2xl font-bold text-gray-800 mb-2">
+          {{ $t('detail.loadingFailed') }}
+        </h2>
+        <p class="text-gray-600 mb-4">{{ $t('detail.failedToLoadPhotos') }}</p>
         <button
           class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
           @click="() => images.refresh()"
         >
-          重新加载
+          {{ $t('detail.reload') }}
         </button>
       </div>
     </div>
@@ -155,6 +163,9 @@
   import { getDetail, getImages } from '~/api/detail'
   import type { MediaType } from '~/types/pages/details'
   import type { Image } from '~/types/apiType'
+
+  // 获取 i18n 实例
+  const { t } = useI18n()
 
   // ==================== 路由参数处理 ====================
   const route = useRoute()
@@ -175,8 +186,8 @@
   // ==================== 图片分类标签配置 ====================
   // 图片分类标签
   const imageTabs = [
-    { id: 'posters' as const, name: '海报' },
-    { id: 'backdrops' as const, name: '剧照' },
+    { id: 'posters' as const, name: t('detail.posters') },
+    { id: 'backdrops' as const, name: t('detail.backdrops') },
   ]
 
   // 当前激活的标签
@@ -367,14 +378,14 @@
   // ==================== SEO 配置 ====================
   useHead(() => ({
     title: detail.data.value
-      ? `${detail.data.value.title || detail.data.value.name} 的图片集 - Nuxt Movie`
-      : '图片集 - Nuxt Movie',
+      ? `${detail.data.value.title || detail.data.value.name} ${t('detail.photos')} - Nuxt Movie`
+      : `${t('detail.photos')} - Nuxt Movie`,
     meta: [
       {
         name: 'description',
         content: detail.data.value
-          ? `查看 ${detail.data.value.title || detail.data.value.name} 的海报和剧照`
-          : '浏览电影和电视剧的海报和剧照',
+          ? `${t('detail.viewPhotos')} ${detail.data.value.title || detail.data.value.name}`
+          : t('detail.browsePhotos'),
       },
     ],
   }))
