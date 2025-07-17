@@ -90,6 +90,7 @@
                 <!-- 了解更多按钮 -->
                 <button
                   class="bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-lg font-semibold transition-colors backdrop-blur-sm flex items-center gap-2"
+                  @click="navigateToDetail"
                 >
                   <svg
                     class="w-5 h-5"
@@ -209,7 +210,10 @@
           <h2 class="text-2xl font-bold text-gray-800">
             {{ $t('home.popularMovies') }}
           </h2>
-          <button class="text-red-600 hover:text-red-700 font-semibold">
+          <button
+            class="text-red-600 hover:text-red-700 font-semibold transition-colors"
+            @click="navigateToMovies"
+          >
             {{ $t('home.viewMore') }}
           </button>
         </div>
@@ -243,7 +247,10 @@
           <h2 class="text-2xl font-bold text-gray-800">
             {{ $t('home.popularTvShows') }}
           </h2>
-          <button class="text-red-600 hover:text-red-700 font-semibold">
+          <button
+            class="text-red-600 hover:text-red-700 font-semibold transition-colors"
+            @click="navigateToTvShows"
+          >
             {{ $t('home.viewMore') }}
           </button>
         </div>
@@ -277,9 +284,9 @@
           <h2 class="text-2xl font-bold text-gray-800">
             {{ $t('home.latestUpdates') }}
           </h2>
-          <button class="text-red-600 hover:text-red-700 font-semibold">
+          <!-- <button class="text-red-600 hover:text-red-700 font-semibold">
             {{ $t('home.viewMore') }}
-          </button>
+          </button> -->
         </div>
 
         <!-- 使用骨架屏组件 -->
@@ -400,6 +407,25 @@
       item.title || item.name,
       favorites.value.has(item.id)
     )
+  }
+
+  // 跳转到详情页面
+  const navigateToDetail = () => {
+    if (currentHeroItem.value?.media_type && currentHeroItem.value?.id) {
+      navigateTo(
+        `/${currentHeroItem.value.media_type}/${currentHeroItem.value.id}`
+      )
+    }
+  }
+
+  // 跳转到电影发现页面
+  const navigateToMovies = () => {
+    navigateTo('/discover/movie')
+  }
+
+  // 跳转到电视剧发现页面
+  const navigateToTvShows = () => {
+    navigateTo('/discover/tv')
   }
 
   // ==================== 自动轮播 ====================
