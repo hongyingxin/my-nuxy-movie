@@ -28,6 +28,13 @@ export default defineNuxtConfig({
     '@nuxtjs/stylelint-module',
     '@nuxtjs/i18n',
   ],
+  // pinia 配置过期时间
+  piniaPluginPersistedstate: {
+    storage: 'cookies',
+    cookieOptions: {
+      maxAge: 1 * 24 * 60 * 60, // 1 天，单位：秒
+    },
+  },
 
   // i18n 模块配置
   i18n: {

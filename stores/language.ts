@@ -1,6 +1,6 @@
 import { UI_LOCALES } from '~/constants/languages'
 import { getLanguagesConfiguration } from '~/api/detail'
-import type { TmdbLanguage } from '~/types/language'
+import type { TmdbLanguage, UILanguageCode } from '~/types/language'
 
 /**
  * 语言相关 Pinia Store
@@ -12,7 +12,7 @@ import type { TmdbLanguage } from '~/types/language'
 export const useLanguageStore = defineStore('language', {
   state: () => ({
     /** 当前界面语言（i18n 语言） */
-    currentLocale: 'zh-CN' as string,
+    currentLocale: 'zh-CN' as UILanguageCode,
     /** 界面可用语言列表（UI 语言切换） */
     locales: UI_LOCALES,
     /**
@@ -49,7 +49,7 @@ export const useLanguageStore = defineStore('language', {
      * 设置当前界面语言
      * @param localeCode 语言 code
      */
-    setLocale(localeCode: string) {
+    setLocale(localeCode: UILanguageCode) {
       if (this.locales.find(locale => locale.code === localeCode)) {
         this.currentLocale = localeCode
       }
@@ -59,7 +59,7 @@ export const useLanguageStore = defineStore('language', {
      * 切换界面语言（不改变路径，仅切换 i18n 状态）
      * @param localeCode 目标语言 code
      */
-    async switchLanguage(localeCode: string) {
+    async switchLanguage(localeCode: UILanguageCode) {
       if (this.currentLocale === localeCode) return
 
       this.setLocale(localeCode)
@@ -67,7 +67,7 @@ export const useLanguageStore = defineStore('language', {
       try {
         // 直接使用 i18n 切换语言，不改变路径
         const { $i18n } = useNuxtApp()
-        await $i18n.setLocale(localeCode as any)
+        await $i18n.setLocale(localeCode as UILanguageCode)
 
         console.log(`Language switched to: ${localeCode}`)
       } catch (error) {
