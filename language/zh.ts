@@ -24,6 +24,9 @@ export default {
     results: '个结果',
     all: '全部',
     none: '无',
+    share: '分享',
+    noResult: '无结果',
+    getDataFailed: '获取数据失败',
   },
 
   // 导航和页面标题
@@ -141,6 +144,32 @@ export default {
     tryAdjustFilters: '尝试调整筛选条件',
     allLanguages: '所有语言',
     languageSearchPlaceholder: '搜索语言…',
+    // 扁平化翻译键
+    movieType: '电影',
+    tvType: '电视剧',
+    nowPlaying: '正在上映',
+    nowAir: '正在播出',
+    upcoming: '即将上映',
+    upcomingAir: '即将播出',
+    popular: '热门',
+    topRated: '高分',
+    latest: '最新',
+    today: '今日播出',
+    nowPlayingMovie: '发现正在上映的电影，影院观影指南',
+    nowAirTv: '发现正在播出的电视剧，当前热门剧集',
+    todayMovie: '发现今天上映的电影',
+    todayTv: '发现今天播出的电视剧',
+    popularMovie: '发现最热门的电影，包含近期和即将上映的佳作',
+    popularTv: '发现最热门的电视剧，包含近期和即将播出的精品',
+    upcomingTheatrical: '发现即将在影院上映的电影，提前了解新片信息',
+    upcomingMovie: '发现即将上映的电影，提前了解新片信息',
+    upcomingTv: '发现即将播出的电视剧，提前了解新剧信息',
+    nowPlayingTheatrical: '发现正在影院上映的电影，影院观影指南',
+    nowAirTvShow: '发现正在播出的电视剧，当前热门剧集',
+    topRatedMovie: '发现评分最高的电影，经典佳作推荐',
+    topRatedTv: '发现评分最高的电视剧，精品剧集推荐',
+    latestMovie: '探索最新上映的电影',
+    latestTv: '探索最新播出的电视剧',
   },
 
   // 详情页面
@@ -182,6 +211,17 @@ export default {
     unknown: '未知',
     viewAllImages: '查看全部图片',
     loadingFailedDetails: '无法获取{type}详情，请稍后重试',
+    // 扁平化翻译键
+    loadingMoreImages: '加载更多图片中...',
+    scrollToLoadMore: '滚动到底部加载更多',
+    allImagesLoaded: '🎉 已加载完所有图片',
+    loadFailed: '加载失败',
+    loadFailedMessage: '无法获取图片信息，请稍后重试',
+    retry: '重新加载',
+    browsePhotos: '浏览电影和电视剧的海报和剧照',
+    viewPhotos: '查看 {title} 的海报和剧照',
+    movieType: '电影',
+    tvType: '电视剧',
   },
 
   // 演员页面
@@ -194,6 +234,10 @@ export default {
     birthDate: '出生日期',
     birthPlace: '出生地',
     loadingActors: '加载演员中...',
+    gender: '性别',
+    popularity: '人气指数',
+    addToFavorites: '添加到收藏',
+    share: '分享',
   },
 
   // 错误页面

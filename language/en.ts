@@ -24,6 +24,9 @@ export default {
     results: 'results',
     all: 'All',
     none: 'None',
+    share: 'Share',
+    noResult: 'No Result',
+    getDataFailed: 'Failed to get data',
   },
 
   // 导航和页面标题
@@ -143,6 +146,37 @@ export default {
     tryAdjustFilters: 'Try adjusting your filters',
     allLanguages: 'All Languages',
     languageSearchPlaceholder: 'Search language…',
+    // 扁平化翻译键
+    movieType: 'Movie',
+    tvType: 'TV Show',
+    nowPlaying: 'Now Playing',
+    nowAir: 'On Air',
+    upcoming: 'Upcoming',
+    upcomingAir: 'Upcoming',
+    popular: 'Popular',
+    topRated: 'Top Rated',
+    latest: 'Latest',
+    today: 'Today',
+    nowPlayingMovie: 'Discover movies currently in theaters, cinema guide',
+    nowAirTv: 'Discover TV shows currently on air, current popular series',
+    todayMovie: 'Discover movies released today',
+    todayTv: 'Discover TV shows airing today',
+    popularMovie:
+      'Discover the most popular movies, including recent and upcoming masterpieces',
+    popularTv:
+      'Discover the most popular TV shows, including recent and upcoming quality content',
+    upcomingTheatrical:
+      'Discover movies coming to theaters soon, get early information about new films',
+    upcomingMovie:
+      'Discover upcoming movies, get early information about new films',
+    upcomingTv:
+      'Discover upcoming TV shows, get early information about new series',
+    nowPlayingTheatrical: 'Discover movies currently in theaters, cinema guide',
+    nowAirTvShow: 'Discover TV shows currently on air, current popular series',
+    topRatedMovie: 'Discover the highest-rated movies, classic masterpieces',
+    topRatedTv: 'Discover the highest-rated TV shows, quality series',
+    latestMovie: 'Explore the latest released movies',
+    latestTv: 'Explore the latest aired TV shows',
   },
 
   // 详情页面
@@ -186,6 +220,18 @@ export default {
     viewAllImages: 'View All Images',
     loadingFailedDetails:
       'Unable to load {type} details, please try again later',
+    // 扁平化翻译键
+    loadingMoreImages: 'Loading more images...',
+    scrollToLoadMore: 'Scroll to bottom to load more',
+    allImagesLoaded: '🎉 All images loaded',
+    loadFailed: 'Load Failed',
+    loadFailedMessage:
+      'Unable to load image information, please try again later',
+    retry: 'Retry',
+    browsePhotos: 'Browse posters and backdrops of movies and TV shows',
+    viewPhotos: 'View posters and backdrops of {title}',
+    movieType: 'Movie',
+    tvType: 'TV Show',
   },
 
   // 演员页面
@@ -198,6 +244,10 @@ export default {
     birthDate: 'Birth Date',
     birthPlace: 'Birth Place',
     loadingActors: 'Loading actors...',
+    gender: 'Gender',
+    popularity: 'Popularity',
+    addToFavorites: 'Add to Favorites',
+    share: 'Share',
   },
 
   // 错误页面

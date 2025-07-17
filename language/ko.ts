@@ -23,6 +23,9 @@ export default {
     results: '결과',
     all: '전체',
     none: '없음',
+    share: '공유',
+    noResult: '결과 없음',
+    getDataFailed: '데이터 가져오기 실패',
   },
   nav: {
     home: '홈',
@@ -129,6 +132,41 @@ export default {
     allLanguages: '모든 언어',
     languageSearchPlaceholder: '언어 검색…',
     allRegions: '전체 지역',
+    // 扁平化翻译键
+    movieType: '영화',
+    tvType: 'TV 프로그램',
+    nowPlaying: '상영 중',
+    nowAir: '방영 중',
+    upcoming: '개봉 예정',
+    upcomingAir: '방영 예정',
+    popular: '인기',
+    topRated: '최고 평점',
+    latest: '최신',
+    today: '오늘',
+    nowPlayingMovie:
+      '현재 상영 중인 영화를 발견하고, 영화관 가이드를 확인하세요',
+    nowAirTv:
+      '현재 방영 중인 TV 프로그램을 발견하고, 현재 인기 시리즈를 확인하세요',
+    todayMovie: '오늘 개봉된 영화를 발견하세요',
+    todayTv: '오늘 방영되는 TV 프로그램을 발견하세요',
+    popularMovie:
+      '가장 인기 있는 영화를 발견하고, 최근 및 개봉 예정 작품을 포함합니다',
+    popularTv:
+      '가장 인기 있는 TV 프로그램을 발견하고, 최근 및 방영 예정 품질 콘텐츠를 포함합니다',
+    upcomingTheatrical:
+      '곧 영화관에서 개봉될 영화를 발견하고, 신작 영화의 조기 정보를 얻으세요',
+    upcomingMovie:
+      '개봉 예정 영화를 발견하고, 신작 영화의 조기 정보를 얻으세요',
+    upcomingTv:
+      '방영 예정 TV 프로그램을 발견하고, 신작 시리즈의 조기 정보를 얻으세요',
+    nowPlayingTheatrical:
+      '현재 영화관에서 상영 중인 영화를 발견하고, 영화관 가이드를 확인하세요',
+    nowAirTvShow:
+      '현재 방영 중인 TV 프로그램을 발견하고, 현재 인기 시리즈를 확인하세요',
+    topRatedMovie: '최고 평점 영화를 발견하고, 클래식 명작을 확인하세요',
+    topRatedTv: '최고 평점 TV 프로그램을 발견하고, 품질 시리즈를 확인하세요',
+    latestMovie: '최신 개봉 영화를 탐색하세요',
+    latestTv: '최신 방영 TV 프로그램을 탐색하세요',
   },
   detail: {
     overview: '개요',
@@ -170,6 +208,18 @@ export default {
     viewAllImages: '모든 이미지 보기',
     loadingFailedDetails:
       '{type} 세부 정보를 불러오지 못했습니다. 나중에 다시 시도해 주세요',
+    // 扁平化翻译键
+    loadingMoreImages: '더 많은 이미지 로딩 중...',
+    scrollToLoadMore: '더 많은 이미지를 로드하려면 아래로 스크롤하세요',
+    allImagesLoaded: '🎉 모든 이미지를 로드했습니다',
+    loadFailed: '로딩 실패',
+    loadFailedMessage:
+      '이미지 정보를 불러오지 못했습니다. 나중에 다시 시도해 주세요',
+    retry: '다시 시도',
+    browsePhotos: '영화와 TV 프로그램의 포스터와 배경 이미지를 탐색하세요',
+    viewPhotos: '{title}의 포스터와 배경 이미지를 보세요',
+    movieType: '영화',
+    tvType: 'TV 프로그램',
   },
   actors: {
     title: '인기 배우',
@@ -180,6 +230,10 @@ export default {
     birthDate: '생년월일',
     birthPlace: '출생지',
     loadingActors: '배우 로딩 중...',
+    gender: '성별',
+    popularity: '인기도',
+    addToFavorites: '즐겨찾기에 추가',
+    share: '공유',
   },
   error: {
     pageNotFound: '페이지를 찾을 수 없습니다',
