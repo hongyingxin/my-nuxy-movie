@@ -691,7 +691,7 @@
         </p>
         <button
           class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
-          @click="detail.refresh"
+          @click="() => detail?.refresh()"
         >
           {{ $t('actors.reload') }}
         </button>
@@ -700,31 +700,47 @@
   </div>
 </template>
 
-<script setup>
-  // 路由参数
+<script setup lang="ts">
   // API 导入
   import { getPersonDetail, getPersonCredits } from '~/api/person'
 
+  // 类型导入
+  import type { UseHttpReturn } from '~/types/apiType/http'
+  import type {
+    PersonDetail,
+    PersonCreditsResponse,
+    PersonCreditItem,
+  } from '~/types/apiType/person'
+  import type { WorkFilterType, TimelineYearGroup } from '~/types/pages/actors'
+
+  // 路由实例
   const route = useRoute()
-  const actorId = parseInt(route.params.id)
 
-  // 数据获取
-  const detail = getPersonDetail(actorId)
-  const credits = getPersonCredits(actorId)
-  console.log('detail-------', detail)
-  console.log('credits-------', credits)
+  // 从路由参数获取演员ID
+  const actorId = parseInt(route.params.id as string)
 
-  // 响应式数据
-  const activeTab = ref('all')
-  const scrollContainer = ref(null)
-  const scrollPosition = ref(0)
-  const maxScroll = ref(0)
-  const scrollProgress = ref(0)
+  // 获取演员详情数据
+  const detail = getPersonDetail(actorId) as UseHttpReturn<PersonDetail>
 
-  // 计算属性
-  const filteredWorks = computed(() => {
+  // 获取演员作品数据
+  const credits = getPersonCredits(
+    actorId
+  ) as UseHttpReturn<PersonCreditsResponse>
+
+  // 当前激活的作品过滤标签
+  const activeTab = ref<WorkFilterType>('all')
+
+  // 滚动容器引用
+  const scrollContainer = ref<HTMLDivElement | null>(null)
+
+  // 滚动位置状态
+  const scrollPosition = ref<number>(0)
+  const maxScroll = ref<number>(0)
+  const scrollProgress = ref<number>(0)
+
+  // 根据当前标签过滤的作品列表
+  const filteredWorks = computed<PersonCreditItem[]>(() => {
     if (!credits.data.value?.cast) return []
-
     const works = credits.data.value.cast
     switch (activeTab.value) {
       case 'movie':
@@ -736,14 +752,13 @@
     }
   })
 
-  // 时间轴数据
-  const timelineData = computed(() => {
+  // 按年份分组的时间轴数据
+  const timelineData = computed<TimelineYearGroup[]>(() => {
     if (!credits.data.value?.cast) return []
-
-    // 获取所有作品并按年份分组
     const works = credits.data.value.cast
-    const yearGroups = {}
+    const yearGroups: Record<string, PersonCreditItem[]> = {}
 
+    // 按年份分组作品
     works.forEach(work => {
       const date = work.release_date || work.first_air_date
       if (date) {
@@ -760,12 +775,12 @@
       .map(([year, works]) => ({
         year: parseInt(year),
         works: works.sort((a, b) => {
-          const dateA = a.release_date || a.first_air_date
-          const dateB = b.release_date || b.first_air_date
-          return new Date(dateB) - new Date(dateA)
+          const dateA = a.release_date || a.first_air_date || ''
+          const dateB = b.release_date || b.first_air_date || ''
+          return new Date(dateB).getTime() - new Date(dateA).getTime()
         }),
       }))
-      .sort((a, b) => b.year - a.year) // 按年份降序排列
+      .sort((a, b) => b.year - a.year)
   })
 
   // SEO 配置
@@ -782,21 +797,14 @@
   }))
 
   // 导航到作品详情页
-  const navigateToWork = work => {
+  const navigateToWork = (work: PersonCreditItem): void => {
     const mediaType = work.media_type || 'movie'
     navigateTo(`/${mediaType}/${work.id}`)
   }
 
-  // 刷新功能
-  // const refresh = () => {
-  //   detail.refresh()
-  //   credits.refresh()
-  // }
-
-  // 滚动相关方法
-  const handleScroll = () => {
+  // 处理滚动事件
+  const handleScroll = (): void => {
     if (!scrollContainer.value) return
-
     const container = scrollContainer.value
     scrollPosition.value = container.scrollLeft
     maxScroll.value = container.scrollWidth - container.clientWidth
@@ -809,33 +817,34 @@
     }
   }
 
-  const scrollLeft = () => {
+  // 向左滚动
+  const scrollLeft = (): void => {
     if (!scrollContainer.value) return
     const container = scrollContainer.value
     container.scrollBy({ left: -400, behavior: 'smooth' })
   }
 
-  const scrollRight = () => {
+  // 向右滚动
+  const scrollRight = (): void => {
     if (!scrollContainer.value) return
     const container = scrollContainer.value
     container.scrollBy({ left: 400, behavior: 'smooth' })
   }
 
-  const scrollToIndex = index => {
+  // 滚动到指定索引位置
+  const scrollToIndex = (index: number): void => {
     if (!scrollContainer.value) return
     const container = scrollContainer.value
-    const itemWidth = 200 + 16 // 200px 宽度 + 16px gap
-    const scrollTo = index * 5 * itemWidth // 每页显示5个项目
+    const itemWidth = 200 + 16 // 200 宽度 + 16p
+    const scrollTo = index * 5 * itemWidth // 每页显示5目
     container.scrollTo({ left: scrollTo, behavior: 'smooth' })
   }
 
-  const getIndicatorClass = index => {
+  // 获取滚动指示器样式类
+  const getIndicatorClass = (index: number): string => {
     if (!scrollContainer.value) return 'bg-gray-300'
-
-    // const container = scrollContainer.value
     const itemWidth = 200 + 16
     const currentIndex = Math.floor(scrollPosition.value / (5 * itemWidth))
-
     return index === currentIndex
       ? 'bg-red-600'
       : 'bg-gray-300 hover:bg-gray-400'

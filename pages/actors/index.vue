@@ -155,7 +155,7 @@
         <p class="text-gray-600 mb-4">{{ $t('actors.loadingActors') }}</p>
         <button
           class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
-          @click="actors.refresh"
+          @click="() => actors?.refresh()"
         >
           {{ $t('common.retry') }}
         </button>
@@ -164,9 +164,14 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
   // API 导入
   import { getPopularPeople } from '~/api/person'
+
+  // 类型导入
+  import type { UseHttpReturn } from '~/types/apiType/http'
+  import type { PersonPaginatedResponse } from '~/types/apiType/person'
+  import type { CurrentPage } from '~/types/pages/actors'
 
   // 获取 i18n 实例
   const { t } = useI18n()
@@ -186,26 +191,27 @@
   const route = useRoute()
 
   // 当前页码 - 从 URL 参数初始化
-  const currentPage = computed(() => {
-    const page = parseInt(route.query.page)
+  const currentPage = computed<CurrentPage>(() => {
+    const page = parseInt(route.query.page as string)
     return page > 0 ? page : 1
   })
 
   // 演员列表数据
-  const actors = ref()
+  const actors = ref<UseHttpReturn<PersonPaginatedResponse>>()
 
   // 获取演员列表数据
-  const fetchData = async () => {
+  const fetchData = async (): Promise<void> => {
     try {
       console.log('获取演员数据，页码:', currentPage.value)
       actors.value = getPopularPeople(currentPage.value)
     } catch (error) {
+      // 这里 error 类型为 unknown，直接打印
       console.error('获取演员列表失败:', error)
     }
   }
 
   // 页面跳转处理
-  const handlePageChange = page => {
+  const handlePageChange = (page: number): void => {
     if (page < 1 || page > (actors.value?.data.value?.total_pages || 1)) return
 
     // 更新 URL 参数
@@ -216,7 +222,7 @@
       delete newQuery.page
     } else {
       // 其他页面添加 page 参数
-      newQuery.page = page
+      newQuery.page = page.toString()
     }
 
     console.log('页面跳转，更新 URL:', newQuery)
@@ -240,7 +246,7 @@
   )
 
   // 导航到演员详情页
-  const navigateToActor = actorId => {
+  const navigateToActor = (actorId: number): void => {
     navigateTo(`/actors/${actorId}`)
   }
 </script>
