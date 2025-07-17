@@ -54,10 +54,18 @@
                     {{ detail.data.value.title || detail.data.value.name }}
                   </h1>
                   <div class="flex items-center gap-2 mb-2">
+                    <!-- <span class="text-gray-600">{{
+                      common.getYear(
+                        isMovie(detail.data.value)
+                          ? detail.data.value.release_date
+                          : detail.data.value.first_air_date
+                      )
+                    }}</span> -->
                     <span class="text-gray-600">{{
                       common.getYear(
-                        detail.data.value.release_date ||
-                          detail.data.value.first_air_date
+                        isMovie(detail.data.value)
+                          ? detail.data.value.release_date
+                          : detail.data.value.first_air_date
                       )
                     }}</span>
                     <span class="text-gray-400">•</span>
@@ -121,7 +129,12 @@
                     {{ detail.data.value.status }}
                   </span>
                   <span class="text-gray-300">
-                    {{ detail.data.value.number_of_episodes }} 集
+                    {{
+                      isTvShow(detail.data.value)
+                        ? detail.data.value.number_of_episodes
+                        : 0
+                    }}
+                    集
                   </span>
                 </div>
 
@@ -247,7 +260,9 @@
                         ? 'border-red-600 text-red-600'
                         : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
                     ]"
-                    @click="activeMediaTab = tab.id"
+                    @click="
+                      activeMediaTab = tab.id as typeof activeMediaTab.value
+                    "
                   >
                     {{ tab.name }}
                     <span
@@ -258,7 +273,7 @@
                           : 'bg-gray-100 text-gray-600',
                       ]"
                     >
-                      {{ getMediaCount(tab.id) }}
+                      {{ getMediaCount(tab.id as typeof activeMediaTab.value) }}
                     </span>
                   </button>
                 </nav>
@@ -406,7 +421,9 @@
                       >{{ $t('detail.budget') }}：</span
                     >
                     <span class="text-gray-800">{{
-                      common.formatBudget(detail.data.value.budget)
+                      isMovie(detail.data.value)
+                        ? common.formatBudget(detail.data.value.budget)
+                        : '-'
                     }}</span>
                   </div>
                   <div>
@@ -414,7 +431,9 @@
                       >{{ $t('detail.revenue') }}：</span
                     >
                     <span class="text-gray-800">{{
-                      common.formatBudget(detail.data.value.revenue)
+                      isMovie(detail.data.value)
+                        ? common.formatBudget(detail.data.value.revenue)
+                        : '-'
                     }}</span>
                   </div>
                   <div>
@@ -422,7 +441,9 @@
                       >{{ $t('detail.releaseDate') }}：</span
                     >
                     <span class="text-gray-800">{{
-                      common.formatDate(detail.data.value.release_date)
+                      isMovie(detail.data.value)
+                        ? common.formatDate(detail.data.value.release_date)
+                        : '-'
                     }}</span>
                   </div>
                 </template>
@@ -434,7 +455,11 @@
                       >{{ $t('detail.seasons') }}：</span
                     >
                     <span class="text-gray-800"
-                      >{{ detail.data.value.number_of_seasons }}
+                      >{{
+                        isTvShow(detail.data.value)
+                          ? detail.data.value.number_of_seasons
+                          : ''
+                      }}
                       {{ $t('detail.seasons') }}</span
                     >
                   </div>
@@ -443,7 +468,11 @@
                       >{{ $t('detail.episodes') }}：</span
                     >
                     <span class="text-gray-800"
-                      >{{ detail.data.value.number_of_episodes }}
+                      >{{
+                        isTvShow(detail.data.value)
+                          ? detail.data.value.number_of_episodes
+                          : ''
+                      }}
                       {{ $t('detail.episodes') }}</span
                     >
                   </div>
@@ -452,15 +481,24 @@
                       >{{ $t('detail.firstAirDate') }}：</span
                     >
                     <span class="text-gray-800">{{
-                      common.formatDate(detail.data.value.first_air_date)
+                      isTvShow(detail.data.value)
+                        ? common.formatDate(detail.data.value.first_air_date)
+                        : ''
                     }}</span>
                   </div>
-                  <div v-if="detail.data.value.last_air_date">
+                  <div
+                    v-if="
+                      isTvShow(detail.data.value) &&
+                      detail.data.value.last_air_date
+                    "
+                  >
                     <span class="text-gray-600 text-sm"
                       >{{ $t('detail.lastAirDate') }}：</span
                     >
                     <span class="text-gray-800">{{
-                      common.formatDate(detail.data.value.last_air_date)
+                      isTvShow(detail.data.value)
+                        ? common.formatDate(detail.data.value.last_air_date)
+                        : ''
                     }}</span>
                   </div>
                 </template>
@@ -519,7 +557,11 @@
 
             <!-- 关键词 (电影特有) -->
             <section
-              v-if="!isTv && detail.data.value.keywords?.keywords?.length"
+              v-if="
+                !isTv &&
+                isMovie(detail.data.value) &&
+                detail.data.value.keywords?.keywords?.length
+              "
               class="bg-white rounded-lg shadow-md p-6"
             >
               <h3 class="text-lg font-bold text-gray-800 mb-4">
@@ -527,10 +569,9 @@
               </h3>
               <div class="flex flex-wrap gap-2">
                 <span
-                  v-for="keyword in detail.data.value.keywords.keywords.slice(
-                    0,
-                    10
-                  )"
+                  v-for="keyword in isMovie(detail.data.value)
+                    ? detail.data.value.keywords.keywords.slice(0, 10)
+                    : []"
                   :key="keyword.id"
                   class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
                 >
@@ -541,7 +582,11 @@
 
             <!-- 季数信息 (电视剧特有) -->
             <section
-              v-if="isTv && detail.data.value.seasons?.length"
+              v-if="
+                isTv &&
+                isTvShow(detail.data.value) &&
+                detail.data.value.seasons?.length
+              "
               class="bg-white rounded-lg shadow-md p-6"
             >
               <h3 class="text-lg font-bold text-gray-800 mb-4">
@@ -549,7 +594,9 @@
               </h3>
               <div class="space-y-3">
                 <div
-                  v-for="season in detail.data.value.seasons.slice(0, 5)"
+                  v-for="season in isTvShow(detail.data.value)
+                    ? detail.data.value.seasons.slice(0, 5)
+                    : []"
                   :key="season.id"
                   class="flex items-center gap-3 p-2 rounded hover:bg-gray-50"
                 >
@@ -596,8 +643,8 @@
   </div>
 </template>
 
-<script setup>
-  // 路由参数
+<script setup lang="ts">
+  // ==================== 路由参数处理 ====================
   // API 导入
   import {
     getDetail,
@@ -607,30 +654,62 @@
     getImages,
   } from '~/api/detail'
 
+  // 导入类型定义
+  import type { MovieDetail, TvShowDetail } from '~/types/apiType'
+  import type { MediaType } from '~/types/pages/details'
+
   // 获取 i18n 实例
   const { t } = useI18n()
 
   const route = useRoute()
-  const mediaType = route.params.type // 'movie' 或 'tv'
-  const mediaId = parseInt(route.params.id)
+  // 从路由参数中提取媒体类型和ID，确保类型安全
+  const mediaType = (
+    Array.isArray(route.params.type) ? route.params.type[0] : route.params.type
+  ) as MediaType
+  const mediaId = parseInt(
+    Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
+  )
 
-  // 计算属性
+  // ==================== 计算属性 ====================
+  // 判断是否为电视剧
   const isTv = computed(() => mediaType === 'tv')
+  // 获取媒体类型的中文描述
   const mediaTypeText = computed(() => (isTv.value ? '电视剧' : '电影'))
+  //  ==================== 类型守卫函数 ====================
+  // 判断是否为电影详情
+  const isMovie = (
+    detail: MovieDetail | TvShowDetail
+  ): detail is MovieDetail => {
+    return 'release_date' in detail && 'runtime' in detail
+  }
 
-  // 数据获取
+  // 判断是否为电视剧详情
+  const isTvShow = (
+    detail: MovieDetail | TvShowDetail
+  ): detail is TvShowDetail => {
+    return 'first_air_date' in detail && 'number_of_seasons' in detail
+  }
+
+  // ==================== 数据获取 ====================
+  // 获取详情数据
   const detail = getDetail(mediaType, mediaId)
+  // 获取演职员信息
   const credits = getCredits(mediaType, mediaId)
+  // 获取视频信息
   const videos = getVideos(mediaType, mediaId)
+  // 获取相似内容
   const similar = getSimilar(mediaType, mediaId)
+  // 获取图片信息
   const images = getImages(mediaType, mediaId)
+
+  // 调试日志
   console.log('detail', detail)
   console.log('credits', credits)
   console.log('videos', videos)
   console.log('similar', similar)
   console.log('images', images)
 
-  // SEO 配置
+  // ==================== SEO 配置 ====================
   useHead(() => ({
     title: detail.data.value
       ? `${detail.data.value.title || detail.data.value.name} - Nuxt Movie`
@@ -644,12 +723,14 @@
     ],
   }))
 
-  // 媒体标签页状态
-  const activeMediaTab = ref('backdrops')
+  // ==================== 媒体标签页状态管理 ====================
+  // 当前激活的媒体标签页
+  const activeMediaTab = ref<'backdrops' | 'posters' | 'videos'>('backdrops')
+  // 媒体标签页配置
   const mediaTabs = [
-    { id: 'backdrops', name: t('detail.backdrops') },
-    { id: 'posters', name: t('detail.posters') },
-    { id: 'videos', name: t('detail.videos') },
+    { id: 'backdrops' as const, name: t('detail.backdrops') },
+    { id: 'posters' as const, name: t('detail.posters') },
+    { id: 'videos' as const, name: t('detail.videos') },
   ]
 
   // 监听数据加载完成，设置默认标签页
@@ -666,8 +747,9 @@
   //   }
   // }, { immediate: true })
 
+  // ==================== 工具函数 ====================
   // 获取媒体数量
-  const getMediaCount = type => {
+  const getMediaCount = (type: 'backdrops' | 'posters' | 'videos'): number => {
     switch (type) {
       case 'backdrops':
         return images.data.value?.backdrops?.length || 0
@@ -680,7 +762,7 @@
     }
   }
 
-  // 是否有更多媒体内容
+  // 判断是否有更多媒体内容
   const hasMoreMedia = computed(() => {
     switch (activeMediaTab.value) {
       case 'backdrops':
@@ -694,18 +776,23 @@
     }
   })
 
-  // 打开灯箱
-  const openLightbox = (type, index) => {
+  // 打开灯箱功能
+  const openLightbox = (type: string, index: number): void => {
     // TODO: 实现灯箱功能
     console.log('Open lightbox', type, index)
   }
 
-  // 工具函数
-  const getRuntimeOrSeasons = () => {
+  // 获取时长或季数信息
+  const getRuntimeOrSeasons = (): string => {
     if (isTv.value) {
-      return `${detail.data.value.number_of_seasons} ${t('detail.seasons')}`
+      // 电视剧显示季数
+      const seasons = isTvShow(detail.data.value)
+        ? detail.data.value.number_of_seasons
+        : 0
+      return `${seasons} ${t('detail.seasons')}`
     } else {
-      const minutes = detail.data.value.runtime
+      // 电影显示时长
+      const minutes = isMovie(detail.data.value) ? detail.data.value.runtime : 0
       if (!minutes) return t('detail.unknown')
       const hours = Math.floor(minutes / 60)
       const mins = minutes % 60
@@ -713,8 +800,9 @@
     }
   }
 
-  // 刷新功能
-  const refresh = () => {
+  // ==================== 刷新功能 ====================
+  // 刷新所有数据
+  const refresh = (): void => {
     detail.refresh()
     credits.refresh()
     videos.refresh()

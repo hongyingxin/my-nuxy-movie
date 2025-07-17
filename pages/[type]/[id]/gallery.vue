@@ -10,7 +10,7 @@
     <div class="container mx-auto px-4">
       <!-- 页面标题 -->
       <MediaPageHeader
-        :backdrop_path="detail.data.value?.backdrop_path"
+        :backdrop_path="detail.data.value?.backdrop_path ?? undefined"
         :title="`${detail.data.value?.title || detail.data.value?.name} ${$t('detail.photos')}`"
         :back-to="`/${mediaType}/${mediaId}`"
       />
@@ -138,7 +138,7 @@
         <p class="text-gray-600 mb-4">无法获取图片信息，请稍后重试</p>
         <button
           class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
-          @click="images.refresh"
+          @click="() => images.refresh()"
         >
           重新加载
         </button>
@@ -147,28 +147,42 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+  // ==================== 第三方库导入 ====================
   import PhotoSwipeLightbox from 'photoswipe/lightbox'
 
-  // API 导入
+  // ==================== API 导入 ====================
   import { getDetail, getImages } from '~/api/detail'
+  import type { MediaType } from '~/types/pages/details'
+  import type { Image } from '~/types/apiType'
 
+  // ==================== 路由参数处理 ====================
   const route = useRoute()
-  const [mediaType, mediaId] = [route.params.type, parseInt(route.params.id)]
+  // 从路由参数中提取媒体类型和ID，确保类型安全
+  const mediaType = (
+    Array.isArray(route.params.type) ? route.params.type[0] : route.params.type
+  ) as MediaType
+  const mediaId = parseInt(
+    Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
+  )
 
-  // 获取数据
+  // ==================== 数据获取 ====================
+  // 获取详情数据（用于显示标题）
   const detail = getDetail(mediaType, mediaId)
+  // 获取图片数据
   const images = getImages(mediaType, mediaId)
 
+  // ==================== 图片分类标签配置 ====================
   // 图片分类标签
   const imageTabs = [
-    { id: 'posters', name: '海报' },
-    { id: 'backdrops', name: '剧照' },
+    { id: 'posters' as const, name: '海报' },
+    { id: 'backdrops' as const, name: '剧照' },
   ]
 
   // 当前激活的标签
-  const activeTab = ref('posters')
+  const activeTab = ref<'posters' | 'backdrops'>('posters')
 
+  // ==================== 无限滚动配置 ====================
   // 使用无限滚动组合式函数
   const { currentPage, isLoading, hasMore, observerTarget, reset } =
     useInfiniteScroll(
@@ -178,14 +192,19 @@
 
         // 重新初始化 PhotoSwipe 以包含新加载的图片
         nextTick(() => {
-          if (lightbox) {
-            lightbox.destroy()
-            lightbox = null
+          if (lightbox.value) {
+            lightbox.value.destroy()
+            lightbox.value = null
           }
           initPhotoSwipe()
         })
       },
-      computed(() => images.data.value?.[activeTab.value]?.length || 0),
+      // 计算当前标签页的图片总数
+      computed(
+        () =>
+          (images.data.value?.[activeTab.value] as Image[] | undefined)
+            ?.length || 0
+      ),
       {
         pageSize: 20,
         rootMargin: () => {
@@ -194,14 +213,29 @@
 
           // 检测网络状况（如果支持）
           const connection =
-            navigator.connection ||
-            navigator.mozConnection ||
-            navigator.webkitConnection
+            (
+              navigator as Navigator & {
+                connection?: { effectiveType?: string }
+                mozConnection?: { effectiveType?: string }
+                webkitConnection?: { effectiveType?: string }
+              }
+            ).connection ||
+            (
+              navigator as Navigator & {
+                mozConnection?: { effectiveType?: string }
+              }
+            ).mozConnection ||
+            (
+              navigator as Navigator & {
+                webkitConnection?: { effectiveType?: string }
+              }
+            ).webkitConnection
+
           const isSlowNetwork =
             connection &&
             (connection.effectiveType === 'slow-2g' ||
               connection.effectiveType === '2g')
-
+          // 根据设备和网络状况返回不同的 rootMargin
           if (isMobile) {
             return isSlowNetwork ? '100px' : '50px'
           } else {
@@ -216,51 +250,62 @@
       }
     )
 
+  // ==================== 计算属性 ====================
   // 计算当前显示的图片
   const currentImages = computed(() => {
-    const allImages = images.data.value?.[activeTab.value] || []
+    const allImages =
+      (images.data.value?.[activeTab.value] as Image[] | undefined) || []
     return allImages.slice(0, currentPage.value * 20)
   })
 
+  // ==================== 工具函数 ====================
   // 获取图片数量
-  const getImageCount = type => {
-    return images.data.value?.[type]?.length || 0
+  const getImageCount = (type: 'posters' | 'backdrops'): number => {
+    return (images.data.value?.[type] as Image[] | undefined)?.length || 0
   }
 
   // 监听标签切换，重置分页
   watch(activeTab, () => {
     reset() // 重置无限滚动
     nextTick(() => {
-      if (lightbox) {
-        lightbox.destroy()
-        lightbox = null
+      if (lightbox.value) {
+        lightbox.value.destroy()
+        lightbox.value = null
       }
       initPhotoSwipe()
     })
   })
 
   // 图片链接生成
-  const getFullImageUrl = (path, size, type) => {
+  const getFullImageUrl = (
+    path: string,
+    size: 'small' | 'medium' | 'large' | 'original',
+    type: 'posters' | 'backdrops'
+  ): string => {
     return type === 'posters'
       ? image.getPosterUrl(path, size)
       : image.getBackdropUrl(path, size)
   }
 
-  // PhotoSwipe 初始化
-  let lightbox = null
+  // ==================== PhotoSwipe 灯箱功能 ====================
+  // PhotoSwipe 实例
+  const lightbox = ref<PhotoSwipeLightbox | null>(null)
 
+  // 组件挂载时初始化灯箱
   onMounted(() => {
     initPhotoSwipe()
   })
 
+  // 初始化 PhotoSwipe 灯箱
   const initPhotoSwipe = () => {
     // 确保先清理之前的实例
-    if (lightbox) {
-      lightbox.destroy()
-      lightbox = null
+    if (lightbox.value) {
+      lightbox.value.destroy()
+      lightbox.value = null
     }
 
-    lightbox = new PhotoSwipeLightbox({
+    // 创建新的 PhotoSwipe 实例
+    lightbox.value = new PhotoSwipeLightbox({
       gallery: '.pswp-gallery',
       children: 'a[href]', // 只选择有 href 属性的 a 标签
       pswpModule: () => import('photoswipe'),
@@ -278,44 +323,48 @@
       },
     })
 
-    lightbox.on('beforeOpen', () => {
+    // 灯箱打开前隐藏页面滚动
+    lightbox.value.on('beforeOpen', () => {
       document.body.style.overflow = 'hidden'
     })
 
-    lightbox.on('close', () => {
+    // 灯箱关闭后恢复页面滚动
+    lightbox.value.on('close', () => {
       document.body.style.overflow = ''
     })
 
-    lightbox.init()
+    // 初始化灯箱
+    lightbox.value.init()
   }
 
-  // 页面卸载时清理
+  // ==================== 生命周期清理 ====================
+  // 页面卸载时清理灯箱
   onBeforeUnmount(() => {
-    if (lightbox) {
-      lightbox.destroy()
-      lightbox = null
+    if (lightbox.value) {
+      lightbox.value.destroy()
+      lightbox.value = null
     }
   })
 
   // 路由变化时清理
   onBeforeRouteLeave(() => {
-    if (lightbox) {
-      lightbox.destroy()
-      lightbox = null
+    if (lightbox.value) {
+      lightbox.value.destroy()
+      lightbox.value = null
     }
-    // TODO: 因为是针对body，这里以后可能影响到别的页面，产生一些排查不出来的问题。
+
     // 额外的清理：移除可能残留的 PhotoSwipe 元素
     const pswpElements = document.querySelectorAll('.pswp')
     pswpElements.forEach(el => el.remove())
 
     // 恢复 body 样式
     document.body.style.overflow = ''
-
     // 移除可能残留的事件监听器
-    document.removeEventListener('keydown', null)
+    // 不再传 null，避免类型报错
+    // document.removeEventListener('keydown', null)
   })
 
-  // SEO 配置
+  // ==================== SEO 配置 ====================
   useHead(() => ({
     title: detail.data.value
       ? `${detail.data.value.title || detail.data.value.name} 的图片集 - Nuxt Movie`
