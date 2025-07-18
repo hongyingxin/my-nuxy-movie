@@ -46,6 +46,18 @@ export default {
     trending: 'Trending',
   },
 
+  // 用户相关
+  user: {
+    profile: 'Profile',
+    favorites: 'My Favorites',
+    watchlist: 'Watchlist',
+    settings: 'Settings',
+    logout: 'Logout',
+    login: 'Login',
+    register: 'Register',
+    account: 'Account',
+  },
+
   // 首页
   home: {
     welcome: 'Welcome to My Nuxt Movie',
@@ -166,6 +178,7 @@ export default {
     today: 'Today',
     nowPlayingMovie: 'Discover movies currently in theaters, cinema guide',
     nowAirTv: 'Discover TV shows currently on air, current popular series',
+    airingTv: 'Discover TV shows currently on air, current popular series',
     todayMovie: 'Discover movies released today',
     todayTv: 'Discover TV shows airing today',
     popularMovie:
@@ -174,11 +187,15 @@ export default {
       'Discover the most popular TV shows, including recent and upcoming quality content',
     upcomingTheatrical:
       'Discover movies coming to theaters soon, get early information about new films',
+    upcomingTheatricalMovie:
+      'Discover movies coming to theaters soon, get early information about new films',
     upcomingMovie:
       'Discover upcoming movies, get early information about new films',
     upcomingTv:
       'Discover upcoming TV shows, get early information about new series',
     nowPlayingTheatrical: 'Discover movies currently in theaters, cinema guide',
+    nowPlayingTheatricalMovie:
+      'Discover movies currently in theaters, cinema guide',
     nowAirTvShow: 'Discover TV shows currently on air, current popular series',
     topRatedMovie: 'Discover the highest-rated movies, classic masterpieces',
     topRatedTv: 'Discover the highest-rated TV shows, quality series',
@@ -214,7 +231,7 @@ export default {
     status: 'Status',
     originalLanguage: 'Original Language',
     budget: 'Budget',
-    revenue: 'Box Office',
+    revenue: 'Revenue',
     genres: 'Genres',
     seasons: 'Seasons',
     episodes: 'Episodes',
@@ -223,7 +240,7 @@ export default {
     loadingDetails: 'Loading {type} details...',
     loadingFailed: 'Loading Failed',
     loadingFailedMessage:
-      'Unable to load cast and crew information, please try again later',
+      'Unable to get cast and crew information, please try again later',
     reload: 'Reload',
     backdrops: 'Backdrops',
     posters: 'Posters',
@@ -237,17 +254,17 @@ export default {
     unknown: 'Unknown',
     viewAllImages: 'View All Images',
     loadingFailedDetails:
-      'Unable to load {type} details, please try again later',
+      'Unable to get {type} details, please try again later',
     // 扁平化翻译键
     loadingMoreImages: 'Loading more images...',
     scrollToLoadMore: 'Scroll to bottom to load more',
     allImagesLoaded: '🎉 All images loaded',
     loadFailed: 'Load Failed',
     loadFailedMessage:
-      'Unable to load image information, please try again later',
+      'Unable to get image information, please try again later',
     retry: 'Retry',
-    browsePhotos: 'Browse posters and backdrops of movies and TV shows',
-    viewPhotos: 'View posters and backdrops of {title}',
+    browsePhotos: 'Browse posters and stills from movies and TV shows',
+    viewPhotos: 'View posters and stills for {title}',
     movieType: 'Movie',
     tvType: 'TV Show',
   },
@@ -255,7 +272,7 @@ export default {
   // 演员页面
   actors: {
     title: 'Popular Actors',
-    description: 'Discover the most popular actors and stars',
+    description: 'Discover the most popular actors and celebrities',
     knownFor: 'Known For',
     biography: 'Biography',
     filmography: 'Filmography',
@@ -266,6 +283,14 @@ export default {
     popularity: 'Popularity',
     addToFavorites: 'Add to Favorites',
     share: 'Share',
+    occupation: 'Occupation',
+    imdb: 'IMDb',
+    viewDetails: 'View Details',
+    careerTimeline: 'Career Timeline',
+    loadFailed: 'Load Failed',
+    failedToLoadActorDetails:
+      'Failed to load actor details, please try again later',
+    reload: 'Reload',
   },
 
   // 错误页面

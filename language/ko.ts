@@ -42,6 +42,19 @@ export default {
     search: '검색',
     trending: '트렌드',
   },
+
+  // 사용자 관련
+  user: {
+    profile: '프로필',
+    favorites: '즐겨찾기',
+    watchlist: '시청 목록',
+    settings: '설정',
+    logout: '로그아웃',
+    login: '로그인',
+    register: '회원가입',
+    account: '계정',
+  },
+
   home: {
     welcome: 'My Nuxt Movie에 오신 것을 환영합니다',
     test: '이것은 영어 테스트 메시지입니다',
@@ -154,6 +167,8 @@ export default {
       '현재 상영 중인 영화를 발견하고, 영화관 가이드를 확인하세요',
     nowAirTv:
       '현재 방영 중인 TV 프로그램을 발견하고, 현재 인기 시리즈를 확인하세요',
+    airingTv:
+      '현재 방영 중인 TV 프로그램을 발견하고, 현재 인기 시리즈를 확인하세요',
     todayMovie: '오늘 개봉된 영화를 발견하세요',
     todayTv: '오늘 방영되는 TV 프로그램을 발견하세요',
     popularMovie:
@@ -162,11 +177,15 @@ export default {
       '가장 인기 있는 TV 프로그램을 발견하고, 최근 및 방영 예정 품질 콘텐츠를 포함합니다',
     upcomingTheatrical:
       '곧 영화관에서 개봉될 영화를 발견하고, 신작 영화의 조기 정보를 얻으세요',
+    upcomingTheatricalMovie:
+      '곧 영화관에서 개봉될 영화를 발견하고, 신작 영화의 조기 정보를 얻으세요',
     upcomingMovie:
       '개봉 예정 영화를 발견하고, 신작 영화의 조기 정보를 얻으세요',
     upcomingTv:
       '방영 예정 TV 프로그램을 발견하고, 신작 시리즈의 조기 정보를 얻으세요',
     nowPlayingTheatrical:
+      '현재 영화관에서 상영 중인 영화를 발견하고, 영화관 가이드를 확인하세요',
+    nowPlayingTheatricalMovie:
       '현재 영화관에서 상영 중인 영화를 발견하고, 영화관 가이드를 확인하세요',
     nowAirTvShow:
       '현재 방영 중인 TV 프로그램을 발견하고, 현재 인기 시리즈를 확인하세요',
@@ -187,72 +206,82 @@ export default {
     systemModeDescription: '시스템 테마 설정 따름',
   },
 
+  // 详情页面
   detail: {
     overview: '개요',
     cast: '출연진',
     crew: '제작진',
-    videos: '비디오',
+    videos: '동영상',
     photos: '사진',
-    similar: '유사',
+    similar: '유사한 작품',
     recommendations: '추천',
-    runtime: '상영 시간',
+    runtime: '상영시간',
     rating: '평점',
     releaseDate: '개봉일',
-    firstAirDate: '첫 방영일',
-    lastAirDate: '마지막 방영일',
+    firstAirDate: '첫 방송일',
+    lastAirDate: '마지막 방송일',
     status: '상태',
     originalLanguage: '원어',
     budget: '예산',
     revenue: '수익',
     genres: '장르',
-    seasons: '시즌',
-    episodes: '에피소드',
-    networks: '네트워크',
+    seasons: '시즌 수',
+    episodes: '에피소드 수',
+    networks: '방송사',
     productionCompanies: '제작사',
-    loadingDetails: '{type} 세부 정보 로딩 중...',
-    loadingFailed: '로딩 실패',
+    loadingDetails: '{type} 상세 정보를 불러오는 중...',
+    loadingFailed: '불러오기 실패',
     loadingFailedMessage:
-      '출연진 및 제작진 정보를 불러오지 못했습니다. 나중에 다시 시도해 주세요',
+      '출연진과 제작진 정보를 가져올 수 없습니다. 나중에 다시 시도해 주세요',
     reload: '다시 불러오기',
-    backdrops: '배경',
+    backdrops: '배경 사진',
     posters: '포스터',
     watchTrailer: '예고편 보기',
     addToFavorites: '즐겨찾기에 추가',
-    viewAll: '전체 보기',
-    peopleRated: '명이 평가함',
+    viewAll: '모두 보기',
+    peopleRated: '명이 평가',
     basedOnRatings: '{count}개의 평가 기준',
-    details: '세부 정보',
+    details: '상세 정보',
     keywords: '키워드',
     unknown: '알 수 없음',
     viewAllImages: '모든 이미지 보기',
     loadingFailedDetails:
-      '{type} 세부 정보를 불러오지 못했습니다. 나중에 다시 시도해 주세요',
+      '{type} 상세 정보를 가져올 수 없습니다. 나중에 다시 시도해 주세요',
     // 扁平化翻译键
-    loadingMoreImages: '더 많은 이미지 로딩 중...',
-    scrollToLoadMore: '더 많은 이미지를 로드하려면 아래로 스크롤하세요',
-    allImagesLoaded: '🎉 모든 이미지를 로드했습니다',
-    loadFailed: '로딩 실패',
+    loadingMoreImages: '더 많은 이미지를 불러오는 중...',
+    scrollToLoadMore: '더 많은 이미지를 불러오려면 아래로 스크롤하세요',
+    allImagesLoaded: '🎉 모든 이미지를 불러왔습니다',
+    loadFailed: '불러오기 실패',
     loadFailedMessage:
-      '이미지 정보를 불러오지 못했습니다. 나중에 다시 시도해 주세요',
+      '이미지 정보를 가져올 수 없습니다. 나중에 다시 시도해 주세요',
     retry: '다시 시도',
-    browsePhotos: '영화와 TV 프로그램의 포스터와 배경 이미지를 탐색하세요',
-    viewPhotos: '{title}의 포스터와 배경 이미지를 보세요',
+    browsePhotos: '영화와 TV 프로그램의 포스터와 스틸 사진을 둘러보세요',
+    viewPhotos: '{title}의 포스터와 스틸 사진 보기',
     movieType: '영화',
     tvType: 'TV 프로그램',
   },
+  // 演员页面
   actors: {
     title: '인기 배우',
-    description: '가장 인기 있는 배우와 스타를 탐색하세요',
+    description: '가장 인기 있는 배우와 셀럽을 발견하세요',
     knownFor: '대표작',
     biography: '약력',
-    filmography: '필모그래피',
+    filmography: '출연작',
     birthDate: '생년월일',
     birthPlace: '출생지',
-    loadingActors: '배우 로딩 중...',
+    loadingActors: '배우를 불러오는 중...',
     gender: '성별',
     popularity: '인기도',
     addToFavorites: '즐겨찾기에 추가',
     share: '공유',
+    occupation: '직업',
+    imdb: 'IMDb',
+    viewDetails: '상세 보기',
+    careerTimeline: '경력 타임라인',
+    loadFailed: '불러오기 실패',
+    failedToLoadActorDetails:
+      '배우 상세 정보를 불러올 수 없습니다. 나중에 다시 시도해 주세요',
+    reload: '다시 불러오기',
   },
   error: {
     pageNotFound: '페이지를 찾을 수 없습니다',

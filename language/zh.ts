@@ -46,6 +46,18 @@ export default {
     trending: '热门',
   },
 
+  // 用户相关
+  user: {
+    profile: '个人资料',
+    favorites: '我的收藏',
+    watchlist: '观看清单',
+    settings: '设置',
+    logout: '退出登录',
+    login: '登录',
+    register: '注册',
+    account: '账户',
+  },
+
   // 首页
   home: {
     welcome: '欢迎来到我的 Nuxt 电影',
@@ -164,14 +176,17 @@ export default {
     today: '今日播出',
     nowPlayingMovie: '发现正在上映的电影，影院观影指南',
     nowAirTv: '发现正在播出的电视剧，当前热门剧集',
+    airingTv: '发现正在播出的电视剧，当前热门剧集',
     todayMovie: '发现今天上映的电影',
     todayTv: '发现今天播出的电视剧',
     popularMovie: '发现最热门的电影，包含近期和即将上映的佳作',
     popularTv: '发现最热门的电视剧，包含近期和即将播出的精品',
     upcomingTheatrical: '发现即将在影院上映的电影，提前了解新片信息',
+    upcomingTheatricalMovie: '发现即将在影院上映的电影，提前了解新片信息',
     upcomingMovie: '发现即将上映的电影，提前了解新片信息',
     upcomingTv: '发现即将播出的电视剧，提前了解新剧信息',
     nowPlayingTheatrical: '发现正在影院上映的电影，影院观影指南',
+    nowPlayingTheatricalMovie: '发现正在影院上映的电影，影院观影指南',
     nowAirTvShow: '发现正在播出的电视剧，当前热门剧集',
     topRatedMovie: '发现评分最高的电影，经典佳作推荐',
     topRatedTv: '发现评分最高的电视剧，精品剧集推荐',
@@ -256,6 +271,13 @@ export default {
     popularity: '人气指数',
     addToFavorites: '添加到收藏',
     share: '分享',
+    occupation: '职业',
+    imdb: 'IMDb',
+    viewDetails: '查看详情',
+    careerTimeline: '职业生涯',
+    loadFailed: '加载失败',
+    failedToLoadActorDetails: '无法获取演员详情，请稍后重试',
+    reload: '重新加载',
   },
 
   // 错误页面
