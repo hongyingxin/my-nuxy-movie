@@ -1,13 +1,13 @@
 <template>
   <div
     v-if="showSuggestions && suggestions.length > 0"
-    class="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-xl z-50 mt-2 overflow-hidden"
+    class="absolute top-full left-0 right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl z-50 mt-2 overflow-hidden"
   >
     <div class="max-h-80 overflow-y-auto">
       <div
         v-for="suggestion in suggestions"
         :key="`${suggestion.media_type}-${suggestion.id}`"
-        class="flex items-center space-x-3 p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition-colors duration-150 group"
+        class="flex items-center space-x-3 p-4 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-b-0 transition-colors duration-150 group"
         @click="selectSuggestion(suggestion)"
       >
         <!-- 图片 -->
@@ -31,10 +31,10 @@
           />
           <div
             v-else
-            class="w-12 h-16 bg-gray-200 rounded-lg flex items-center justify-center shadow-sm"
+            class="w-12 h-16 bg-gray-200 dark:bg-gray-700 rounded-lg flex items-center justify-center shadow-sm"
           >
             <svg
-              class="w-6 h-6 text-gray-400"
+              class="w-6 h-6 text-gray-400 dark:text-gray-500"
               fill="currentColor"
               viewBox="0 0 20 20"
             >
@@ -53,7 +53,7 @@
         <!-- 信息 -->
         <div class="flex-1 min-w-0">
           <div class="flex items-center space-x-2 mb-1">
-            <h4 class="font-semibold text-gray-900 truncate">
+            <h4 class="font-semibold text-gray-900 dark:text-gray-100 truncate">
               {{ suggestion.title || suggestion.name }}
             </h4>
             <span
@@ -66,12 +66,14 @@
 
           <p
             v-if="suggestion.overview"
-            class="text-sm text-gray-600 mb-2 line-clamp-2"
+            class="text-sm text-gray-600 dark:text-gray-300 mb-2 line-clamp-2"
           >
             {{ suggestion.overview }}
           </p>
 
-          <div class="flex items-center space-x-3 text-xs text-gray-500">
+          <div
+            class="flex items-center space-x-3 text-xs text-gray-500 dark:text-gray-400"
+          >
             <span
               v-if="suggestion.release_date || suggestion.first_air_date"
               class="flex items-center"
@@ -118,7 +120,7 @@
 
         <!-- 箭头 -->
         <div
-          class="flex-shrink-0 text-gray-300 group-hover:text-gray-400 transition-colors"
+          class="flex-shrink-0 text-gray-300 dark:text-gray-500 group-hover:text-gray-400 dark:group-hover:text-gray-400 transition-colors"
         >
           <svg
             class="w-4 h-4"
@@ -138,9 +140,11 @@
     </div>
 
     <!-- 查看更多结果 -->
-    <div class="p-4 bg-gray-50 border-t border-gray-200">
+    <div
+      class="p-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600"
+    >
       <button
-        class="w-full text-center text-sm text-red-600 hover:text-red-700 font-medium py-2 rounded-lg hover:bg-red-50 transition-all duration-150"
+        class="w-full text-center text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-150"
         @click="viewAllResults"
       >
         查看所有结果 ({{ totalResults }})
@@ -195,13 +199,13 @@
   const getTypeClass = (mediaType: SearchResultItem['media_type']) => {
     switch (mediaType) {
       case 'movie':
-        return 'bg-blue-50 text-blue-700 border border-blue-200'
+        return 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700'
       case 'tv':
-        return 'bg-purple-50 text-purple-700 border border-purple-200'
+        return 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-700'
       case 'person':
-        return 'bg-green-50 text-green-700 border border-green-200'
+        return 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-700'
       default:
-        return 'bg-gray-50 text-gray-700 border border-gray-200'
+        return 'bg-gray-50 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600'
     }
   }
 

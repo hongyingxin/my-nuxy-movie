@@ -5,7 +5,7 @@
   url: /movie/1234567890、/tv/1234567890
 -->
 <template>
-  <div class="min-h-screen bg-gray-50 py-8">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
     <div class="container mx-auto px-4">
       <!-- 页面标题 -->
       <MediaPageHeader
@@ -20,28 +20,34 @@
       >
         <!-- 左侧：演员列表骨架屏 -->
         <div class="lg:col-span-3">
-          <h2 class="text-2xl font-bold text-gray-800 mb-6">
+          <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">
             {{ $t('detail.cast') }}
           </h2>
           <SkeletonList :count="15" variant="actor" />
         </div>
         <!-- 右侧：剧组成员骨架屏 -->
         <div class="lg:col-span-1">
-          <h2 class="text-2xl font-bold text-gray-800 mb-6">
+          <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">
             {{ $t('detail.crew') }}
           </h2>
           <div class="space-y-6">
             <div v-for="n in 3" :key="n" class="animate-pulse">
-              <div class="bg-gray-300 h-5 rounded w-20 mb-3" />
-              <div class="bg-white rounded-lg shadow-sm">
+              <div class="bg-gray-300 dark:bg-gray-600 h-5 rounded w-20 mb-3" />
+              <div
+                class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
+              >
                 <div
                   v-for="m in 4"
                   :key="m"
                   class="p-3"
-                  :class="{ 'border-b': m !== 4 }"
+                  :class="{
+                    'border-b border-gray-200 dark:border-gray-700': m !== 4,
+                  }"
                 >
-                  <div class="bg-gray-300 h-4 rounded w-3/4 mb-1" />
-                  <div class="bg-gray-300 h-3 rounded w-1/2" />
+                  <div
+                    class="bg-gray-300 dark:bg-gray-600 h-4 rounded w-3/4 mb-1"
+                  />
+                  <div class="bg-gray-300 dark:bg-gray-600 h-3 rounded w-1/2" />
                 </div>
               </div>
             </div>
@@ -54,16 +60,19 @@
       >
         <!-- 左侧：演员列表 -->
         <div class="lg:col-span-3">
-          <h2 class="text-2xl font-bold text-gray-800 mb-6">
+          <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">
             {{ $t('detail.cast') }} ({{ credits.data.value.cast?.length || 0 }})
           </h2>
-          <div class="bg-white rounded-lg shadow-sm">
+          <div
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
+          >
             <div
               v-for="(actor, index) in credits.data.value.cast"
               :key="actor.id"
-              class="flex items-center p-4 cursor-pointer hover:bg-gray-100 hover:shadow-md transition-all duration-200 rounded-lg"
+              class="flex items-center p-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 hover:shadow-md transition-all duration-200 rounded-lg"
               :class="{
-                'border-b': index !== credits.data.value.cast.length - 1,
+                'border-b border-gray-200 dark:border-gray-700':
+                  index !== credits.data.value.cast.length - 1,
               }"
               @click="navigateTo(`/actors/${actor.id}`)"
             >
@@ -76,10 +85,14 @@
                 />
               </div>
               <div class="ml-4 flex-1">
-                <h3 class="font-medium text-gray-900">{{ actor.name }}</h3>
-                <p class="text-gray-600">{{ actor.character }}</p>
+                <h3 class="font-medium text-gray-900 dark:text-white">
+                  {{ actor.name }}
+                </h3>
+                <p class="text-gray-600 dark:text-gray-400">
+                  {{ actor.character }}
+                </p>
               </div>
-              <div class="text-sm text-gray-500">
+              <div class="text-sm text-gray-500 dark:text-gray-400">
                 {{ actor.known_for_department }}
               </div>
             </div>
@@ -87,7 +100,7 @@
         </div>
         <!-- 右侧：剧组成员 -->
         <div class="lg:col-span-1">
-          <h2 class="text-2xl font-bold text-gray-800 mb-6">
+          <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">
             {{ $t('detail.crew') }} ({{ credits.data.value.crew?.length || 0 }})
           </h2>
           <!-- 按部门分组显示 -->
@@ -96,18 +109,27 @@
             :key="String(department)"
             class="mb-6"
           >
-            <h3 class="font-semibold text-gray-700 mb-3">
+            <h3 class="font-semibold text-gray-700 dark:text-gray-300 mb-3">
               {{ translateDepartment(String(department)) }}
             </h3>
-            <div class="bg-white rounded-lg shadow-sm">
+            <div
+              class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700"
+            >
               <div
                 v-for="(member, index) in group"
                 :key="member.credit_id"
                 class="p-3"
-                :class="{ 'border-b': index !== group.length - 1 }"
+                :class="{
+                  'border-b border-gray-200 dark:border-gray-700':
+                    index !== group.length - 1,
+                }"
               >
-                <div class="font-medium text-gray-900">{{ member.name }}</div>
-                <div class="text-sm text-gray-600">{{ member.job }}</div>
+                <div class="font-medium text-gray-900 dark:text-white">
+                  {{ member.name }}
+                </div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">
+                  {{ member.job }}
+                </div>
               </div>
             </div>
           </div>
@@ -115,10 +137,10 @@
       </div>
       <div v-else-if="credits.error.value" class="text-center py-12">
         <div class="text-red-600 text-6xl mb-4">😞</div>
-        <h2 class="text-2xl font-bold text-gray-800 mb-2">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">
           {{ $t('detail.loadingFailed') }}
         </h2>
-        <p class="text-gray-600 mb-4">
+        <p class="text-gray-600 dark:text-gray-300 mb-4">
           {{ $t('detail.loadingFailedMessage') }}
         </p>
         <button

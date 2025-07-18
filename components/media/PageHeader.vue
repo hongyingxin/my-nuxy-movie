@@ -17,7 +17,7 @@
       <!-- 返回按钮 -->
       <NuxtLink
         :to="backTo"
-        class="inline-flex items-center px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium mb-6 transition-all duration-200 backdrop-blur-sm group"
+        class="inline-flex items-center px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 dark:hover:bg-black/30 text-white font-medium mb-6 transition-all duration-200 backdrop-blur-sm group"
       >
         <svg
           class="w-5 h-5 mr-2 transform group-hover:-translate-x-1 transition-transform duration-200"

@@ -1,11 +1,10 @@
 <!--
-  演员详情页面 - 左右结构版本
-  采用左右布局，去掉大海报，作品固定一行可滚动
+  演员详情页面
   id: 演员的id
   url: /actors/1234567890
 -->
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- 加载状态 -->
     <SkeletonLoadingState
       v-if="detail.pending.value"
@@ -20,7 +19,9 @@
           <!-- 左侧 - 演员头像和基本信息 -->
           <div class="lg:col-span-1">
             <!-- 演员头像卡片 -->
-            <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/50 p-6 mb-6 border border-gray-200 dark:border-gray-700"
+            >
               <div class="text-center">
                 <div class="relative group mb-6">
                   <img
@@ -54,23 +55,28 @@
                 </div>
 
                 <!-- 基本信息 -->
-                <h1 class="text-3xl font-bold text-gray-800 mb-3">
+                <h1
+                  class="text-3xl font-bold text-gray-800 dark:text-white mb-3"
+                >
                   {{ detail.data.value.name }}
                 </h1>
 
                 <div
                   v-if="detail.data.value.birthday"
-                  class="text-gray-600 mb-2"
+                  class="text-gray-600 dark:text-gray-300 mb-2"
                 >
                   {{ common.formatDate(detail.data.value.birthday) }}
-                  <span v-if="detail.data.value.deathday" class="text-gray-400">
+                  <span
+                    v-if="detail.data.value.deathday"
+                    class="text-gray-400 dark:text-gray-500"
+                  >
                     - {{ common.formatDate(detail.data.value.deathday) }}
                   </span>
                 </div>
 
                 <div
                   v-if="detail.data.value.place_of_birth"
-                  class="text-gray-600 mb-4"
+                  class="text-gray-600 dark:text-gray-300 mb-4"
                 >
                   📍 {{ detail.data.value.place_of_birth }}
                 </div>
@@ -78,19 +84,23 @@
                 <!-- 性别和作品数量 -->
                 <div class="flex items-center justify-center gap-6 mb-6">
                   <div class="text-center">
-                    <div class="text-2xl font-bold text-gray-800">
+                    <div
+                      class="text-2xl font-bold text-gray-800 dark:text-white"
+                    >
                       {{ common.getGenderText(detail.data.value.gender) }}
                     </div>
-                    <div class="text-sm text-gray-500">
+                    <div class="text-sm text-gray-500 dark:text-gray-400">
                       {{ $t('actors.gender') }}
                     </div>
                   </div>
-                  <div class="w-px h-8 bg-gray-300" />
+                  <div class="w-px h-8 bg-gray-300 dark:bg-gray-600" />
                   <div class="text-center">
-                    <div class="text-2xl font-bold text-gray-800">
+                    <div
+                      class="text-2xl font-bold text-gray-800 dark:text-white"
+                    >
                       {{ credits.data.value?.cast?.length || 0 }}
                     </div>
-                    <div class="text-sm text-gray-500">
+                    <div class="text-sm text-gray-500 dark:text-gray-400">
                       {{ $t('actors.filmography') }}
                     </div>
                   </div>
@@ -131,7 +141,7 @@
                     {{ $t('actors.addToFavorites') }}
                   </button>
                   <button
-                    class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
+                    class="w-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 px-6 py-3 rounded-xl font-semibold transition-colors flex items-center justify-center gap-2"
                   >
                     <svg
                       class="w-5 h-5"
@@ -153,9 +163,11 @@
             </div>
 
             <!-- 详细信息卡片 -->
-            <div class="bg-white rounded-2xl shadow-lg p-6">
+            <div
+              class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/50 p-6 border border-gray-200 dark:border-gray-700"
+            >
               <h3
-                class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2"
+                class="text-xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2"
               >
                 <svg
                   class="w-6 h-6 text-red-600"
@@ -178,7 +190,7 @@
                   class="flex items-start gap-3"
                 >
                   <svg
-                    class="w-5 h-5 text-gray-400 mt-0.5"
+                    class="w-5 h-5 text-gray-400 dark:text-gray-500 mt-0.5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -191,10 +203,10 @@
                     />
                   </svg>
                   <div>
-                    <span class="text-gray-600 text-sm">{{
+                    <span class="text-gray-600 dark:text-gray-400 text-sm">{{
                       $t('actors.birthDate')
                     }}</span>
-                    <p class="text-gray-800 font-medium">
+                    <p class="text-gray-800 dark:text-white font-medium">
                       {{ common.formatDate(detail.data.value.birthday) }}
                     </p>
                   </div>
@@ -204,7 +216,7 @@
                   class="flex items-start gap-3"
                 >
                   <svg
-                    class="w-5 h-5 text-gray-400 mt-0.5"
+                    class="w-5 h-5 text-gray-400 dark:text-gray-500 mt-0.5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -223,17 +235,17 @@
                     />
                   </svg>
                   <div>
-                    <span class="text-gray-600 text-sm">{{
+                    <span class="text-gray-600 dark:text-gray-400 text-sm">{{
                       $t('actors.birthPlace')
                     }}</span>
-                    <p class="text-gray-800 font-medium">
+                    <p class="text-gray-800 dark:text-white font-medium">
                       {{ detail.data.value.place_of_birth }}
                     </p>
                   </div>
                 </div>
                 <div class="flex items-start gap-3">
                   <svg
-                    class="w-5 h-5 text-gray-400 mt-0.5"
+                    class="w-5 h-5 text-gray-400 dark:text-gray-500 mt-0.5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -246,17 +258,17 @@
                     />
                   </svg>
                   <div>
-                    <span class="text-gray-600 text-sm">{{
+                    <span class="text-gray-600 dark:text-gray-400 text-sm">{{
                       $t('actors.occupation')
                     }}</span>
-                    <p class="text-gray-800 font-medium">
+                    <p class="text-gray-800 dark:text-white font-medium">
                       {{ detail.data.value.known_for_department }}
                     </p>
                   </div>
                 </div>
                 <div class="flex items-start gap-3">
                   <svg
-                    class="w-5 h-5 text-gray-400 mt-0.5"
+                    class="w-5 h-5 text-gray-400 dark:text-gray-500 mt-0.5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -269,10 +281,10 @@
                     />
                   </svg>
                   <div>
-                    <span class="text-gray-600 text-sm">{{
+                    <span class="text-gray-600 dark:text-gray-400 text-sm">{{
                       $t('actors.gender')
                     }}</span>
-                    <p class="text-gray-800 font-medium">
+                    <p class="text-gray-800 dark:text-white font-medium">
                       {{ common.getGenderText(detail.data.value.gender) }}
                     </p>
                   </div>
@@ -282,7 +294,7 @@
                   class="flex items-start gap-3"
                 >
                   <svg
-                    class="w-5 h-5 text-gray-400 mt-0.5"
+                    class="w-5 h-5 text-gray-400 dark:text-gray-500 mt-0.5"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
@@ -291,13 +303,13 @@
                     />
                   </svg>
                   <div>
-                    <span class="text-gray-600 text-sm">{{
+                    <span class="text-gray-600 dark:text-gray-400 text-sm">{{
                       $t('actors.imdb')
                     }}</span>
                     <a
                       :href="`https://www.imdb.com/name/${detail.data.value.imdb_id}`"
                       target="_blank"
-                      class="text-red-600 hover:text-red-700 font-medium transition-colors"
+                      class="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-medium transition-colors"
                     >
                       查看 IMDb 页面
                     </a>
@@ -313,12 +325,16 @@
             <section class="mb-8">
               <div class="flex items-center gap-3 mb-6">
                 <div class="w-1 h-8 bg-red-600 rounded-full" />
-                <h2 class="text-3xl font-bold text-gray-800">
+                <h2 class="text-3xl font-bold text-gray-800 dark:text-white">
                   {{ $t('actors.biography') }}
                 </h2>
               </div>
-              <div class="bg-white rounded-2xl shadow-lg p-8">
-                <p class="text-gray-700 leading-relaxed text-lg">
+              <div
+                class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/50 p-8 border border-gray-200 dark:border-gray-700"
+              >
+                <p
+                  class="text-gray-700 dark:text-gray-300 leading-relaxed text-lg"
+                >
                   {{ detail.data.value.biography || '暂无简介信息' }}
                 </p>
               </div>
@@ -329,7 +345,7 @@
               <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center gap-3">
                   <div class="w-1 h-8 bg-red-600 rounded-full" />
-                  <h2 class="text-3xl font-bold text-gray-800">
+                  <h2 class="text-3xl font-bold text-gray-800 dark:text-white">
                     {{ $t('actors.filmography') }}
                   </h2>
                 </div>
@@ -339,7 +355,7 @@
                     :class="
                       activeTab === 'all'
                         ? 'bg-red-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
                     "
                     @click="activeTab = 'all'"
                   >
@@ -350,7 +366,7 @@
                     :class="
                       activeTab === 'movie'
                         ? 'bg-red-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
                     "
                     @click="activeTab = 'movie'"
                   >
@@ -361,7 +377,7 @@
                     :class="
                       activeTab === 'tv'
                         ? 'bg-red-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600'
                     "
                     @click="activeTab = 'tv'"
                   >
@@ -376,7 +392,7 @@
                 <div class="flex items-center gap-2 mb-4">
                   <button
                     :disabled="scrollPosition <= 0"
-                    class="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    class="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     @click="scrollLeft"
                   >
                     <svg
@@ -395,7 +411,7 @@
                   </button>
                   <button
                     :disabled="scrollPosition >= maxScroll"
-                    class="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    class="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     @click="scrollRight"
                   >
                     <svg
@@ -423,7 +439,7 @@
                   <div
                     v-for="work in filteredWorks"
                     :key="`${work.media_type}-${work.id}`"
-                    class="group cursor-pointer bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 flex-shrink-0"
+                    class="group cursor-pointer bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-gray-900/50 overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 flex-shrink-0 border border-gray-200 dark:border-gray-700"
                     style="width: 200px"
                     @click="navigateToWork(work)"
                   >
@@ -478,15 +494,15 @@
                     <!-- 作品信息 -->
                     <div class="p-3">
                       <h3
-                        class="font-semibold text-gray-800 text-sm line-clamp-2 mb-2 group-hover:text-red-600 transition-colors"
+                        class="font-semibold text-gray-800 dark:text-white text-sm line-clamp-2 mb-2 group-hover:text-red-600 transition-colors"
                       >
                         {{ work.title || work.name }}
                       </h3>
-                      <p class="text-xs text-gray-600 mb-2">
+                      <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">
                         {{ work.character }}
                       </p>
                       <div
-                        class="flex items-center justify-between text-xs text-gray-500"
+                        class="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400"
                       >
                         <span>{{
                           (work.release_date || work.first_air_date)?.split(
@@ -516,7 +532,9 @@
                 </div>
 
                 <!-- 滚动进度条 -->
-                <div class="mt-2 bg-gray-200 rounded-full h-1 overflow-hidden">
+                <div
+                  class="mt-2 bg-gray-200 dark:bg-gray-700 rounded-full h-1 overflow-hidden"
+                >
                   <div
                     class="bg-red-600 h-full rounded-full transition-all duration-300"
                     :style="{ width: `${scrollProgress}%` }"
@@ -541,16 +559,18 @@
             >
               <div class="flex items-center gap-3 mb-8">
                 <div class="w-1 h-8 bg-red-600 rounded-full" />
-                <h2 class="text-3xl font-bold text-gray-800">
+                <h2 class="text-3xl font-bold text-gray-800 dark:text-white">
                   {{ $t('actors.careerTimeline') }}
                 </h2>
               </div>
 
-              <div class="bg-white rounded-2xl shadow-lg p-8">
+              <div
+                class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/50 p-8 border border-gray-200 dark:border-gray-700"
+              >
                 <div class="relative">
                   <!-- 时间轴中心线 -->
                   <div
-                    class="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200"
+                    class="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-600"
                   />
 
                   <!-- 时间轴项目 -->
@@ -563,12 +583,14 @@
                       <!-- 年份标记 -->
                       <div class="flex items-center mb-6">
                         <div
-                          class="absolute left-6 w-4 h-4 bg-red-600 rounded-full border-4 border-white shadow-lg transform -translate-x-2"
+                          class="absolute left-6 w-4 h-4 bg-red-600 rounded-full border-4 border-white dark:border-gray-800 shadow-lg transform -translate-x-2"
                         />
-                        <h3 class="text-2xl font-bold text-gray-800 ml-12">
+                        <h3
+                          class="text-2xl font-bold text-gray-800 dark:text-white ml-12"
+                        >
                           {{ yearGroup.year }} 年
                         </h3>
-                        <div class="ml-4 text-gray-500">
+                        <div class="ml-4 text-gray-500 dark:text-gray-400">
                           {{ yearGroup.works.length }} 部作品
                         </div>
                       </div>
@@ -578,7 +600,7 @@
                         <div
                           v-for="work in yearGroup.works"
                           :key="`${work.media_type}-${work.id}`"
-                          class="group cursor-pointer bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-colors"
+                          class="group cursor-pointer bg-gray-50 dark:bg-gray-700 rounded-xl p-4 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors border border-gray-200 dark:border-gray-600"
                           @click="navigateToWork(work)"
                         >
                           <div class="flex items-start gap-4">
@@ -598,7 +620,7 @@
                             <div class="flex-1 min-w-0">
                               <div class="flex items-center gap-2 mb-1">
                                 <h4
-                                  class="font-semibold text-gray-800 group-hover:text-red-600 transition-colors"
+                                  class="font-semibold text-gray-800 dark:text-white group-hover:text-red-600 transition-colors"
                                 >
                                   {{ work.title || work.name }}
                                 </h4>
@@ -618,12 +640,14 @@
                                 </span>
                               </div>
 
-                              <p class="text-sm text-gray-600 mb-2">
+                              <p
+                                class="text-sm text-gray-600 dark:text-gray-400 mb-2"
+                              >
                                 {{ work.character }}
                               </p>
 
                               <div
-                                class="flex items-center gap-4 text-xs text-gray-500"
+                                class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400"
                               >
                                 <span>{{
                                   common.formatDate(
@@ -650,7 +674,7 @@
                               class="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
                             >
                               <svg
-                                class="w-5 h-5 text-gray-400"
+                                class="w-5 h-5 text-gray-400 dark:text-gray-500"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -683,10 +707,10 @@
     >
       <div class="text-center">
         <div class="text-red-600 text-6xl mb-4">😞</div>
-        <h2 class="text-2xl font-bold text-gray-800 mb-2">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">
           {{ $t('actors.loadFailed') }}
         </h2>
-        <p class="text-gray-600 mb-4">
+        <p class="text-gray-600 dark:text-gray-300 mb-4">
           {{ $t('actors.failedToLoadActorDetails') }}
         </p>
         <button
@@ -842,12 +866,12 @@
 
   // 获取滚动指示器样式类
   const getIndicatorClass = (index: number): string => {
-    if (!scrollContainer.value) return 'bg-gray-300'
+    if (!scrollContainer.value) return 'bg-gray-300 dark:bg-gray-600'
     const itemWidth = 200 + 16
     const currentIndex = Math.floor(scrollPosition.value / (5 * itemWidth))
     return index === currentIndex
       ? 'bg-red-600'
-      : 'bg-gray-300 hover:bg-gray-400'
+      : 'bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500'
   }
 
   // 监听标签切换，重置滚动位置

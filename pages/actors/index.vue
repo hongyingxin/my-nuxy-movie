@@ -4,14 +4,18 @@
   展示热门演员列表，支持分页加载
 -->
 <template>
-  <div class="min-h-screen bg-gray-50 py-8">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
     <div class="container mx-auto px-4">
       <!-- 页面标题 -->
       <div class="mb-8">
-        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+        <h1
+          class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-2"
+        >
           {{ $t('actors.title') }}
         </h1>
-        <p class="text-gray-600">{{ $t('actors.description') }}</p>
+        <p class="text-gray-600 dark:text-gray-300">
+          {{ $t('actors.description') }}
+        </p>
       </div>
 
       <!-- 加载状态 -->
@@ -34,7 +38,7 @@
           <div
             v-for="actor in actors.data.value.results"
             :key="actor.id"
-            class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer group"
+            class="bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md dark:shadow-gray-900/50 transition-shadow cursor-pointer group border border-gray-200 dark:border-gray-700"
             @click="navigateToActor(actor.id)"
           >
             <!-- 演员头像 -->
@@ -81,28 +85,28 @@
             <div class="p-4">
               <!-- 演员姓名 -->
               <h3
-                class="font-semibold text-gray-800 mb-2 line-clamp-1 group-hover:text-red-600 transition-colors"
+                class="font-semibold text-gray-800 dark:text-white mb-2 line-clamp-1 group-hover:text-red-600 transition-colors"
               >
                 {{ actor.name }}
               </h3>
 
               <!-- 代表作 -->
               <div class="space-y-1">
-                <p class="text-xs text-gray-500">
+                <p class="text-xs text-gray-500 dark:text-gray-400">
                   {{ $t('actors.knownFor') }}：
                 </p>
                 <div class="flex flex-wrap gap-1">
                   <span
                     v-for="work in actor.known_for?.slice(0, 2)"
                     :key="work.id"
-                    class="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full line-clamp-1"
+                    class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full line-clamp-1"
                     :title="work.title || work.name"
                   >
                     {{ work.title || work.name }}
                   </span>
                   <span
                     v-if="(actor.known_for?.length || 0) > 2"
-                    class="text-xs text-gray-400"
+                    class="text-xs text-gray-400 dark:text-gray-500"
                   >
                     +{{ (actor.known_for?.length || 0) - 2 }}
                   </span>
@@ -125,7 +129,7 @@
                     actor.popularity.toFixed(0)
                   }}</span>
                 </div>
-                <span class="text-xs text-gray-400">{{
+                <span class="text-xs text-gray-400 dark:text-gray-500">{{
                   actor.known_for_department
                 }}</span>
               </div>
@@ -149,10 +153,12 @@
       <!-- 错误状态 -->
       <div v-else-if="actors?.error.value" class="text-center py-12">
         <div class="text-red-600 text-6xl mb-4">😞</div>
-        <h2 class="text-2xl font-bold text-gray-800 mb-2">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">
           {{ $t('error.serverError') }}
         </h2>
-        <p class="text-gray-600 mb-4">{{ $t('actors.loadingActors') }}</p>
+        <p class="text-gray-600 dark:text-gray-300 mb-4">
+          {{ $t('actors.loadingActors') }}
+        </p>
         <button
           class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
           @click="() => actors?.refresh()"

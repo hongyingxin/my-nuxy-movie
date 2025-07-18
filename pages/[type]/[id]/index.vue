@@ -61,7 +61,7 @@
                           : detail.data.value.first_air_date
                       )
                     }}</span> -->
-                    <span class="text-gray-600">{{
+                    <span class="text-gray-300">{{
                       common.getYear(
                         isMovie(detail.data.value)
                           ? detail.data.value.release_date
@@ -69,11 +69,11 @@
                       )
                     }}</span>
                     <span class="text-gray-400">•</span>
-                    <span class="text-gray-600">{{
+                    <span class="text-gray-300">{{
                       getRuntimeOrSeasons()
                     }}</span>
                     <span class="text-gray-400">•</span>
-                    <span class="text-gray-600"
+                    <span class="text-gray-300"
                       >{{ detail.data.value.vote_average?.toFixed(1) }}/10</span
                     >
                   </div>
@@ -186,10 +186,10 @@
           <div class="lg:col-span-2">
             <!-- 简介 -->
             <section class="mb-8">
-              <h2 class="text-2xl font-bold text-gray-800 mb-4">
+              <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">
                 {{ $t('detail.overview') }}
               </h2>
-              <p class="text-gray-700 leading-relaxed">
+              <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
                 {{ detail.data.value.overview || $t('detail.overview') }}
               </p>
             </section>
@@ -197,12 +197,12 @@
             <!-- 演职员 -->
             <section v-if="credits.data.value" class="mb-8">
               <div class="flex items-center justify-between mb-4">
-                <h2 class="text-2xl font-bold text-gray-800">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-white">
                   {{ $t('detail.cast') }}
                 </h2>
                 <NuxtLink
                   :to="`/${mediaType}/${mediaId}/credits`"
-                  class="text-red-600 hover:text-red-700 flex items-center"
+                  class="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 flex items-center"
                 >
                   {{ $t('detail.viewAll') }}
                   <svg
@@ -233,23 +233,25 @@
                     class="w-16 h-16 rounded-full mx-auto mb-2 object-cover group-hover:ring-2 group-hover:ring-red-500 transition-all duration-200"
                   />
                   <p
-                    class="text-sm font-medium text-gray-800 group-hover:text-red-600 transition-colors"
+                    class="text-sm font-medium text-gray-800 dark:text-white group-hover:text-red-600 transition-colors"
                   >
                     {{ cast.name }}
                   </p>
-                  <p class="text-xs text-gray-600">{{ cast.character }}</p>
+                  <p class="text-xs text-gray-600 dark:text-gray-400">
+                    {{ cast.character }}
+                  </p>
                 </NuxtLink>
               </div>
             </section>
 
             <!-- 媒体 -->
             <section v-if="images.data.value && activeMediaTab" class="mb-8">
-              <h2 class="text-2xl font-bold text-gray-800 mb-4">
+              <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">
                 {{ $t('detail.photos') }}
               </h2>
 
               <!-- 标签页 -->
-              <div class="border-b border-gray-200 mb-6">
+              <div class="border-b border-gray-200 dark:border-gray-700 mb-6">
                 <nav class="flex space-x-8" aria-label="Tabs">
                   <button
                     v-for="tab in mediaTabs"
@@ -258,7 +260,7 @@
                       'py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap',
                       activeMediaTab === tab.id
                         ? 'border-red-600 text-red-600'
-                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                        : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600',
                     ]"
                     @click="
                       activeMediaTab = tab.id as typeof activeMediaTab.value
@@ -269,8 +271,8 @@
                       :class="[
                         'ml-2 rounded-full text-xs px-2 py-0.5',
                         activeMediaTab === tab.id
-                          ? 'bg-red-100 text-red-600'
-                          : 'bg-gray-100 text-gray-600',
+                          ? 'bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400'
+                          : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400',
                       ]"
                     >
                       {{ getMediaCount(tab.id as typeof activeMediaTab.value) }}
@@ -335,7 +337,7 @@
                 <div
                   v-for="video in videos.data.value?.results?.slice(0, 4)"
                   :key="video.id"
-                  class="bg-gray-200 rounded-lg overflow-hidden"
+                  class="bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden"
                 >
                   <iframe
                     :src="`https://www.youtube.com/embed/${video.key}`"
@@ -344,8 +346,12 @@
                     allowfullscreen
                   />
                   <div class="p-3">
-                    <p class="font-medium text-gray-800">{{ video.name }}</p>
-                    <p class="text-sm text-gray-600">{{ video.type }}</p>
+                    <p class="font-medium text-gray-800 dark:text-white">
+                      {{ video.name }}
+                    </p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                      {{ video.type }}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -354,7 +360,7 @@
               <div v-if="hasMoreMedia" class="text-center mt-6">
                 <NuxtLink
                   :to="`/${mediaType}/${mediaId}/gallery`"
-                  class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                  class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                 >
                   {{ $t('detail.viewAllImages') }}
                   <svg
@@ -375,7 +381,7 @@
 
             <!-- 相似内容 -->
             <section v-if="similar.data.value?.results?.length" class="mb-8">
-              <h2 class="text-2xl font-bold text-gray-800 mb-4">
+              <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">
                 {{ $t('detail.similar') }}{{ mediaTypeText }}
               </h2>
               <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -392,24 +398,26 @@
           <!-- 右侧边栏 -->
           <div class="lg:col-span-1">
             <!-- 详细信息 -->
-            <section class="bg-white rounded-lg shadow-md p-6 mb-6">
-              <h3 class="text-lg font-bold text-gray-800 mb-4">
+            <section
+              class="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900/50 p-6 mb-6 border border-gray-200 dark:border-gray-700"
+            >
+              <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">
                 {{ $t('detail.details') }}
               </h3>
               <div class="space-y-3">
                 <div>
-                  <span class="text-gray-600 text-sm"
+                  <span class="text-gray-600 dark:text-gray-400 text-sm"
                     >{{ $t('detail.status') }}：</span
                   >
-                  <span class="text-gray-800">{{
+                  <span class="text-gray-800 dark:text-white">{{
                     detail.data.value.status
                   }}</span>
                 </div>
                 <div>
-                  <span class="text-gray-600 text-sm"
+                  <span class="text-gray-600 dark:text-gray-400 text-sm"
                     >{{ $t('detail.originalLanguage') }}：</span
                   >
-                  <span class="text-gray-800">{{
+                  <span class="text-gray-800 dark:text-white">{{
                     detail.data.value.original_language?.toUpperCase()
                   }}</span>
                 </div>
@@ -417,30 +425,30 @@
                 <!-- 电影特有信息 -->
                 <template v-if="!isTv">
                   <div>
-                    <span class="text-gray-600 text-sm"
+                    <span class="text-gray-600 dark:text-gray-400 text-sm"
                       >{{ $t('detail.budget') }}：</span
                     >
-                    <span class="text-gray-800">{{
+                    <span class="text-gray-800 dark:text-white">{{
                       isMovie(detail.data.value)
                         ? common.formatBudget(detail.data.value.budget)
                         : '-'
                     }}</span>
                   </div>
                   <div>
-                    <span class="text-gray-600 text-sm"
+                    <span class="text-gray-600 dark:text-gray-400 text-sm"
                       >{{ $t('detail.revenue') }}：</span
                     >
-                    <span class="text-gray-800">{{
+                    <span class="text-gray-800 dark:text-white">{{
                       isMovie(detail.data.value)
                         ? common.formatBudget(detail.data.value.revenue)
                         : '-'
                     }}</span>
                   </div>
                   <div>
-                    <span class="text-gray-600 text-sm"
+                    <span class="text-gray-600 dark:text-gray-400 text-sm"
                       >{{ $t('detail.releaseDate') }}：</span
                     >
-                    <span class="text-gray-800">{{
+                    <span class="text-gray-800 dark:text-white">{{
                       isMovie(detail.data.value)
                         ? common.formatDate(detail.data.value.release_date)
                         : '-'
@@ -451,10 +459,10 @@
                 <!-- 电视剧特有信息 -->
                 <template v-else>
                   <div>
-                    <span class="text-gray-600 text-sm"
+                    <span class="text-gray-600 dark:text-gray-400 text-sm"
                       >{{ $t('detail.seasons') }}：</span
                     >
-                    <span class="text-gray-800"
+                    <span class="text-gray-800 dark:text-white"
                       >{{
                         isTvShow(detail.data.value)
                           ? detail.data.value.number_of_seasons
@@ -464,10 +472,10 @@
                     >
                   </div>
                   <div>
-                    <span class="text-gray-600 text-sm"
+                    <span class="text-gray-600 dark:text-gray-400 text-sm"
                       >{{ $t('detail.episodes') }}：</span
                     >
-                    <span class="text-gray-800"
+                    <span class="text-gray-800 dark:text-white"
                       >{{
                         isTvShow(detail.data.value)
                           ? detail.data.value.number_of_episodes
@@ -477,10 +485,10 @@
                     >
                   </div>
                   <div>
-                    <span class="text-gray-600 text-sm"
+                    <span class="text-gray-600 dark:text-gray-400 text-sm"
                       >{{ $t('detail.firstAirDate') }}：</span
                     >
-                    <span class="text-gray-800">{{
+                    <span class="text-gray-800 dark:text-white">{{
                       isTvShow(detail.data.value)
                         ? common.formatDate(detail.data.value.first_air_date)
                         : ''
@@ -492,10 +500,10 @@
                       detail.data.value.last_air_date
                     "
                   >
-                    <span class="text-gray-600 text-sm"
+                    <span class="text-gray-600 dark:text-gray-400 text-sm"
                       >{{ $t('detail.lastAirDate') }}：</span
                     >
-                    <span class="text-gray-800">{{
+                    <span class="text-gray-800 dark:text-white">{{
                       isTvShow(detail.data.value)
                         ? common.formatDate(detail.data.value.last_air_date)
                         : ''
@@ -504,14 +512,14 @@
                 </template>
 
                 <div>
-                  <span class="text-gray-600 text-sm"
+                  <span class="text-gray-600 dark:text-gray-400 text-sm"
                     >{{ $t('detail.productionCompanies') }}：</span
                   >
                   <div class="mt-1">
                     <span
                       v-for="company in detail.data.value.production_companies"
                       :key="company.id"
-                      class="inline-block bg-gray-100 text-gray-700 px-2 py-1 rounded text-sm mr-2 mb-1"
+                      class="inline-block bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-2 py-1 rounded text-sm mr-2 mb-1"
                     >
                       {{ company.name }}
                     </span>
@@ -521,8 +529,10 @@
             </section>
 
             <!-- 评分 -->
-            <section class="bg-white rounded-lg shadow-md p-6 mb-6">
-              <h3 class="text-lg font-bold text-gray-800 mb-4">
+            <section
+              class="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900/50 p-6 mb-6 border border-gray-200 dark:border-gray-700"
+            >
+              <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">
                 {{ $t('detail.rating') }}
               </h3>
               <div class="text-center">
@@ -538,14 +548,14 @@
                       :class="
                         i <= Math.round(detail.data.value.vote_average)
                           ? 'text-yellow-400'
-                          : 'text-gray-300'
+                          : 'text-gray-300 dark:text-gray-600'
                       "
                     >
                       ★
                     </span>
                   </div>
                 </div>
-                <p class="text-gray-600 text-sm">
+                <p class="text-gray-600 dark:text-gray-400 text-sm">
                   {{
                     $t('detail.basedOnRatings', {
                       count: detail.data.value.vote_count,
@@ -562,9 +572,9 @@
                 isMovie(detail.data.value) &&
                 detail.data.value.keywords?.keywords?.length
               "
-              class="bg-white rounded-lg shadow-md p-6"
+              class="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900/50 p-6 border border-gray-200 dark:border-gray-700"
             >
-              <h3 class="text-lg font-bold text-gray-800 mb-4">
+              <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">
                 {{ $t('detail.keywords') }}
               </h3>
               <div class="flex flex-wrap gap-2">
@@ -573,7 +583,7 @@
                     ? detail.data.value.keywords.keywords.slice(0, 10)
                     : []"
                   :key="keyword.id"
-                  class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
+                  class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-1 rounded-full text-sm"
                 >
                   {{ keyword.name }}
                 </span>
@@ -587,9 +597,9 @@
                 isTvShow(detail.data.value) &&
                 detail.data.value.seasons?.length
               "
-              class="bg-white rounded-lg shadow-md p-6"
+              class="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900/50 p-6 border border-gray-200 dark:border-gray-700"
             >
-              <h3 class="text-lg font-bold text-gray-800 mb-4">
+              <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4">
                 {{ $t('detail.seasons') }}
               </h3>
               <div class="space-y-3">
@@ -598,7 +608,7 @@
                     ? detail.data.value.seasons.slice(0, 5)
                     : []"
                   :key="season.id"
-                  class="flex items-center gap-3 p-2 rounded hover:bg-gray-50"
+                  class="flex items-center gap-3 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700"
                 >
                   <img
                     :src="image.getPosterUrl(season.poster_path, 'small')"
@@ -606,8 +616,10 @@
                     class="w-12 h-16 rounded object-cover"
                   />
                   <div class="flex-1">
-                    <p class="font-medium text-gray-800">{{ season.name }}</p>
-                    <p class="text-sm text-gray-600">
+                    <p class="font-medium text-gray-800 dark:text-white">
+                      {{ season.name }}
+                    </p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
                       {{ season.episode_count }} {{ $t('detail.episodes') }}
                     </p>
                   </div>
@@ -626,10 +638,10 @@
     >
       <div class="text-center">
         <div class="text-red-600 text-6xl mb-4">😞</div>
-        <h2 class="text-2xl font-bold text-gray-800 mb-2">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">
           {{ $t('detail.loadingFailed') }}
         </h2>
-        <p class="text-gray-600 mb-4">
+        <p class="text-gray-600 dark:text-gray-300 mb-4">
           {{ $t('detail.loadingFailedDetails', { type: mediaTypeText }) }}
         </p>
         <button

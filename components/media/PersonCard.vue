@@ -35,18 +35,21 @@
 
     <!-- 姓名 -->
     <h3
-      class="font-semibold text-gray-800 line-clamp-2 mb-1 group-hover:text-red-600 transition-colors"
+      class="font-semibold text-gray-800 dark:text-gray-100 line-clamp-2 mb-1 group-hover:text-red-600 transition-colors"
     >
       {{ person.name }}
     </h3>
 
     <!-- 职业 -->
-    <div class="text-sm text-gray-600 mb-1">
+    <div class="text-sm text-gray-600 dark:text-gray-300 mb-1">
       {{ person.known_for_department || '演员' }}
     </div>
 
     <!-- 代表作品 -->
-    <div v-if="knownFor.length" class="text-xs text-gray-500 line-clamp-2">
+    <div
+      v-if="knownFor.length"
+      class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2"
+    >
       {{ knownFor.join(' · ') }}
     </div>
   </div>

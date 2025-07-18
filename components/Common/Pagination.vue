@@ -1,7 +1,7 @@
 <template>
   <div v-if="totalPages > 1" class="flex flex-col items-center space-y-4">
     <!-- 分页信息 -->
-    <div class="text-sm text-gray-600 text-center px-4">
+    <div class="text-sm text-gray-600 dark:text-gray-400 text-center px-4">
       <slot
         name="summary"
         :current="currentPage"
@@ -24,7 +24,7 @@
       <button
         v-if="showFirstLast && !isMobile"
         :disabled="currentPage <= 1"
-        class="px-2 sm:px-3 py-2 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors text-sm"
+        class="px-2 sm:px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm text-gray-700 dark:text-gray-300"
         :title="'跳转到首页'"
         @click="handlePageChange(1)"
       >
@@ -34,7 +34,7 @@
       <!-- 上一页按钮 -->
       <button
         :disabled="currentPage <= 1"
-        class="px-2 sm:px-3 py-2 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors text-sm sm:text-base"
+        class="px-2 sm:px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm sm:text-base text-gray-700 dark:text-gray-300"
         @click="handlePageChange(currentPage - 1)"
       >
         <slot name="prev-text">
@@ -48,7 +48,7 @@
         <!-- 省略号 -->
         <span
           v-if="showStartEllipsis"
-          class="px-1 sm:px-2 text-gray-400 text-sm"
+          class="px-1 sm:px-2 text-gray-400 dark:text-gray-500 text-sm"
           >...</span
         >
 
@@ -60,7 +60,7 @@
           :class="
             page === currentPage
               ? 'bg-red-600 text-white border-red-600'
-              : 'border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400'
+              : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500'
           "
           @click="handlePageChange(page)"
         >
@@ -68,7 +68,9 @@
         </button>
 
         <!-- 省略号 -->
-        <span v-if="showEndEllipsis" class="px-1 sm:px-2 text-gray-400 text-sm"
+        <span
+          v-if="showEndEllipsis"
+          class="px-1 sm:px-2 text-gray-400 dark:text-gray-500 text-sm"
           >...</span
         >
       </div>
@@ -76,7 +78,7 @@
       <!-- 下一页按钮 -->
       <button
         :disabled="currentPage >= totalPages"
-        class="px-2 sm:px-3 py-2 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors text-sm sm:text-base"
+        class="px-2 sm:px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm sm:text-base text-gray-700 dark:text-gray-300"
         @click="handlePageChange(currentPage + 1)"
       >
         <slot name="next-text">
@@ -89,7 +91,7 @@
       <button
         v-if="showFirstLast && !isMobile"
         :disabled="currentPage >= totalPages"
-        class="px-2 sm:px-3 py-2 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors text-sm"
+        class="px-2 sm:px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-sm text-gray-700 dark:text-gray-300"
         :title="'跳转到末页'"
         @click="handlePageChange(totalPages)"
       >
@@ -102,18 +104,18 @@
       v-if="showQuickJump"
       class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2 text-sm"
     >
-      <span class="text-gray-600">跳转到</span>
+      <span class="text-gray-600 dark:text-gray-400">跳转到</span>
       <div class="flex items-center space-x-2">
         <input
           v-model.number="jumpPage"
           type="number"
           min="1"
           :max="totalPages"
-          class="w-16 px-2 py-1 border border-gray-300 rounded-md text-center focus:outline-none focus:ring-2 focus:ring-red-500"
+          class="w-16 px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md text-center focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300"
           @keyup.enter="handleQuickJump"
           @blur="handleQuickJump"
         />
-        <span class="text-gray-600">页</span>
+        <span class="text-gray-600 dark:text-gray-400">页</span>
         <button
           class="px-3 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
           @click="handleQuickJump"
@@ -128,10 +130,10 @@
       v-if="showPageSize && pageSizeOptions.length > 0"
       class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2 text-sm"
     >
-      <span class="text-gray-600">每页显示</span>
+      <span class="text-gray-600 dark:text-gray-400">每页显示</span>
       <select
         :value="pageSize"
-        class="px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+        class="px-2 py-1 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300"
         @change="handlePageSizeChange"
       >
         <option v-for="option in pageSizeOptions" :key="option" :value="option">

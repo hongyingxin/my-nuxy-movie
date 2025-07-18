@@ -195,9 +195,11 @@
       <!-- 加载状态 - 数据加载时显示 -->
       <div
         v-else
-        class="h-full bg-gray-300 animate-pulse flex items-center justify-center"
+        class="h-full bg-gray-300 dark:bg-gray-700 animate-pulse flex items-center justify-center"
       >
-        <div class="text-gray-500 text-xl">{{ $t('home.loadingContent') }}</div>
+        <div class="text-gray-500 dark:text-gray-400 text-xl">
+          {{ $t('home.loadingContent') }}
+        </div>
       </div>
     </section>
 
@@ -207,7 +209,7 @@
       <section class="mb-12">
         <!-- 区域标题和操作按钮 -->
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold text-gray-800">
+          <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">
             {{ $t('home.popularMovies') }}
           </h2>
           <button
@@ -244,7 +246,7 @@
       <section class="mb-12">
         <!-- 区域标题和操作按钮 -->
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold text-gray-800">
+          <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">
             {{ $t('home.popularTvShows') }}
           </h2>
           <button
@@ -281,7 +283,7 @@
       <section class="mb-12">
         <!-- 区域标题和操作按钮 -->
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-2xl font-bold text-gray-800">
+          <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">
             {{ $t('home.latestUpdates') }}
           </h2>
           <!-- <button class="text-red-600 hover:text-red-700 font-semibold">

@@ -4,7 +4,7 @@
     <div v-if="variant === 'dropdown'" class="relative">
       <button
         type="button"
-        class="flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
+        class="flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-colors"
         :class="buttonClass"
         @click="toggleDropdown"
       >
@@ -32,7 +32,7 @@
       <!-- 下拉选项 -->
       <div
         v-if="isDropdownOpen"
-        class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50"
+        class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-50"
         @click.stop
       >
         <div class="py-1">
@@ -40,16 +40,19 @@
             v-for="locale in availableLocales"
             :key="locale.code"
             type="button"
-            class="flex items-center space-x-3 w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+            class="flex items-center space-x-3 w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             :class="{
-              'bg-red-50 text-red-700': locale.code === currentLocale,
+              'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300':
+                locale.code === currentLocale,
             }"
             @click="switchLanguage(locale.code)"
           >
             <span class="text-lg">{{ locale.flag }}</span>
             <div class="flex flex-col items-start">
               <span class="font-medium">{{ locale.name }}</span>
-              <span class="text-xs text-gray-500">{{ locale.iso }}</span>
+              <span class="text-xs text-gray-500 dark:text-gray-400">{{
+                locale.iso
+              }}</span>
             </div>
             <svg
               v-if="locale.code === currentLocale"
@@ -78,7 +81,7 @@
         :class="[
           locale.code === currentLocale
             ? 'bg-red-600 text-white'
-            : 'text-gray-600 bg-gray-100 hover:bg-gray-200 hover:text-gray-800',
+            : 'text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-gray-800 dark:hover:text-gray-100',
           buttonClass,
         ]"
         @click="switchLanguage(locale.code)"
@@ -93,7 +96,7 @@
     <div v-else class="relative">
       <button
         type="button"
-        class="flex items-center space-x-1 px-2 py-1.5 text-sm text-gray-600 hover:text-red-600 transition-colors rounded-md hover:bg-gray-50"
+        class="flex items-center space-x-1 px-2 py-1.5 text-sm text-gray-600 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
         :class="buttonClass"
         @click="toggleDropdown"
       >
@@ -120,7 +123,7 @@
       <!-- 下拉选项 -->
       <div
         v-if="isDropdownOpen"
-        class="absolute right-0 mt-1 w-36 bg-white border border-gray-200 rounded-md shadow-lg z-50"
+        class="absolute right-0 mt-1 w-36 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-50"
         @click.stop
       >
         <div class="py-1">
@@ -128,9 +131,10 @@
             v-for="locale in availableLocales"
             :key="locale.code"
             type="button"
-            class="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+            class="flex items-center space-x-2 w-full px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             :class="{
-              'bg-red-50 text-red-700': locale.code === currentLocale,
+              'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300':
+                locale.code === currentLocale,
             }"
             @click="switchLanguage(locale.code)"
           >

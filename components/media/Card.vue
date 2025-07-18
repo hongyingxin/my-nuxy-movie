@@ -1,7 +1,7 @@
 <template>
   <div class="group cursor-pointer" @click="navigateToDetail">
     <div
-      class="relative overflow-hidden rounded-lg mb-3 aspect-[2/3] bg-gray-200"
+      class="relative overflow-hidden rounded-lg mb-3 aspect-[2/3] bg-gray-200 dark:bg-gray-800"
     >
       <NuxtImg
         v-if="item.poster_path"
@@ -51,25 +51,28 @@
 
     <!-- 标题 -->
     <h3
-      class="font-semibold text-gray-800 line-clamp-2 mb-1 group-hover:text-red-600 transition-colors"
+      class="font-semibold text-gray-800 dark:text-gray-100 line-clamp-2 mb-1 group-hover:text-red-600 transition-colors"
     >
       {{ item.title || item.name }}
     </h3>
 
     <!-- 年份和热度 -->
     <div class="flex items-center justify-between text-sm mb-1">
-      <span class="text-gray-600">
+      <span class="text-gray-600 dark:text-gray-300">
         {{
           (item.release_date || item.first_air_date)?.split('-')[0] || '未知'
         }}
       </span>
-      <span class="text-gray-500"
+      <span class="text-gray-500 dark:text-gray-400"
         >🔥 {{ common.formatPopularity(item.popularity) }}</span
       >
     </div>
 
     <!-- 分类 -->
-    <div v-if="genreNames.length" class="text-xs text-gray-500">
+    <div
+      v-if="genreNames.length"
+      class="text-xs text-gray-500 dark:text-gray-400"
+    >
       {{ genreNames.join(' · ') }}
     </div>
   </div>

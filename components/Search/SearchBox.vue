@@ -14,7 +14,7 @@
       />
       <!-- 搜索图标 -->
       <div
-        class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"
+        class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none"
       >
         <svg
           class="w-4 h-4"

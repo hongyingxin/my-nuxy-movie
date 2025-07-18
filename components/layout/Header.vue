@@ -163,13 +163,13 @@
                   v-for="item in userMenuItems"
                   :key="item.to"
                   :to="item.to"
-                  class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors"
+                  class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
                   <span class="text-sm text-gray-700">{{ t(item.label) }}</span>
                 </NuxtLink>
                 <hr class="my-2" />
                 <button
-                  class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors w-full text-left"
+                  class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors w-full text-left"
                 >
                   <span class="text-sm text-gray-700">{{
                     t('user.logout')
@@ -226,7 +226,7 @@
               v-for="item in mobileNavItems"
               :key="item.to"
               :to="item.to"
-              class="block py-2 text-gray-700 hover:text-red-600 transition-colors"
+              class="block py-2 text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 transition-colors"
               @click="closeMobileMenu"
             >
               {{ t(item.label) }}
@@ -262,14 +262,14 @@
                 v-for="item in userMenuItems"
                 :key="item.to"
                 :to="item.to"
-                class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors"
+                class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 @click="closeMobileMenu"
               >
                 <span class="text-sm text-gray-700">{{ t(item.label) }}</span>
               </NuxtLink>
               <hr class="my-2" />
               <button
-                class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors w-full text-left"
+                class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors w-full text-left"
                 @click="closeMobileMenu"
               >
                 <span class="text-sm text-gray-700">{{

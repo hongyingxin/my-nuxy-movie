@@ -6,7 +6,7 @@
   使用到的插件 https://photoswipe.com/
 -->
 <template>
-  <div class="min-h-screen bg-gray-50 py-8">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
     <div class="container mx-auto px-4">
       <!-- 页面标题 -->
       <MediaPageHeader
@@ -20,14 +20,14 @@
         <div
           class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"
         />
-        <p class="text-gray-600">
+        <p class="text-gray-600 dark:text-gray-300">
           {{ $t('detail.loadingDetails', { type: $t('detail.photos') }) }}
         </p>
       </div>
 
       <div v-else-if="images.data.value" class="space-y-8">
         <!-- 分类标签页 -->
-        <div class="border-b border-gray-200">
+        <div class="border-b border-gray-200 dark:border-gray-700">
           <nav class="flex space-x-8" aria-label="Tabs">
             <button
               v-for="tab in imageTabs"
@@ -36,7 +36,7 @@
                 'py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap',
                 activeTab === tab.id
                   ? 'border-red-600 text-red-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                  : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600',
               ]"
               @click="activeTab = tab.id"
             >
@@ -45,8 +45,8 @@
                 :class="[
                   'ml-2 rounded-full text-xs px-2 py-0.5',
                   activeTab === tab.id
-                    ? 'bg-red-100 text-red-600'
-                    : 'bg-gray-100 text-gray-600',
+                    ? 'bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400'
+                    : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400',
                 ]"
               >
                 {{ getImageCount(tab.id) }}
@@ -70,7 +70,7 @@
             <!-- 图片 -->
             <div
               :class="[
-                'overflow-hidden bg-gray-100 rounded-lg',
+                'overflow-hidden bg-gray-100 dark:bg-gray-800 rounded-lg',
                 activeTab === 'posters' ? 'aspect-[2/3]' : 'aspect-[16/9]',
               ]"
             >
@@ -120,18 +120,18 @@
             <div
               class="animate-spin rounded-full h-6 w-6 border-b-2 border-red-600"
             />
-            <span class="text-gray-600">{{
+            <span class="text-gray-600 dark:text-gray-300">{{
               $t('detail.loadingMorePhotos')
             }}</span>
           </div>
-          <div v-else class="text-gray-500 text-sm">
+          <div v-else class="text-gray-500 dark:text-gray-400 text-sm">
             {{ $t('detail.scrollToLoadMore') }}
           </div>
         </div>
 
         <!-- 已加载完所有图片 -->
         <div v-else class="text-center py-8">
-          <div class="text-gray-500 text-sm">
+          <div class="text-gray-500 dark:text-gray-400 text-sm">
             🎉 {{ $t('detail.allPhotosLoaded') }}
           </div>
         </div>
@@ -140,10 +140,12 @@
       <!-- 错误状态 -->
       <div v-else-if="images.error.value" class="text-center py-12">
         <div class="text-red-600 text-6xl mb-4">😞</div>
-        <h2 class="text-2xl font-bold text-gray-800 mb-2">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">
           {{ $t('detail.loadingFailed') }}
         </h2>
-        <p class="text-gray-600 mb-4">{{ $t('detail.failedToLoadPhotos') }}</p>
+        <p class="text-gray-600 dark:text-gray-300 mb-4">
+          {{ $t('detail.failedToLoadPhotos') }}
+        </p>
         <button
           class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
           @click="() => images.refresh()"

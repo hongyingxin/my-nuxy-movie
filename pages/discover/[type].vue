@@ -6,14 +6,16 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- 页面头部 -->
-    <div class="bg-white shadow-sm border-b">
+    <div
+      class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700"
+    >
       <div class="container mx-auto px-6 py-8">
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-3xl font-bold text-gray-900">
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">
               {{ getPageHeaderTitle() }}
             </h1>
-            <p class="text-gray-600 mt-2">
+            <p class="text-gray-600 dark:text-gray-400 mt-2">
               {{ getPageHeaderDescription() }}
             </p>
           </div>
@@ -47,9 +49,11 @@
         <!-- 筛选侧边栏 -->
         <div
           v-if="showFilters"
-          class="lg:w-80 bg-white rounded-lg shadow-sm border p-6"
+          class="lg:w-80 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6"
         >
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">
+          <h3
+            class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4"
+          >
             {{ $t('discover.filterConditions') }}
           </h3>
 
@@ -68,12 +72,13 @@
           <div class="space-y-6">
             <!-- 排序 -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">{{
-                $t('discover.sortBy')
-              }}</label>
+              <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >{{ $t('discover.sortBy') }}</label
+              >
               <select
                 v-model="filters.sort_by"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300"
               >
                 <option
                   v-for="option in sortOptions"
@@ -87,9 +92,10 @@
 
             <!-- 分类筛选 -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">{{
-                $t('discover.genres')
-              }}</label>
+              <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >{{ $t('discover.genres') }}</label
+              >
               <div class="flex flex-wrap gap-2">
                 <button
                   v-for="genre in genres"
@@ -98,7 +104,7 @@
                     'px-3 py-2 text-sm rounded-md transition-colors border',
                     filters.with_genres.includes(genre.id)
                       ? 'bg-red-600 text-white border-red-600 hover:bg-red-700'
-                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50 hover:border-gray-400',
+                      : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-400 dark:hover:border-gray-500',
                   ]"
                   @click="toggleGenre(genre.id)"
                 >
@@ -109,9 +115,10 @@
 
             <!-- 评分筛选 -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">{{
-                $t('discover.minRating')
-              }}</label>
+              <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >{{ $t('discover.minRating') }}</label
+              >
               <div class="flex items-center space-x-2">
                 <input
                   v-model="filters['vote_average.gte']"
@@ -121,7 +128,7 @@
                   step="0.5"
                   class="flex-1"
                 />
-                <span class="text-sm text-gray-600 w-12">{{
+                <span class="text-sm text-gray-600 dark:text-gray-400 w-12">{{
                   filters['vote_average.gte'] || 0
                 }}</span>
               </div>
@@ -129,7 +136,9 @@
 
             <!-- 年份筛选 -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+              >
                 {{
                   isMovie ? $t('discover.releaseDate') : $t('discover.airDate')
                 }}
@@ -139,7 +148,7 @@
                   type="date"
                   :value="getStartDate()"
                   :placeholder="$t('discover.startDatePlaceholder')"
-                  class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                  class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300"
                   @input="
                     updateStartDate(($event.target as HTMLInputElement).value)
                   "
@@ -148,7 +157,7 @@
                   type="date"
                   :value="getEndDate()"
                   :placeholder="$t('discover.endDatePlaceholder')"
-                  class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                  class="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300"
                   @input="
                     updateEndDate(
                       ($event.target as HTMLInputElement)?.value || ''
@@ -156,11 +165,11 @@
                   "
                 />
               </div>
-              <p class="text-xs text-gray-500 mt-1">
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 {{ $t('discover.filterDescription') }}
                 <span
                   v-if="filters.sort_by === 'popularity.desc'"
-                  class="block mt-1 text-blue-600"
+                  class="block mt-1 text-blue-600 dark:text-blue-400"
                 >
                   {{ $t('discover.popularityNote') }}
                 </span>
@@ -169,13 +178,14 @@
 
             <!-- 语言筛选 -->
             <div class="relative">
-              <label class="block text-sm font-medium text-gray-700 mb-2">{{
-                $t('discover.language')
-              }}</label>
+              <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >{{ $t('discover.language') }}</label
+              >
               <!-- 伪下拉框，显示当前选中项 -->
               <button
                 type="button"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md bg-white text-left focus:outline-none focus:ring-2 focus:ring-red-500 flex items-center justify-between"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-left focus:outline-none focus:ring-2 focus:ring-red-500 flex items-center justify-between text-gray-700 dark:text-gray-300"
                 :aria-expanded="dropdownOpen"
                 @click="dropdownOpen = !dropdownOpen"
               >
@@ -183,7 +193,7 @@
                   {{ selectedLanguageLabel }}
                 </span>
                 <svg
-                  class="w-4 h-4 ml-2 text-gray-400"
+                  class="w-4 h-4 ml-2 text-gray-400 dark:text-gray-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -199,13 +209,13 @@
               <!-- 下拉面板 -->
               <div
                 v-show="dropdownOpen"
-                class="absolute z-20 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-64 overflow-y-auto"
+                class="absolute z-20 mt-1 w-full bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-64 overflow-y-auto"
               >
                 <input
                   v-model="languageSearch"
                   type="text"
                   :placeholder="$t('discover.languageSearchPlaceholder')"
-                  class="w-full px-3 py-2 border-b border-gray-200 focus:outline-none"
+                  class="w-full px-3 py-2 border-b border-gray-200 dark:border-gray-600 focus:outline-none bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300"
                   @keydown.stop
                 />
                 <ul>
@@ -213,10 +223,10 @@
                     v-for="option in filteredLanguageOptions"
                     :key="option.value"
                     :class="[
-                      'px-3 py-2 cursor-pointer hover:bg-red-50',
+                      'px-3 py-2 cursor-pointer hover:bg-red-50 dark:hover:bg-red-900/20',
                       filters.with_original_language === option.value
-                        ? 'bg-red-100 text-red-600 font-semibold'
-                        : '',
+                        ? 'bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-semibold'
+                        : 'text-gray-700 dark:text-gray-300',
                     ]"
                     @click="selectLanguage(option.value)"
                   >
@@ -224,7 +234,7 @@
                   </li>
                   <li
                     v-if="filteredLanguageOptions.length === 0"
-                    class="px-3 py-2 text-gray-400"
+                    class="px-3 py-2 text-gray-400 dark:text-gray-500"
                   >
                     {{ $t('common.noResult') }}
                   </li>
@@ -234,12 +244,13 @@
 
             <!-- 地区筛选 (仅电影) -->
             <div v-if="isMovie">
-              <label class="block text-sm font-medium text-gray-700 mb-2">{{
-                $t('discover.region')
-              }}</label>
+              <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >{{ $t('discover.region') }}</label
+              >
               <select
                 v-model="filters.region"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300"
               >
                 <option
                   v-for="option in regionOptions"
@@ -249,19 +260,20 @@
                   {{ option.label }}
                 </option>
               </select>
-              <p class="text-xs text-gray-500 mt-1">
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 {{ $t('discover.regionNote') }}
               </p>
             </div>
 
             <!-- 上映类型筛选 (仅电影) -->
             <div v-if="isMovie">
-              <label class="block text-sm font-medium text-gray-700 mb-2">{{
-                $t('discover.releaseType')
-              }}</label>
+              <label
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >{{ $t('discover.releaseType') }}</label
+              >
               <select
                 v-model="filters.with_release_type"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300"
               >
                 <option
                   v-for="option in RELEASE_TYPE_OPTIONS"
@@ -271,16 +283,16 @@
                   {{ option.label }}
                 </option>
               </select>
-              <p class="text-xs text-gray-500 mt-1">
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 {{ $t('discover.regionNote') }}
               </p>
             </div>
           </div>
 
           <!-- 重置按钮 - 固定在底部 -->
-          <div class="mt-6 pt-4 border-t border-gray-200">
+          <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
             <button
-              class="w-full px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+              class="w-full px-4 py-2 text-gray-600 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
               @click="resetFilters"
             >
               {{ $t('common.clear') }}
@@ -292,7 +304,7 @@
         <div class="flex-1">
           <!-- 结果统计 -->
           <div class="flex items-center justify-between mb-6">
-            <p class="text-gray-600">
+            <p class="text-gray-600 dark:text-gray-400">
               {{ $t('search.foundResults', { count: totalResults }) }}
             </p>
 
@@ -302,8 +314,8 @@
                 :class="[
                   'p-2 rounded-md transition-colors',
                   viewMode === 'grid'
-                    ? 'bg-red-100 text-red-600'
-                    : 'text-gray-400 hover:text-gray-600',
+                    ? 'bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400'
+                    : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400',
                 ]"
                 @click="viewMode = 'grid'"
               >
@@ -317,8 +329,8 @@
                 :class="[
                   'p-2 rounded-md transition-colors',
                   viewMode === 'list'
-                    ? 'bg-red-100 text-red-600'
-                    : 'text-gray-400 hover:text-gray-600',
+                    ? 'bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400'
+                    : 'text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-400',
                 ]"
                 @click="viewMode = 'list'"
               >
@@ -341,9 +353,11 @@
               class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"
             >
               <div v-for="n in 12" :key="n" class="animate-pulse">
-                <div class="bg-gray-300 aspect-[2/3] rounded-lg mb-2" />
-                <div class="bg-gray-300 h-4 rounded mb-1" />
-                <div class="bg-gray-300 h-3 rounded w-1/2" />
+                <div
+                  class="bg-gray-300 dark:bg-gray-600 aspect-[2/3] rounded-lg mb-2"
+                />
+                <div class="bg-gray-300 dark:bg-gray-600 h-4 rounded mb-1" />
+                <div class="bg-gray-300 dark:bg-gray-600 h-3 rounded w-1/2" />
               </div>
             </div>
 
@@ -397,7 +411,7 @@
     <!-- 吸顶应用筛选按钮 -->
     <div
       v-if="hasFilterChanges && !isApplyButtonVisible"
-      class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg"
+      class="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg"
     >
       <div class="container mx-auto px-6 py-4">
         <button
