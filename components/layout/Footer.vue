@@ -1,5 +1,7 @@
 <template>
-  <footer class="bg-gray-900 text-gray-300">
+  <footer
+    class="bg-gray-900 dark:bg-gray-950 text-gray-300 border-t border-gray-800 dark:border-gray-700"
+  >
     <!-- 主要内容区域 -->
     <div class="container mx-auto px-6 py-12">
       <div class="flex flex-col md:flex-row justify-between gap-8">
@@ -21,7 +23,7 @@
             </div>
             <span class="text-xl font-bold text-white">Nuxt Movie</span>
           </div>
-          <p class="text-sm leading-relaxed">
+          <p class="text-sm leading-relaxed text-gray-400 dark:text-gray-300">
             发现最新最热门的电影和电视剧，获取详细的演员信息、评分和评论。您的影视娱乐指南。
           </p>
         </div>
@@ -35,7 +37,7 @@
                 :href="link.url"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="text-gray-400 hover:text-red-500 transition-colors"
+                class="text-gray-400 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors"
               >
                 {{ link.label }}
               </a>
@@ -46,21 +48,25 @@
     </div>
 
     <!-- 底部版权信息 -->
-    <div class="border-t border-gray-800">
+    <div
+      class="border-t border-gray-800 dark:border-gray-700 bg-gray-950 dark:bg-black"
+    >
       <div class="container mx-auto px-6 py-6">
         <div
           class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"
         >
-          <div class="text-sm text-gray-400">
+          <div class="text-sm text-gray-400 dark:text-gray-500">
             © 2024 Nuxt Movie. 保留所有权利。
           </div>
-          <div class="flex items-center space-x-6 text-sm text-gray-400">
+          <div
+            class="flex items-center space-x-6 text-sm text-gray-400 dark:text-gray-500"
+          >
             <span>数据来源：</span>
             <a
               href="https://www.themoviedb.org/"
               target="_blank"
               rel="noopener noreferrer"
-              class="hover:text-red-500 transition-colors"
+              class="hover:text-red-500 dark:hover:text-red-400 transition-colors"
             >
               TMDB
             </a>

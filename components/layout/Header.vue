@@ -4,8 +4,8 @@
     class="fixed top-0 left-0 right-0 z-50 transition-all duration-200 ease-out"
     :class="[
       isScrolled
-        ? 'bg-white dark:bg-gray-900 shadow-lg'
-        : 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm',
+        ? 'bg-white dark:bg-gray-900 shadow-lg dark:shadow-gray-900/50 border-b border-gray-200 dark:border-gray-700'
+        : 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-b border-gray-200/50 dark:border-gray-700/50',
     ]"
   >
     <div class="container mx-auto px-6">
@@ -66,7 +66,7 @@
                   </svg>
                 </button>
                 <div
-                  class="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999]"
+                  class="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg dark:shadow-gray-900/50 border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999]"
                 >
                   <div class="p-4">
                     <div class="grid grid-cols-1 gap-2">
@@ -103,7 +103,7 @@
               v-model="searchQuery"
               placeholder="搜索电影、电视剧、演员..."
               :show-search-button="false"
-              :input-class="'bg-gray-50 hover:bg-white focus:bg-white border border-gray-200 hover:border-gray-300 focus:border-red-500 pl-10 pr-4 py-2.5 text-sm w-64 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:shadow-lg'"
+              :input-class="'bg-gray-50 dark:bg-gray-800 hover:bg-white dark:hover:bg-gray-700 focus:bg-white dark:focus:bg-gray-700 border border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 focus:border-red-500 pl-10 pr-4 py-2.5 text-sm w-64 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:shadow-lg'"
               @search="handleHeaderSearch"
               @suggestion-select="handleSuggestionSelect"
               @view-all-results="handleViewAllResults"
@@ -123,7 +123,7 @@
           <!-- 用户菜单 -->
           <div class="relative group hidden md:block">
             <button
-              class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
             >
               <div
                 class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center"
@@ -141,7 +141,7 @@
                 </svg>
               </div>
               <svg
-                class="w-4 h-4 text-gray-600"
+                class="w-4 h-4 text-gray-600 dark:text-gray-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -156,7 +156,7 @@
             </button>
             <!-- 用户下拉菜单 -->
             <div
-              class="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999]"
+              class="absolute top-full right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg dark:shadow-gray-900/50 border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999]"
             >
               <div class="p-2">
                 <NuxtLink
@@ -165,13 +165,15 @@
                   :to="item.to"
                   class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
-                  <span class="text-sm text-gray-700">{{ t(item.label) }}</span>
+                  <span class="text-sm text-gray-700 dark:text-gray-300">{{
+                    t(item.label)
+                  }}</span>
                 </NuxtLink>
-                <hr class="my-2" />
+                <hr class="my-2 border-gray-200 dark:border-gray-600" />
                 <button
                   class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors w-full text-left"
                 >
-                  <span class="text-sm text-gray-700">{{
+                  <span class="text-sm text-gray-700 dark:text-gray-300">{{
                     t('user.logout')
                   }}</span>
                 </button>
@@ -181,7 +183,7 @@
 
           <!-- 移动端菜单按钮 -->
           <button
-            class="md:hidden p-2 text-gray-600 hover:text-red-600 transition-colors"
+            class="md:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
             @click="toggleMobileMenu"
           >
             <svg
@@ -204,7 +206,7 @@
       <!-- 移动端菜单 -->
       <div
         v-if="isMobileMenuOpen"
-        class="md:hidden border-t border-gray-200 py-4"
+        class="md:hidden border-t border-gray-200 dark:border-gray-700 py-4"
       >
         <div class="space-y-4">
           <!-- 移动端搜索框 -->
@@ -213,7 +215,7 @@
               v-model="mobileSearchQuery"
               placeholder="搜索..."
               :show-search-button="false"
-              :input-class="'bg-gray-50 hover:bg-white focus:bg-white border border-gray-200 hover:border-gray-300 focus:border-red-500 pl-10 pr-4 py-2.5 text-sm w-full rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:shadow-lg'"
+              :input-class="'bg-gray-50 dark:bg-gray-800 hover:bg-white dark:hover:bg-gray-700 focus:bg-white dark:focus:bg-gray-700 border border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500 focus:border-red-500 pl-10 pr-4 py-2.5 text-sm w-full rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:shadow-lg'"
               @search="handleMobileSearch"
               @suggestion-select="handleSuggestionSelect"
               @view-all-results="handleViewAllResults"
@@ -256,7 +258,7 @@
           </div>
 
           <!-- 移动端用户菜单 -->
-          <div class="border-t border-gray-200 pt-4">
+          <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
             <div class="space-y-2">
               <NuxtLink
                 v-for="item in userMenuItems"
@@ -265,14 +267,16 @@
                 class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 @click="closeMobileMenu"
               >
-                <span class="text-sm text-gray-700">{{ t(item.label) }}</span>
+                <span class="text-sm text-gray-700 dark:text-gray-300">{{
+                  t(item.label)
+                }}</span>
               </NuxtLink>
-              <hr class="my-2" />
+              <hr class="my-2 border-gray-200 dark:border-gray-600" />
               <button
                 class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors w-full text-left"
                 @click="closeMobileMenu"
               >
-                <span class="text-sm text-gray-700">{{
+                <span class="text-sm text-gray-700 dark:text-gray-300">{{
                   t('user.logout')
                 }}</span>
               </button>
