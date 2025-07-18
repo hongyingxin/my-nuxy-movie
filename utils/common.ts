@@ -10,7 +10,7 @@
  * @param delay 延迟时间（毫秒）
  * @returns 防抖后的函数
  */
-function debounce<T extends (...args: any[]) => any>(
+function debounce<T extends (...args: never[]) => unknown>(
   fn: T,
   delay: number
 ): (...args: Parameters<T>) => void {
@@ -24,7 +24,8 @@ function debounce<T extends (...args: any[]) => any>(
 
     // 设置新的定时器
     timer = setTimeout(() => {
-      fn(...args)
+      // 使用类型断言，因为我们知道 fn 的参数类型与 args 匹配
+      ;(fn as (...args: Parameters<T>) => unknown)(...args)
     }, delay)
   }
 }
@@ -37,7 +38,8 @@ function debounce<T extends (...args: any[]) => any>(
  * @param delay 延迟时间（毫秒）
  * @returns 节流后的函数
  */
-function throttle<T extends (...args: any[]) => any>(
+
+function throttle<T extends (...args: unknown[]) => unknown>(
   fn: T,
   delay: number
 ): (...args: Parameters<T>) => void {

@@ -1,4 +1,5 @@
-import { ref, onMounted, onBeforeUnmount, nextTick, type Ref, watch } from 'vue'
+import { ref, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
+import type { Ref } from 'vue'
 // import { debounce } from '~/utils/common'
 
 /**

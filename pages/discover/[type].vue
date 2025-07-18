@@ -4,7 +4,7 @@
   url: /discover/tv
 -->
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- 页面头部 -->
     <div class="bg-white shadow-sm border-b">
       <div class="container mx-auto px-6 py-8">

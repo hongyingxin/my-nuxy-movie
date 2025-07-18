@@ -168,6 +168,18 @@ export default {
     latestMovie: '최신 개봉 영화를 탐색하세요',
     latestTv: '최신 방영 TV 프로그램을 탐색하세요',
   },
+
+  // 主题相关
+  theme: {
+    switchTheme: '테마 전환',
+    lightMode: '라이트 모드',
+    darkMode: '다크 모드',
+    systemMode: '시스템',
+    lightModeDescription: '라이트 테마 사용',
+    darkModeDescription: '다크 테마 사용',
+    systemModeDescription: '시스템 테마 설정 따름',
+  },
+
   detail: {
     overview: '개요',
     cast: '출연진',

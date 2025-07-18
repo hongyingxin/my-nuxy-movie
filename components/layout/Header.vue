@@ -3,7 +3,9 @@
   <header
     class="fixed top-0 left-0 right-0 z-50 transition-all duration-200 ease-out"
     :class="[
-      isScrolled ? 'bg-white shadow-lg' : 'bg-white/90 backdrop-blur-sm',
+      isScrolled
+        ? 'bg-white dark:bg-gray-900 shadow-lg'
+        : 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm',
     ]"
   >
     <div class="container mx-auto px-6">
@@ -25,7 +27,9 @@
                 />
               </svg>
             </div>
-            <span class="text-xl font-bold text-gray-900">Nuxt Movie</span>
+            <span class="text-xl font-bold text-gray-900 dark:text-white"
+              >Nuxt Movie</span
+            >
           </div>
 
           <!-- 主导航菜单 -->
@@ -34,7 +38,7 @@
               <NuxtLink
                 v-if="!menu.dropdown"
                 :to="menu.to"
-                class="text-gray-700 hover:text-red-600 font-medium transition-colors relative group"
+                class="text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 font-medium transition-colors relative group"
                 active-class="text-red-600"
               >
                 {{ t(menu.label) }}
@@ -44,7 +48,7 @@
               </NuxtLink>
               <div v-else class="relative group">
                 <button
-                  class="text-gray-700 hover:text-red-600 font-medium transition-colors flex items-center space-x-1"
+                  class="text-gray-700 dark:text-gray-300 hover:text-red-600 dark:hover:text-red-400 font-medium transition-colors flex items-center space-x-1"
                 >
                   <span>{{ t(menu.label) }}</span>
                   <svg
@@ -62,7 +66,7 @@
                   </svg>
                 </button>
                 <div
-                  class="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999]"
+                  class="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-[9999]"
                 >
                   <div class="p-4">
                     <div class="grid grid-cols-1 gap-2">
@@ -70,13 +74,15 @@
                         v-for="item in menu.dropdown"
                         :key="item.to"
                         :to="item.to"
-                        class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 transition-colors"
+                        class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                       >
                         <div>
-                          <div class="font-medium text-gray-900">
+                          <div
+                            class="font-medium text-gray-900 dark:text-white"
+                          >
                             {{ t(item.label) }}
                           </div>
-                          <div class="text-sm text-gray-500">
+                          <div class="text-sm text-gray-500 dark:text-gray-400">
                             {{ item.desc ? t(item.desc) : '' }}
                           </div>
                         </div>
@@ -109,24 +115,10 @@
             <CommonLanguageSwitcher variant="simple" />
           </div>
 
-          <!-- 主题切换按钮 -->
-          <button
-            class="hidden md:block p-2 text-gray-600 hover:text-red-600 transition-colors"
-          >
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-              />
-            </svg>
-          </button>
+          <!-- 主题切换器 -->
+          <div class="hidden md:block">
+            <CommonThemeSwitcher />
+          </div>
 
           <!-- 用户菜单 -->
           <div class="relative group hidden md:block">
@@ -242,12 +234,24 @@
           </div>
 
           <!-- 移动端语言切换 -->
-          <div class="border-t border-gray-200 pt-4">
+          <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
             <div class="px-3 py-2">
-              <div class="text-sm text-gray-500 mb-2">
+              <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">
                 {{ t('language.settings') }}
               </div>
               <CommonLanguageSwitcher variant="buttons" />
+            </div>
+          </div>
+
+          <!-- 移动端主题切换 -->
+          <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+            <div class="px-3 py-2">
+              <div class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                {{ t('theme.switchTheme') }}
+              </div>
+              <div class="flex justify-center">
+                <CommonThemeToggle />
+              </div>
             </div>
           </div>
 

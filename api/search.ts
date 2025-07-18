@@ -8,8 +8,6 @@ import type {
   TvShowSearchResponse,
   PersonSearchResponse,
   MultiSearchResponse,
-  SearchParams,
-  MultiSearchParams,
 } from '~/types/apiType'
 
 // ==================== 多类型搜索 ====================
@@ -238,7 +236,7 @@ export const advancedMultiSearch = async (
  * @param limit 建议数量，默认5
  * @returns 搜索建议
  */
-export const getSearchSuggestions = (query: string, limit = 5) => {
+export const getSearchSuggestions = (query: string) => {
   return useHttp<MultiSearchResponse>({
     url: '/search/multi',
     method: 'GET',

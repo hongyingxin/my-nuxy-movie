@@ -179,6 +179,17 @@ export default {
     latestTv: 'Explore the latest aired TV shows',
   },
 
+  // 主题相关
+  theme: {
+    switchTheme: 'Switch Theme',
+    lightMode: 'Light Mode',
+    darkMode: 'Dark Mode',
+    systemMode: 'System',
+    lightModeDescription: 'Use light theme',
+    darkModeDescription: 'Use dark theme',
+    systemModeDescription: 'Follow system theme setting',
+  },
+
   // 详情页面
   detail: {
     overview: 'Overview',

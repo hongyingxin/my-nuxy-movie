@@ -172,6 +172,17 @@ export default {
     latestTv: '探索最新播出的电视剧',
   },
 
+  // 主题相关
+  theme: {
+    switchTheme: '切换主题',
+    lightMode: '明亮模式',
+    darkMode: '暗黑模式',
+    systemMode: '跟随系统',
+    lightModeDescription: '使用明亮主题',
+    darkModeDescription: '使用暗黑主题',
+    systemModeDescription: '跟随系统主题设置',
+  },
+
   // 详情页面
   detail: {
     overview: '简介',

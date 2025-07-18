@@ -114,7 +114,7 @@
   // ==================== 防抖搜索函数 ====================
   const debouncedSearch = common.debounce(async (query: string) => {
     try {
-      const result = await getSearchSuggestions(query, props.suggestionLimit)
+      const result = await getSearchSuggestions(query)
       if (result.data.value) {
         // 直接使用类型断言，因为 API 返回的数据已经包含了所需字段
         searchSuggestions.value = result.data.value.results.slice(

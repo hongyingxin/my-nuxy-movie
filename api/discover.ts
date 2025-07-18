@@ -10,9 +10,6 @@ import type {
   MediaType,
 } from '~/types/apiType'
 
-// 导入排序选项常量
-import { MOVIE_SORT_OPTIONS, TV_SORT_OPTIONS } from '~/constants'
-
 // ==================== 通用 Discover 接口 ====================
 
 /**

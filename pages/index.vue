@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- Hero 轮播区 - 展示热门内容的动态轮播 -->
     <section class="relative h-96 md:h-[500px] overflow-hidden z-10">
       <!-- 渐变遮罩层 - 确保文字在背景图片上清晰可见 -->

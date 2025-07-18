@@ -5,7 +5,7 @@
   url: /movie/1234567890、/tv/1234567890
 -->
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
     <!-- 加载状态 -->
     <SkeletonLoadingState
       v-if="detail.pending.value"

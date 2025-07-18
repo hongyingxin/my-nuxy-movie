@@ -162,6 +162,18 @@ export default {
     latestMovie: '最新公開の映画を探索',
     latestTv: '最新放送のテレビ番組を探索',
   },
+
+  // 主题相关
+  theme: {
+    switchTheme: 'テーマ切り替え',
+    lightMode: 'ライトモード',
+    darkMode: 'ダークモード',
+    systemMode: 'システム',
+    lightModeDescription: 'ライトテーマを使用',
+    darkModeDescription: 'ダークテーマを使用',
+    systemModeDescription: 'システムテーマ設定に従う',
+  },
+
   detail: {
     overview: '概要',
     cast: 'キャスト',

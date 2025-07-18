@@ -166,6 +166,18 @@ export default {
     latestMovie: 'استكشف أحدث الأفلام الصادرة',
     latestTv: 'استكشف أحدث المسلسلات المعروضة',
   },
+
+  // 主题相关
+  theme: {
+    switchTheme: 'تبديل المظهر',
+    lightMode: 'الوضع الفاتح',
+    darkMode: 'الوضع الداكن',
+    systemMode: 'النظام',
+    lightModeDescription: 'استخدام المظهر الفاتح',
+    darkModeDescription: 'استخدام المظهر الداكن',
+    systemModeDescription: 'اتباع إعدادات مظهر النظام',
+  },
+
   detail: {
     overview: 'نظرة عامة',
     cast: 'طاقم التمثيل',

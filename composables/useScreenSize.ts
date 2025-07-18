@@ -37,7 +37,7 @@ export const useScreenSize = () => {
    * 在客户端环境下获取当前窗口的宽度和高度
    */
   const updateSize = () => {
-    if (process.client) {
+    if (import.meta.client) {
       screenWidth.value = window.innerWidth
       screenHeight.value = window.innerHeight
     }
