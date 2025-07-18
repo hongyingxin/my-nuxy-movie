@@ -27,6 +27,12 @@ export default {
     share: 'Share',
     noResult: 'No Result',
     getDataFailed: 'Failed to get data',
+    noOverview: 'No overview available',
+    minutes: 'minutes',
+    movie: 'Movie',
+    tvShow: 'TV Show',
+    person: 'Person',
+    unknown: 'Unknown',
   },
 
   // 导航和页面标题
@@ -112,6 +118,7 @@ export default {
     gridView: 'Grid View',
     listView: 'List View',
     viewMode: 'View Mode',
+    viewAllResults: 'View All Results',
   },
 
   // 发现页面

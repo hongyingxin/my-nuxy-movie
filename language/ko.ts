@@ -26,6 +26,12 @@ export default {
     share: '공유',
     noResult: '결과 없음',
     getDataFailed: '데이터 가져오기 실패',
+    noOverview: '개요 없음',
+    minutes: '분',
+    movie: '영화',
+    tvShow: 'TV 프로그램',
+    person: '인물',
+    unknown: '알 수 없음',
   },
   nav: {
     home: '홈',
@@ -101,6 +107,7 @@ export default {
     gridView: '그리드 보기',
     listView: '리스트 보기',
     viewMode: '보기 모드',
+    viewAllResults: '모든 결과 보기',
   },
   discover: {
     moviesTitle: '영화 탐색',

@@ -27,6 +27,12 @@ export default {
     share: 'シェア',
     noResult: '結果なし',
     getDataFailed: 'データの取得に失敗しました',
+    noOverview: '概要なし',
+    minutes: '分',
+    movie: '映画',
+    tvShow: 'テレビ番組',
+    person: '人物',
+    unknown: '不明',
   },
   nav: {
     home: 'ホーム',
@@ -102,6 +108,7 @@ export default {
     gridView: 'グリッド表示',
     listView: 'リスト表示',
     viewMode: '表示モード',
+    viewAllResults: 'すべての結果を表示',
   },
   discover: {
     allRegions: '全地域',

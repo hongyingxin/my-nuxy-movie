@@ -27,6 +27,12 @@ export default {
     share: '分享',
     noResult: '无结果',
     getDataFailed: '获取数据失败',
+    noOverview: '暂无简介',
+    minutes: '分钟',
+    movie: '电影',
+    tvShow: '电视剧',
+    person: '演员',
+    unknown: '未知',
   },
 
   // 导航和页面标题
@@ -111,6 +117,7 @@ export default {
     gridView: '网格视图',
     listView: '列表视图',
     viewMode: '视图模式',
+    viewAllResults: '查看所有结果',
   },
 
   // 发现页面

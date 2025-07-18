@@ -26,6 +26,12 @@ export default {
     share: 'مشاركة',
     noResult: 'لا توجد نتائج',
     getDataFailed: 'فشل في الحصول على البيانات',
+    noOverview: 'لا توجد نظرة عامة',
+    minutes: 'دقائق',
+    movie: 'فيلم',
+    tvShow: 'مسلسل',
+    person: 'شخص',
+    unknown: 'غير معروف',
   },
   nav: {
     home: 'الرئيسية',
@@ -101,6 +107,7 @@ export default {
     gridView: 'عرض شبكي',
     listView: 'عرض قائمة',
     viewMode: 'وضع العرض',
+    viewAllResults: 'عرض كل النتائج',
   },
   discover: {
     allRegions: 'كل المناطق',

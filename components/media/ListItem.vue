@@ -20,7 +20,7 @@
         </h3>
         <!-- 简介 - 限制为2行显示 -->
         <p class="text-sm text-gray-600 dark:text-gray-300 mb-2 line-clamp-2">
-          {{ item.overview || '暂无简介' }}
+          {{ item.overview || $t('common.noOverview') }}
         </p>
         <!-- 元信息 - 年份、评分、时长 -->
         <div
@@ -32,7 +32,9 @@
           <span v-if="item.vote_average"
             >★ {{ item.vote_average.toFixed(1) }}</span
           >
-          <span v-if="isMovie && item.runtime">{{ item.runtime }}分钟</span>
+          <span v-if="isMovie && item.runtime"
+            >{{ item.runtime }}{{ $t('common.minutes') }}</span
+          >
         </div>
       </div>
     </div>

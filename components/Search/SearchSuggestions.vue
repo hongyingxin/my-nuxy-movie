@@ -147,7 +147,7 @@
         class="w-full text-center text-sm text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-all duration-150"
         @click="viewAllResults"
       >
-        查看所有结果 ({{ totalResults }})
+        {{ $t('search.viewAllResults') }} ({{ totalResults }})
       </button>
     </div>
   </div>
@@ -157,6 +157,9 @@
   // ==================== 导入 ====================
   import type { SearchResultItem } from '~/types/pages/search'
   import type { PersonSearchResult } from '~/types/apiType/search'
+
+  // 获取 i18n 实例
+  const { t } = useI18n()
 
   // ==================== Props 定义 ====================
   defineProps({
@@ -215,13 +218,13 @@
   const getTypeLabel = (mediaType: SearchResultItem['media_type']) => {
     switch (mediaType) {
       case 'movie':
-        return '电影'
+        return t('common.movie')
       case 'tv':
-        return '电视剧'
+        return t('common.tvShow')
       case 'person':
-        return '演员'
+        return t('common.person')
       default:
-        return '未知'
+        return t('common.unknown')
     }
   }
 

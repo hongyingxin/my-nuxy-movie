@@ -37,7 +37,7 @@
         class="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-1.5 bg-red-600 text-white rounded-full hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 text-sm font-medium shadow-sm hover:shadow-md"
         @click="handleSearch"
       >
-        搜索
+        {{ $t('common.search') }}
       </button>
     </div>
 
