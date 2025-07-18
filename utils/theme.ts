@@ -1,5 +1,4 @@
 import type { ThemeMode } from '~/types/theme'
-import { THEME_STORAGE_KEY } from '~/constants/theme'
 
 /**
  * 主题工具函数
@@ -42,33 +41,6 @@ export const watchSystemTheme = (
 
   return () => {
     mediaQuery.removeEventListener('change', handleChange)
-  }
-}
-
-/**
- * 从本地存储获取主题设置
- */
-export const getStoredTheme = (): ThemeMode | null => {
-  if (import.meta.server) return null
-
-  try {
-    const stored = localStorage.getItem(THEME_STORAGE_KEY)
-    return (stored as ThemeMode) || null
-  } catch {
-    return null
-  }
-}
-
-/**
- * 保存主题设置到本地存储
- */
-export const setStoredTheme = (theme: ThemeMode): void => {
-  if (import.meta.server) return
-
-  try {
-    localStorage.setItem(THEME_STORAGE_KEY, theme)
-  } catch (error) {
-    console.warn('Failed to save theme to localStorage:', error)
   }
 }
 

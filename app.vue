@@ -17,11 +17,13 @@
   // 在客户端安全初始化数据
   onMounted(async () => {
     try {
-      // 初始化主题
-      themeStore.initialize()
+      // 初始化主题（确保在客户端执行）
+      if (import.meta.client) {
+        themeStore.initialize()
+      }
 
       // 初始化分类数据
-      await genreStore.initializeGenres()
+      genreStore.initializeGenres()
 
       // 初始化语言设置
       languageStore.initialize()

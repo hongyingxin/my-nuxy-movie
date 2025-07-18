@@ -198,9 +198,6 @@
 
   // ==================== 生命周期 ====================
   onMounted(() => {
-    // 初始化主题
-    themeStore.initialize()
-
     // 监听点击外部事件
     document.addEventListener('click', handleClickOutside)
   })

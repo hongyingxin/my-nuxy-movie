@@ -53,10 +53,4 @@
   const toggleTheme = () => {
     themeStore.toggleTheme()
   }
-
-  // ==================== 生命周期 ====================
-  onMounted(() => {
-    // 初始化主题
-    themeStore.initialize()
-  })
 </script>

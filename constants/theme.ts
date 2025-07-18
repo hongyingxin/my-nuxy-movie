@@ -29,9 +29,6 @@ export const THEME_OPTIONS: ThemeOption[] = [
 /** 默认主题模式 */
 export const DEFAULT_THEME_MODE = 'system' as const
 
-/** 主题存储键名 */
-export const THEME_STORAGE_KEY = 'nuxt-movie-theme'
-
 /** CSS 变量前缀 */
 export const CSS_VAR_PREFIX = '--nuxt-movie'
 

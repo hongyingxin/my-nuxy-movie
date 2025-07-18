@@ -1,8 +1,6 @@
 import type { ThemeMode } from '~/types/theme'
 import { DEFAULT_THEME_MODE } from '~/constants/theme'
 import {
-  getStoredTheme,
-  setStoredTheme,
   applyTheme,
   calculateCurrentTheme,
   watchSystemTheme,
@@ -52,13 +50,11 @@ export const useThemeStore = defineStore('theme', {
      * 初始化主题
      */
     initialize() {
-      if (this.initialized) return
-
-      // 从本地存储获取主题设置
-      const storedTheme = getStoredTheme()
-      if (storedTheme) {
-        this.mode = storedTheme
-      }
+      // 整个store的state
+      console.clear()
+      console.log('initialize-------', this.$state)
+      console.log('initialize-------', this.initialized)
+      // if (this.initialized) return
 
       // 计算实际应用的主题
       this.updateCurrentTheme()
@@ -79,9 +75,6 @@ export const useThemeStore = defineStore('theme', {
      */
     setTheme(mode: ThemeMode) {
       this.mode = mode
-
-      // 保存到本地存储
-      setStoredTheme(mode)
 
       // 更新实际应用的主题
       this.updateCurrentTheme()
