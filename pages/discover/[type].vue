@@ -1083,7 +1083,8 @@
     try {
       // 构建筛选参数
       const params = {
-        page: currentPage.value,
+        // 页面最大仅支持500页
+        page: currentPage.value > 500 ? 500 : currentPage.value,
         sort_by: filters.value.sort_by,
         ...(filters.value.with_genres.length > 0 && {
           with_genres: filters.value.with_genres.join(','),
