@@ -11,7 +11,7 @@
       <!-- 页面标题 -->
       <MediaPageHeader
         :backdrop_path="detail.data.value?.backdrop_path ?? undefined"
-        :title="`${detail.data.value?.title || detail.data.value?.name} ${$t('detail.photos')}`"
+        :title="`${detail.data.value?.title || detail.data.value?.name} ${$t('detail.galleryPageTitle', { type: $t(`detail.${activeTab}`) })}`"
         :back-to="`/${mediaType}/${mediaId}`"
       />
 
@@ -21,7 +21,7 @@
           class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"
         />
         <p class="text-gray-600 dark:text-gray-300">
-          {{ $t('detail.loadingDetails', { type: $t('detail.photos') }) }}
+          {{ $t('detail.loadingDetails', { type: $t(`detail.${activeTab}`) }) }}
         </p>
       </div>
 
@@ -30,7 +30,7 @@
         <div class="border-b border-gray-200 dark:border-gray-700">
           <nav class="flex space-x-8" aria-label="Tabs">
             <button
-              v-for="tab in imageTabs"
+              v-for="tab in mediaTabs"
               :key="tab.id"
               :class="[
                 'py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap',
@@ -49,14 +49,15 @@
                     : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400',
                 ]"
               >
-                {{ getImageCount(tab.id) }}
+                {{ getMediaCount(tab.id) }}
               </span>
             </button>
           </nav>
         </div>
 
-        <!-- 瀑布流图片展示 -->
+        <!-- 图片展示 -->
         <div
+          v-if="activeTab !== 'videos'"
           class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pswp-gallery"
         >
           <a
@@ -111,6 +112,81 @@
           </a>
         </div>
 
+        <!-- 视频展示 -->
+        <div
+          v-if="activeTab === 'videos'"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          <div
+            v-for="video in currentVideos"
+            :key="video.id"
+            class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md"
+          >
+            <!-- 视频播放器 -->
+            <div class="aspect-video bg-gray-100 dark:bg-gray-700">
+              <iframe
+                v-if="video.site === 'YouTube'"
+                :src="`https://www.youtube.com/embed/${video.key}?rel=0`"
+                class="w-full h-full"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              />
+              <div
+                v-else
+                class="w-full h-full flex items-center justify-center text-gray-500 dark:text-gray-400"
+              >
+                <div class="text-center">
+                  <svg
+                    class="w-12 h-12 mx-auto mb-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <p class="text-sm">{{ $t('video.unsupportedPlatform') }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- 视频信息 -->
+            <div class="p-4">
+              <h3 class="font-semibold text-gray-900 dark:text-white mb-2">
+                {{ video.name }}
+              </h3>
+              <div
+                class="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400"
+              >
+                <span class="flex items-center">
+                  <svg
+                    class="w-4 h-4 mr-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2m-9 0h10m-10 0a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V6a2 2 0 00-2-2"
+                    />
+                  </svg>
+                  {{ getVideoTypeText(video.type) }}
+                </span>
+                <span v-if="video.published_at">
+                  {{ formatDate(video.published_at) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- 无限滚动加载指示器 -->
         <div v-if="hasMore" ref="observerTarget" class="text-center py-8">
           <div
@@ -121,7 +197,7 @@
               class="animate-spin rounded-full h-6 w-6 border-b-2 border-red-600"
             />
             <span class="text-gray-600 dark:text-gray-300">{{
-              $t('detail.loadingMorePhotos')
+              $t('detail.loadingMore', { type: $t(`detail.${activeTab}`) })
             }}</span>
           </div>
           <div v-else class="text-gray-500 dark:text-gray-400 text-sm">
@@ -129,10 +205,10 @@
           </div>
         </div>
 
-        <!-- 已加载完所有图片 -->
+        <!-- 已加载完所有媒体 -->
         <div v-else class="text-center py-8">
           <div class="text-gray-500 dark:text-gray-400 text-sm">
-            🎉 {{ $t('detail.allPhotosLoaded') }}
+            🎉 {{ $t('detail.allLoaded', { type: $t(`detail.${activeTab}`) }) }}
           </div>
         </div>
       </div>
@@ -144,7 +220,7 @@
           {{ $t('detail.loadingFailed') }}
         </h2>
         <p class="text-gray-600 dark:text-gray-300 mb-4">
-          {{ $t('detail.failedToLoadPhotos') }}
+          {{ $t('detail.failedToLoad', { type: $t(`detail.${activeTab}`) }) }}
         </p>
         <button
           class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
@@ -162,9 +238,9 @@
   import PhotoSwipeLightbox from 'photoswipe/lightbox'
 
   // ==================== API 导入 ====================
-  import { getDetail, getImages } from '~/api/detail'
+  import { getDetail, getImages, getVideos } from '~/api/detail'
   import type { MediaType } from '~/types/pages/details'
-  import type { Image } from '~/types/apiType'
+  import type { Image, Video } from '~/types/apiType'
 
   // 获取 i18n 实例
   const { t } = useI18n()
@@ -184,16 +260,28 @@
   const detail = getDetail(mediaType, mediaId)
   // 获取图片数据
   const images = getImages(mediaType, mediaId)
+  // 获取视频数据
+  const videos = getVideos(mediaType, mediaId)
 
-  // ==================== 图片分类标签配置 ====================
-  // 图片分类标签
-  const imageTabs = [
-    { id: 'posters' as const, name: t('detail.posters') },
+  // ==================== 媒体分类标签配置 ====================
+  // 从路由查询参数获取初始标签页
+  const initialTab = route.query.tab as string
+  const defaultTab =
+    initialTab === 'videos'
+      ? 'videos'
+      : initialTab === 'backdrops'
+        ? 'backdrops'
+        : 'posters'
+
+  // 媒体分类标签
+  const mediaTabs = [
     { id: 'backdrops' as const, name: t('detail.backdrops') },
+    { id: 'posters' as const, name: t('detail.posters') },
+    { id: 'videos' as const, name: t('detail.videos') },
   ]
 
   // 当前激活的标签
-  const activeTab = ref<'posters' | 'backdrops'>('posters')
+  const activeTab = ref<'posters' | 'backdrops' | 'videos'>(defaultTab)
 
   // ==================== 无限滚动配置 ====================
   // 使用无限滚动组合式函数
@@ -212,12 +300,18 @@
           initPhotoSwipe()
         })
       },
-      // 计算当前标签页的图片总数
-      computed(
-        () =>
+      // 计算当前标签页的媒体总数
+      computed(() => {
+        if (activeTab.value === 'videos') {
+          return (
+            (videos.data.value?.results as Video[] | undefined)?.length || 0
+          )
+        }
+        return (
           (images.data.value?.[activeTab.value] as Image[] | undefined)
             ?.length || 0
-      ),
+        )
+      }),
       {
         pageSize: 20,
         rootMargin: () => {
@@ -266,14 +360,24 @@
   // ==================== 计算属性 ====================
   // 计算当前显示的图片
   const currentImages = computed(() => {
+    if (activeTab.value === 'videos') return []
     const allImages =
       (images.data.value?.[activeTab.value] as Image[] | undefined) || []
     return allImages.slice(0, currentPage.value * 20)
   })
 
+  // 计算当前显示的视频
+  const currentVideos = computed(() => {
+    if (activeTab.value !== 'videos') return []
+    return (videos.data.value?.results as Video[] | undefined) || []
+  })
+
   // ==================== 工具函数 ====================
-  // 获取图片数量
-  const getImageCount = (type: 'posters' | 'backdrops'): number => {
+  // 获取媒体数量
+  const getMediaCount = (type: 'posters' | 'backdrops' | 'videos'): number => {
+    if (type === 'videos') {
+      return (videos.data.value?.results as Video[] | undefined)?.length || 0
+    }
     return (images.data.value?.[type] as Image[] | undefined)?.length || 0
   }
 
@@ -293,11 +397,32 @@
   const getFullImageUrl = (
     path: string,
     size: 'small' | 'medium' | 'large' | 'original',
-    type: 'posters' | 'backdrops'
+    type: 'backdrops' | 'posters'
   ): string => {
     return type === 'posters'
       ? image.getPosterUrl(path, size)
       : image.getBackdropUrl(path, size)
+  }
+
+  // 视频类型文本
+  const getVideoTypeText = (type: string): string => {
+    const typeMap: Record<string, string> = {
+      Trailer: t('video.trailer'),
+      Teaser: t('video.teaser'),
+      Featurette: t('video.featurette'),
+      'Behind the Scenes': t('video.behindTheScenes'),
+      Bloopers: t('video.bloopers'),
+      Clip: t('video.clip'),
+      'Opening Credits': t('video.openingCredits'),
+      Recap: t('video.recap'),
+    }
+    return typeMap[type] || type
+  }
+
+  // 格式化日期
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString()
   }
 
   // ==================== PhotoSwipe 灯箱功能 ====================

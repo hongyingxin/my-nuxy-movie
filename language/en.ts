@@ -253,12 +253,23 @@ export default {
     keywords: 'Keywords',
     unknown: 'Unknown',
     viewAllImages: 'View All Images',
+    viewAllPosters: 'View All Posters',
+    viewAllBackdrops: 'View All Backdrops',
+    viewAllVideos: 'View All Videos',
     loadingFailedDetails:
       'Unable to get {type} details, please try again later',
     // 扁平化翻译键
     loadingMoreImages: 'Loading more images...',
     scrollToLoadMore: 'Scroll to bottom to load more',
-    allImagesLoaded: '🎉 All images loaded',
+    allPhotosLoaded: '🎉 All photos loaded',
+    allPostersLoaded: '🎉 All posters loaded',
+    allBackdropsLoaded: '🎉 All backdrops loaded',
+    allVideosLoaded: '🎉 All videos loaded',
+    // 使用插值的翻译键
+    galleryPageTitle: '{type}',
+    loadingMore: 'Loading more {type}...',
+    failedToLoad: 'Unable to get {type} information, please try again later',
+    allLoaded: '🎉 All {type} loaded',
     loadFailed: 'Load Failed',
     loadFailedMessage:
       'Unable to get image information, please try again later',
@@ -267,6 +278,19 @@ export default {
     viewPhotos: 'View posters and stills for {title}',
     movieType: 'Movie',
     tvType: 'TV Show',
+  },
+
+  // 视频相关
+  video: {
+    trailer: 'Trailer',
+    teaser: 'Teaser',
+    featurette: 'Featurette',
+    behindTheScenes: 'Behind the Scenes',
+    bloopers: 'Bloopers',
+    clip: 'Clip',
+    openingCredits: 'Opening Credits',
+    recap: 'Recap',
+    unsupportedPlatform: 'Unsupported video platform',
   },
 
   // 演员页面

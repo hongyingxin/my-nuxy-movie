@@ -52,6 +52,9 @@ export const getVideos = (mediaType: MediaType, id: number) => {
   return useHttp<VideosResponse>({
     url: `/${mediaType}/${id}/videos`,
     method: 'GET',
+    params: {
+      language: '',
+    },
   })
 }
 

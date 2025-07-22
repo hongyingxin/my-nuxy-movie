@@ -245,12 +245,23 @@ export default {
     keywords: '키워드',
     unknown: '알 수 없음',
     viewAllImages: '모든 이미지 보기',
+    viewAllPosters: '모든 포스터 보기',
+    viewAllBackdrops: '모든 배경 이미지 보기',
+    viewAllVideos: '모든 비디오 보기',
     loadingFailedDetails:
       '{type} 상세 정보를 가져올 수 없습니다. 나중에 다시 시도해 주세요',
     // 扁平化翻译键
     loadingMoreImages: '더 많은 이미지를 불러오는 중...',
     scrollToLoadMore: '더 많은 이미지를 불러오려면 아래로 스크롤하세요',
-    allImagesLoaded: '🎉 모든 이미지를 불러왔습니다',
+    allPhotosLoaded: '🎉 모든 사진을 불러왔습니다',
+    allPostersLoaded: '🎉 모든 포스터를 불러왔습니다',
+    allBackdropsLoaded: '🎉 모든 배경 이미지를 불러왔습니다',
+    allVideosLoaded: '🎉 모든 비디오를 불러왔습니다',
+    // 使用插值的翻译键
+    galleryPageTitle: '{type}',
+    loadingMore: '더 많은 {type}을(를) 불러오는 중...',
+    failedToLoad: '{type} 정보를 가져올 수 없습니다. 나중에 다시 시도해 주세요',
+    allLoaded: '🎉 모든 {type}을(를) 불러왔습니다',
     loadFailed: '불러오기 실패',
     loadFailedMessage:
       '이미지 정보를 가져올 수 없습니다. 나중에 다시 시도해 주세요',
@@ -260,6 +271,20 @@ export default {
     movieType: '영화',
     tvType: 'TV 프로그램',
   },
+
+  // 视频相关
+  video: {
+    trailer: '예고편',
+    teaser: '티저',
+    featurette: '특집',
+    behindTheScenes: '메이킹',
+    bloopers: 'NG 모음',
+    clip: '클립',
+    openingCredits: '오프닝',
+    recap: '회고',
+    unsupportedPlatform: '지원되지 않는 비디오 플랫폼',
+  },
+
   // 演员页面
   actors: {
     title: '인기 배우',

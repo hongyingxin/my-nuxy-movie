@@ -243,11 +243,22 @@ export default {
     keywords: '关键词',
     unknown: '未知',
     viewAllImages: '查看全部图片',
+    viewAllPosters: '查看全部海报',
+    viewAllBackdrops: '查看全部剧照',
+    viewAllVideos: '查看全部视频',
     loadingFailedDetails: '无法获取{type}详情，请稍后重试',
     // 扁平化翻译键
     loadingMoreImages: '加载更多图片中...',
     scrollToLoadMore: '滚动到底部加载更多',
-    allImagesLoaded: '🎉 已加载完所有图片',
+    allPhotosLoaded: '🎉 已加载完所有图片',
+    allPostersLoaded: '🎉 已加载完所有海报',
+    allBackdropsLoaded: '🎉 已加载完所有剧照',
+    allVideosLoaded: '🎉 已加载完所有视频',
+    // 使用插值的翻译键
+    galleryPageTitle: '{type}',
+    loadingMore: '加载更多{type}中...',
+    failedToLoad: '无法获取{type}信息，请稍后重试',
+    allLoaded: '🎉 已加载完所有{type}',
     loadFailed: '加载失败',
     loadFailedMessage: '无法获取图片信息，请稍后重试',
     retry: '重新加载',
@@ -255,6 +266,19 @@ export default {
     viewPhotos: '查看 {title} 的海报和剧照',
     movieType: '电影',
     tvType: '电视剧',
+  },
+
+  // 视频相关
+  video: {
+    trailer: '预告片',
+    teaser: '先导片',
+    featurette: '特辑',
+    behindTheScenes: '幕后花絮',
+    bloopers: '花絮',
+    clip: '片段',
+    openingCredits: '片头',
+    recap: '回顾',
+    unsupportedPlatform: '不支持的视频平台',
   },
 
   // 演员页面

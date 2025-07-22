@@ -140,8 +140,26 @@
 
                 <!-- 操作按钮 -->
                 <div class="flex gap-3 justify-center md:justify-start">
-                  <button
+                  <NuxtLink
+                    v-if="videos.data.value?.results?.length"
+                    :to="`/${mediaType}/${mediaId}/gallery?tab=videos`"
                     class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2"
+                  >
+                    <svg
+                      class="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"
+                      />
+                    </svg>
+                    {{ $t('detail.watchTrailer') }}
+                  </NuxtLink>
+                  <button
+                    v-else
+                    class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2 opacity-50 cursor-not-allowed"
+                    disabled
                   >
                     <svg
                       class="w-5 h-5"
@@ -262,9 +280,7 @@
                         ? 'border-red-600 text-red-600'
                         : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-600',
                     ]"
-                    @click="
-                      activeMediaTab = tab.id as typeof activeMediaTab.value
-                    "
+                    @click="switchMediaTab(tab.id)"
                   >
                     {{ tab.name }}
                     <span
@@ -275,7 +291,7 @@
                           : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400',
                       ]"
                     >
-                      {{ getMediaCount(tab.id as typeof activeMediaTab.value) }}
+                      {{ getMediaCount(tab.id as typeof activeMediaTab) }}
                     </span>
                   </button>
                 </nav>
@@ -357,12 +373,15 @@
               </div>
 
               <!-- 查看更多按钮 -->
-              <div v-if="hasMoreMedia" class="text-center mt-6">
+              <div
+                v-if="currentTabViewMoreConfig.show"
+                class="text-center mt-6"
+              >
                 <NuxtLink
-                  :to="`/${mediaType}/${mediaId}/gallery`"
+                  :to="currentTabViewMoreConfig.link"
                   class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                 >
-                  {{ $t('detail.viewAllImages') }}
+                  {{ currentTabViewMoreConfig.text }}
                   <svg
                     class="ml-2 -mr-1 h-5 w-5"
                     xmlns="http://www.w3.org/2000/svg"
@@ -747,20 +766,6 @@
     { id: 'videos' as const, name: t('detail.videos') },
   ]
 
-  // 监听数据加载完成，设置默认标签页
-  // watch(images, (newImages) => {
-  //   if (newImages.data.value && !activeMediaTab.value) {
-  //     // 优先显示有内容的标签页
-  //     if (newImages.data.value.backdrops?.length > 0) {
-  //       activeMediaTab.value = 'backdrops'
-  //     } else if (newImages.data.value.posters?.length > 0) {
-  //       activeMediaTab.value = 'posters'
-  //     } else if (videos.data.value?.results?.length > 0) {
-  //       activeMediaTab.value = 'videos'
-  //     }
-  //   }
-  // }, { immediate: true })
-
   // ==================== 工具函数 ====================
   // 获取媒体数量
   const getMediaCount = (type: 'backdrops' | 'posters' | 'videos'): number => {
@@ -790,10 +795,45 @@
     }
   })
 
+  // 当前标签页的查看更多按钮配置
+  const currentTabViewMoreConfig = computed(() => {
+    switch (activeMediaTab.value) {
+      case 'backdrops':
+        return {
+          show: hasMoreMedia.value,
+          text: t('detail.viewAllBackdrops'),
+          link: `/${mediaType}/${mediaId}/gallery?tab=backdrops`,
+        }
+      case 'posters':
+        return {
+          show: hasMoreMedia.value,
+          text: t('detail.viewAllPosters'),
+          link: `/${mediaType}/${mediaId}/gallery?tab=posters`,
+        }
+      case 'videos':
+        return {
+          show: hasMoreMedia.value,
+          text: t('detail.viewAllVideos'),
+          link: `/${mediaType}/${mediaId}/gallery?tab=videos`,
+        }
+      default:
+        return {
+          show: false,
+          text: '',
+          link: '',
+        }
+    }
+  })
+
   // 打开灯箱功能
   const openLightbox = (type: string, index: number): void => {
     // TODO: 实现灯箱功能
     console.log('Open lightbox', type, index)
+  }
+
+  // 切换媒体标签页
+  const switchMediaTab = (tabId: 'backdrops' | 'posters' | 'videos'): void => {
+    activeMediaTab.value = tabId
   }
 
   // 获取时长或季数信息

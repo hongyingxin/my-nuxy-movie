@@ -237,12 +237,24 @@ export default {
     keywords: 'キーワード',
     unknown: '不明',
     viewAllImages: 'すべての画像を見る',
+    viewAllPosters: 'すべてのポスターを見る',
+    viewAllBackdrops: 'すべての背景画像を見る',
+    viewAllVideos: 'すべての動画を見る',
     loadingFailedDetails:
       '{type}の詳細を取得できませんでした。後でもう一度お試しください',
     // 扁平化翻译键
     loadingMoreImages: 'さらに画像を読み込み中...',
     scrollToLoadMore: '下にスクロールしてさらに読み込み',
-    allImagesLoaded: '🎉 すべての画像を読み込みました',
+    allPhotosLoaded: '🎉 すべての写真を読み込みました',
+    allPostersLoaded: '🎉 すべてのポスターを読み込みました',
+    allBackdropsLoaded: '🎉 すべての背景画像を読み込みました',
+    allVideosLoaded: '🎉 すべての動画を読み込みました',
+    // 使用插值的翻译键
+    galleryPageTitle: '{type}',
+    loadingMore: 'さらに{type}を読み込み中...',
+    failedToLoad:
+      '{type}情報を取得できませんでした。後でもう一度お試しください',
+    allLoaded: '🎉 すべての{type}を読み込みました',
     loadFailed: '読み込み失敗',
     loadFailedMessage:
       '画像情報を取得できませんでした。後でもう一度お試しください',
@@ -252,6 +264,20 @@ export default {
     movieType: '映画',
     tvType: 'テレビ番組',
   },
+
+  // 视频相关
+  video: {
+    trailer: '予告編',
+    teaser: 'ティーザー',
+    featurette: '特集',
+    behindTheScenes: 'メイキング',
+    bloopers: 'NG集',
+    clip: 'クリップ',
+    openingCredits: 'オープニング',
+    recap: '振り返り',
+    unsupportedPlatform: 'サポートされていない動画プラットフォーム',
+  },
+
   // 演员页面
   actors: {
     title: '人気俳優',
