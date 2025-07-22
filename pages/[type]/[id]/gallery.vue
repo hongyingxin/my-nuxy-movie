@@ -122,34 +122,68 @@
             :key="video.id"
             class="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-md"
           >
-            <!-- 视频播放器 -->
-            <div class="aspect-video bg-gray-100 dark:bg-gray-700">
-              <iframe
+            <!-- 视频缩略图 -->
+            <div
+              class="aspect-video bg-gray-100 dark:bg-gray-700 relative group"
+            >
+              <!-- YouTube 视频缩略图 -->
+              <div
                 v-if="video.site === 'YouTube'"
-                :src="`https://www.youtube.com/embed/${video.key}?rel=0`"
-                class="w-full h-full"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen
-              />
+                class="w-full h-full bg-cover bg-center cursor-pointer relative overflow-hidden"
+                :style="{
+                  backgroundImage: `url(https://img.youtube.com/vi/${video.key}/maxresdefault.jpg)`,
+                }"
+                @click="playVideo(video)"
+              >
+                <!-- 播放按钮遮罩 -->
+                <div
+                  class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center group-hover:bg-opacity-40 transition-all duration-300"
+                >
+                  <div
+                    class="bg-red-600 rounded-full p-4 group-hover:scale-110 transition-transform duration-300"
+                  >
+                    <svg
+                      class="w-8 h-8 text-white"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                </div>
+                <!-- 视频时长（如果有） -->
+                <div
+                  v-if="video.size"
+                  class="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded"
+                >
+                  {{ video.size }}p
+                </div>
+              </div>
+
+              <!-- 其他平台视频 -->
               <div
                 v-else
-                class="w-full h-full flex items-center justify-center text-gray-500 dark:text-gray-400"
+                class="w-full h-full flex items-center justify-center text-gray-500 dark:text-gray-400 cursor-pointer"
+                @click="playVideo(video)"
               >
                 <div class="text-center">
-                  <svg
-                    class="w-12 h-12 mx-auto mb-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                  <div
+                    class="bg-gray-600 dark:bg-gray-500 rounded-full p-4 mb-2 group-hover:scale-110 transition-transform duration-300"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
+                    <svg
+                      class="w-12 h-12 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </div>
                   <p class="text-sm">{{ $t('video.unsupportedPlatform') }}</p>
                 </div>
               </div>
@@ -228,6 +262,48 @@
         >
           {{ $t('detail.reload') }}
         </button>
+      </div>
+
+      <!-- 视频播放模态框 -->
+      <div
+        v-if="showVideoModal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
+        @click="closeVideoModal"
+      >
+        <div
+          class="relative w-full max-w-4xl mx-4 aspect-video bg-black rounded-lg overflow-hidden"
+          @click.stop
+        >
+          <!-- 关闭按钮 -->
+          <button
+            class="absolute top-4 right-4 z-10 bg-black bg-opacity-50 text-white rounded-full p-2 hover:bg-opacity-75 transition-colors"
+            @click="closeVideoModal"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+
+          <!-- YouTube 播放器 -->
+          <iframe
+            v-if="currentPlayingVideo?.site === 'YouTube'"
+            :src="`https://www.youtube.com/embed/${currentPlayingVideo.key}?autoplay=1&rel=0`"
+            class="w-full h-full"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -424,6 +500,42 @@
     const date = new Date(dateString)
     return date.toLocaleDateString()
   }
+
+  // 当前播放的视频
+  const currentPlayingVideo = ref<Video | null>(null)
+  const showVideoModal = ref(false)
+
+  // 播放视频
+  const playVideo = (video: Video) => {
+    if (video.site === 'YouTube') {
+      currentPlayingVideo.value = video
+      showVideoModal.value = true
+    } else {
+      // 对于其他平台，显示提示
+      alert(t('video.unsupportedPlatform'))
+    }
+  }
+
+  // 关闭视频模态框
+  const closeVideoModal = () => {
+    showVideoModal.value = false
+    currentPlayingVideo.value = null
+  }
+
+  // 监听 ESC 键关闭视频模态框
+  onMounted(() => {
+    const handleKeydown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && showVideoModal.value) {
+        closeVideoModal()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeydown)
+
+    onBeforeUnmount(() => {
+      document.removeEventListener('keydown', handleKeydown)
+    })
+  })
 
   // ==================== PhotoSwipe 灯箱功能 ====================
   // PhotoSwipe 实例

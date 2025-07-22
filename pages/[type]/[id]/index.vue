@@ -706,7 +706,7 @@
   const isTv = computed(() => mediaType === 'tv')
   // 获取媒体类型的中文描述
   const mediaTypeText = computed(() =>
-    isTv.value ? t('detail.tvShow') : t('detail.movie')
+    isTv.value ? t('common.tvShow') : t('common.movie')
   )
   //  ==================== 类型守卫函数 ====================
   // 判断是否为电影详情
