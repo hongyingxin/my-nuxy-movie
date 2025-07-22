@@ -70,6 +70,9 @@ export const useLanguageStore = defineStore('language', {
         await $i18n.setLocale(localeCode as UILanguageCode)
 
         console.log(`Language switched to: ${localeCode}`)
+
+        // 刷新页面
+        window.location.reload()
       } catch (error) {
         console.error('Failed to switch language:', error)
         // 回滚状态

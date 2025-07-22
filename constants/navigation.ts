@@ -101,14 +101,14 @@ export const MOBILE_NAV_ITEMS = [
 export const USER_MENU_ITEMS = [
   {
     label: 'user.profile', // 个人资料
-    to: '/profile',
+    // to: '/profile',
   },
   {
     label: 'user.favorites', // 我的收藏
-    to: '/favorites',
+    // to: '/favorites',
   },
   {
     label: 'user.watchlist', // 观看清单
-    to: '/watchlist',
+    // to: '/watchlist',
   },
 ]

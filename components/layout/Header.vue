@@ -260,17 +260,21 @@
           <!-- 移动端用户菜单 -->
           <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
             <div class="space-y-2">
-              <NuxtLink
+              <div
                 v-for="item in userMenuItems"
-                :key="item.to"
-                :to="item.to"
-                class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                @click="closeMobileMenu"
+                :key="item.label"
+                class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer"
+                @click="
+                  () => {
+                    // navigateTo(item.to)
+                    closeMobileMenu()
+                  }
+                "
               >
                 <span class="text-sm text-gray-700 dark:text-gray-300">{{
                   t(item.label)
                 }}</span>
-              </NuxtLink>
+              </div>
               <hr class="my-2 border-gray-200 dark:border-gray-600" />
               <button
                 class="flex items-center space-x-3 p-2 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors w-full text-left"
@@ -298,7 +302,6 @@
     MOBILE_NAV_ITEMS,
     USER_MENU_ITEMS,
   } from '@/constants/navigation'
-  import { useI18n } from 'vue-i18n'
 
   // ==================== 响应式数据 ====================
   const isMobileMenuOpen = ref(false)
