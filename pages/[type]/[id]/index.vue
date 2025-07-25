@@ -346,30 +346,12 @@
                 </div>
               </div>
 
-              <div
-                v-if="activeMediaTab === 'videos'"
-                class="grid grid-cols-1 md:grid-cols-2 gap-4"
-              >
-                <div
-                  v-for="video in videos.data.value?.results?.slice(0, 4)"
-                  :key="video.id"
-                  class="bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden"
-                >
-                  <iframe
-                    :src="`https://www.youtube.com/embed/${video.key}`"
-                    class="w-full aspect-video"
-                    frameborder="0"
-                    allowfullscreen
-                  />
-                  <div class="p-3">
-                    <p class="font-medium text-gray-800 dark:text-white">
-                      {{ video.name }}
-                    </p>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">
-                      {{ video.type }}
-                    </p>
-                  </div>
-                </div>
+              <div v-if="activeMediaTab === 'videos'">
+                <MediaVideoGrid
+                  :videos="videos.data.value?.results || []"
+                  :max-count="4"
+                  :show-modal="true"
+                />
               </div>
 
               <!-- 查看更多按钮 -->
