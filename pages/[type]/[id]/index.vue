@@ -142,8 +142,8 @@
                 <div class="flex gap-3 justify-center md:justify-start">
                   <NuxtLink
                     v-if="videos.data.value?.results?.length"
-                    :to="`/${mediaType}/${mediaId}/gallery?tab=videos`"
                     class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2"
+                    @click="playTrailer"
                   >
                     <svg
                       class="w-5 h-5"
@@ -653,6 +653,13 @@
         </button>
       </div>
     </div>
+
+    <!-- 视频播放模态框 -->
+    <MediaVideoModal
+      :show="showVideoModal"
+      :video="currentPlayingVideo"
+      @close="closeVideoModal"
+    />
   </div>
 </template>
 
@@ -668,7 +675,7 @@
   } from '~/api/detail'
 
   // 导入类型定义
-  import type { MovieDetail, TvShowDetail } from '~/types/apiType'
+  import type { MovieDetail, TvShowDetail, Video } from '~/types/apiType'
   import type { MediaType } from '~/types/pages/details'
 
   // 获取 i18n 实例
@@ -834,6 +841,20 @@
       const mins = minutes % 60
       return `${hours}h ${mins}m`
     }
+  }
+  // ==================== 播放预告片 ====================
+  const showVideoModal = ref(false)
+  const currentPlayingVideo = ref<Video | null>(null)
+
+  const playTrailer = (): void => {
+    showVideoModal.value = true
+    currentPlayingVideo.value = getMainTrailer(videos.data.value?.results || [])
+  }
+
+  // 关闭视频模态框
+  const closeVideoModal = (): void => {
+    showVideoModal.value = false
+    currentPlayingVideo.value = null
   }
 
   // ==================== 刷新功能 ====================
