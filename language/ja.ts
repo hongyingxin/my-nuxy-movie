@@ -276,6 +276,8 @@ export default {
     openingCredits: 'オープニング',
     recap: '振り返り',
     unsupportedPlatform: 'サポートされていない動画プラットフォーム',
+    closeModal: '動画を閉じる',
+    onlyYouTubeSupported: '現在YouTube動画のみサポートしています',
   },
 
   // 演员页面

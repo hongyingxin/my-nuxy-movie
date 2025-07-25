@@ -41,6 +41,7 @@ components/
 - **ListItem.vue** - 媒体列表项，用于列表视图显示
 - **Rating.vue** - 媒体评分组件
 - **PageHeader.vue** - 媒体页面头部组件
+- **VideoModal.vue** - 视频播放模态框组件，支持YouTube视频播放
 - **Grid.vue** - 媒体卡片网格布局 (未来)
 - **Player.vue** - 视频播放器组件 (未来)
 - **Gallery.vue** - 图片画廊组件 (未来)
@@ -522,6 +523,97 @@ const handlePageSizeChange = newPageSize => {
 | `score`    | `Number`  | -        | 评分分数 (0-10)                 |
 | `showText` | `Boolean` | `true`   | 是否显示文字评分                |
 | `size`     | `String`  | `medium` | 组件尺寸 (small, medium, large) |
+
+### VideoModal 视频播放模态框组件
+
+用于播放YouTube等平台视频的模态框组件，支持键盘ESC键关闭和点击遮罩关闭。
+
+#### 基础使用
+
+```vue
+<VideoModal
+  :show="showVideoModal"
+  :video="currentVideo"
+  @close="closeVideoModal"
+/>
+```
+
+#### Props
+
+| 属性    | 类型            | 默认值  | 说明             |
+| ------- | --------------- | ------- | ---------------- |
+| `show`  | `Boolean`       | `false` | 是否显示模态框   |
+| `video` | `Video \| null` | `null`  | 要播放的视频对象 |
+
+#### Events
+
+| 事件名  | 参数 | 说明           |
+| ------- | ---- | -------------- |
+| `close` | -    | 关闭模态框事件 |
+
+#### 功能特性
+
+- **YouTube支持**: 支持YouTube视频播放
+- **键盘支持**: 支持ESC键关闭模态框
+- **点击关闭**: 支持点击遮罩关闭模态框
+- **自动滚动**: 自动处理页面滚动状态
+- **平台提示**: 对不支持的平台显示友好提示
+- **无障碍**: 包含适当的aria-label属性
+
+#### 使用示例
+
+```vue
+<template>
+  <div>
+    <!-- 视频列表 -->
+    <div v-for="video in videos" :key="video.id">
+      <button @click="playVideo(video)">播放 {{ video.name }}</button>
+    </div>
+
+    <!-- 视频播放模态框 -->
+    <VideoModal
+      :show="showVideoModal"
+      :video="currentVideo"
+      @close="closeVideoModal"
+    />
+  </div>
+</template>
+
+<script setup>
+  const showVideoModal = ref(false)
+  const currentVideo = ref(null)
+
+  const playVideo = video => {
+    if (video.site === 'YouTube') {
+      currentVideo.value = video
+      showVideoModal.value = true
+    } else {
+      // 对于其他平台，显示提示
+      alert(t('video.unsupportedPlatform'))
+    }
+  }
+
+  const closeVideoModal = () => {
+    showVideoModal.value = false
+    currentVideo.value = null
+  }
+</script>
+```
+
+#### 视频对象结构
+
+```typescript
+interface Video {
+  id: string
+  key: string
+  name: string
+  site: string // 'YouTube' | 'Vimeo' | etc.
+  size: number
+  type: string
+  official: boolean
+  published_at: string
+}
+```
 
 ### SearchBox 搜索框组件
 

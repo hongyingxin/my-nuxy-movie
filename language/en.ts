@@ -291,6 +291,8 @@ export default {
     openingCredits: 'Opening Credits',
     recap: 'Recap',
     unsupportedPlatform: 'Unsupported video platform',
+    closeModal: 'Close video',
+    onlyYouTubeSupported: 'Currently only YouTube videos are supported',
   },
 
   // 演员页面

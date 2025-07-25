@@ -283,6 +283,8 @@ export default {
     openingCredits: '오프닝',
     recap: '회고',
     unsupportedPlatform: '지원되지 않는 비디오 플랫폼',
+    closeModal: '비디오 닫기',
+    onlyYouTubeSupported: '현재 YouTube 비디오만 지원됩니다',
   },
 
   // 演员页面

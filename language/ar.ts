@@ -281,6 +281,8 @@ export default {
     openingCredits: 'مقدمة',
     recap: 'ملخص',
     unsupportedPlatform: 'منصة فيديو غير مدعومة',
+    closeModal: 'إغلاق الفيديو',
+    onlyYouTubeSupported: 'حالياً يدعم YouTube فقط',
   },
 
   // 演员页面

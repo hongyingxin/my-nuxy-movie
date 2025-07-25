@@ -279,6 +279,8 @@ export default {
     openingCredits: '片头',
     recap: '回顾',
     unsupportedPlatform: '不支持的视频平台',
+    closeModal: '关闭视频',
+    onlyYouTubeSupported: '目前仅支持 YouTube 视频播放',
   },
 
   // 演员页面

@@ -265,46 +265,11 @@
       </div>
 
       <!-- 视频播放模态框 -->
-      <div
-        v-if="showVideoModal"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
-        @click="closeVideoModal"
-      >
-        <div
-          class="relative w-full max-w-4xl mx-4 aspect-video bg-black rounded-lg overflow-hidden"
-          @click.stop
-        >
-          <!-- 关闭按钮 -->
-          <button
-            class="absolute top-4 right-4 z-10 bg-black bg-opacity-50 text-white rounded-full p-2 hover:bg-opacity-75 transition-colors"
-            @click="closeVideoModal"
-          >
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-
-          <!-- YouTube 播放器 -->
-          <iframe
-            v-if="currentPlayingVideo?.site === 'YouTube'"
-            :src="`https://www.youtube.com/embed/${currentPlayingVideo.key}?autoplay=1&rel=0`"
-            class="w-full h-full"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen
-          />
-        </div>
-      </div>
+      <MediaVideoModal
+        :show="showVideoModal"
+        :video="currentPlayingVideo"
+        @close="closeVideoModal"
+      />
     </div>
   </div>
 </template>
@@ -521,21 +486,6 @@
     showVideoModal.value = false
     currentPlayingVideo.value = null
   }
-
-  // 监听 ESC 键关闭视频模态框
-  onMounted(() => {
-    const handleKeydown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && showVideoModal.value) {
-        closeVideoModal()
-      }
-    }
-
-    document.addEventListener('keydown', handleKeydown)
-
-    onBeforeUnmount(() => {
-      document.removeEventListener('keydown', handleKeydown)
-    })
-  })
 
   // ==================== PhotoSwipe 灯箱功能 ====================
   // PhotoSwipe 实例
