@@ -42,6 +42,7 @@ _目前暂无 UI 组件_
 - **PageHeader.vue** - 媒体页面头部组件
 - **VideoGrid.vue** - 视频网格组件，用于展示视频列表
 - **VideoModal.vue** - 视频播放模态框组件，支持YouTube视频播放
+- **Gallery.vue** - 图片画廊组件，支持响应式网格和PhotoSwipe灯箱
 
 ### 🔍 搜索组件 (`Search/`)
 
@@ -244,6 +245,11 @@ _目前暂无 UI 组件_
 <MediaRating :score="movie.vote_average" />
 <VideoGrid :videos="videos" @play-video="handlePlayVideo" />
 <VideoModal :show="showVideo" :video="currentVideo" @close="closeVideo" />
+<MediaGallery
+  :images="images"
+  :image-type="'posters'"
+  @image-click="handleImageClick"
+/>
 
 <!-- 搜索组件 -->
 <SearchBox
@@ -751,6 +757,144 @@ interface Person {
 - **动画效果**: 平滑的切换动画
 - **状态同步**: 与 Pinia store 状态同步
 
+### MediaGallery 图片画廊组件
+
+通用的图片画廊组件，支持响应式网格布局、PhotoSwipe灯箱、懒加载等功能。
+
+#### 基础使用
+
+```vue
+<MediaGallery :images="images" :image-type="'posters'" />
+```
+
+#### 完整功能
+
+```vue
+<MediaGallery
+  :images="images"
+  :image-type="'backdrops'"
+  :image-size="'large'"
+  :cols="{ sm: 2, md: 3, lg: 4, xl: 5 }"
+  :loading="loading"
+  :error="error"
+  :image-alt="'Movie posters'"
+  :enable-photo-swipe="true"
+  @image-click="handleImageClick"
+  @retry="handleRetry"
+/>
+```
+
+#### Props
+
+| 属性               | 类型                                                     | 默认值                           | 说明                     |
+| ------------------ | -------------------------------------------------------- | -------------------------------- | ------------------------ |
+| `images`           | `GalleryImage[]`                                         | -                                | 图片数据数组 (必填)      |
+| `imageType`        | `'posters' \| 'backdrops'`                               | -                                | 图片类型 (必填)          |
+| `imageSize`        | `'small' \| 'medium' \| 'large' \| 'original'`           | `'medium'`                       | 图片尺寸                 |
+| `cols`             | `{ sm?: number, md?: number, lg?: number, xl?: number }` | `{ sm: 2, md: 3, lg: 4, xl: 5 }` | 响应式网格列数配置       |
+| `loading`          | `Boolean`                                                | `false`                          | 加载状态                 |
+| `error`            | `Boolean`                                                | `false`                          | 错误状态                 |
+| `imageAlt`         | `String`                                                 | `'Gallery image'`                | 图片 alt 文本            |
+| `loadingText`      | `String`                                                 | `'加载中...'`                    | 加载提示文本             |
+| `emptyText`        | `String`                                                 | `'暂无图片'`                     | 空状态标题               |
+| `emptyDescription` | `String`                                                 | `'这里还没有图片'`               | 空状态描述               |
+| `errorText`        | `String`                                                 | `'加载失败'`                     | 错误状态标题             |
+| `retryText`        | `String`                                                 | `'重试'`                         | 重试按钮文本             |
+| `enablePhotoSwipe` | `Boolean`                                                | `true`                           | 是否启用 PhotoSwipe 灯箱 |
+
+#### Events
+
+| 事件名        | 参数                                   | 说明         |
+| ------------- | -------------------------------------- | ------------ |
+| `image-click` | `(image: GalleryImage, index: number)` | 图片点击事件 |
+| `retry`       | -                                      | 重试加载事件 |
+
+#### 图片数据结构
+
+```typescript
+interface GalleryImage {
+  id?: string | number
+  file_path: string
+  [key: string]: unknown
+}
+```
+
+#### 功能特性
+
+- **响应式网格**: 支持自定义响应式网格布局
+- **PhotoSwipe 灯箱**: 集成 PhotoSwipe 灯箱功能
+- **懒加载**: 支持图片懒加载，提升性能
+- **悬停效果**: 图片悬停缩放和遮罩效果
+- **错误处理**: 图片加载失败自动处理
+- **加载状态**: 支持加载状态显示
+- **空状态**: 优雅的空状态展示
+- **错误状态**: 友好的错误状态和重试功能
+- **宽高比适配**: 自动根据图片类型调整宽高比
+- **无障碍**: 包含适当的 alt 文本和键盘支持
+
+#### 使用示例
+
+```vue
+<template>
+  <div>
+    <!-- 海报画廊 -->
+    <MediaGallery
+      :images="posters"
+      :image-type="'posters'"
+      :loading="loadingPosters"
+      :error="errorPosters"
+      @image-click="handlePosterClick"
+      @retry="loadPosters"
+    />
+
+    <!-- 背景图片画廊 -->
+    <MediaGallery
+      :images="backdrops"
+      :image-type="'backdrops'"
+      :cols="{ sm: 1, md: 2, lg: 3, xl: 4 }"
+      :image-size="'large'"
+      @image-click="handleBackdropClick"
+    />
+  </div>
+</template>
+
+<script setup>
+  const handlePosterClick = (image, index) => {
+    console.log('点击海报:', image, '索引:', index)
+  }
+
+  const handleBackdropClick = (image, index) => {
+    console.log('点击背景图:', image, '索引:', index)
+  }
+
+  const loadPosters = () => {
+    // 重新加载海报数据
+  }
+</script>
+```
+
+#### 自定义样式
+
+组件使用 Tailwind CSS 类，可以通过以下方式自定义：
+
+```vue
+<MediaGallery :images="images" :image-type="'posters'" class="custom-gallery" />
+```
+
+```css
+.custom-gallery {
+  /* 自定义样式 */
+}
+
+.custom-gallery .gallery-container {
+  /* 容器样式 */
+}
+
+.custom-gallery .cursor-zoom-in {
+  /* 鼠标样式 */
+}
+```
+
 ### SearchBox 搜索框组件
 
 统一的搜索输入框组件，支持头部和搜索页面使用，包含实时搜索建议功能。
@@ -891,6 +1035,7 @@ interface SearchSuggestion {
 - **MediaPersonListItem** - 在演员列表页使用
 - **VideoGrid** - 在详情页视频标签中使用
 - **VideoModal** - 在视频播放时使用
+- **MediaGallery** - 在详情页图片画廊中使用
 
 ### 低频使用组件
 
@@ -961,7 +1106,6 @@ interface SearchSuggestion {
 - **UiModal** - 模态框组件
 - **UiTooltip** - 工具提示组件
 - **MediaPlayer** - 视频播放器组件
-- **MediaGallery** - 图片画廊组件
 - **CommonIcon** - 图标组件
 - **CommonBreadcrumb** - 面包屑导航组件
 

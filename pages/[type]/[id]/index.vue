@@ -298,52 +298,34 @@
               </div>
 
               <!-- 图片网格 -->
-              <div
-                v-if="activeMediaTab === 'backdrops'"
-                class="grid grid-cols-2 md:grid-cols-3 gap-4"
-              >
-                <div
-                  v-for="(imgItem, index) in images.data.value.backdrops?.slice(
-                    0,
-                    6
-                  )"
-                  :key="index"
-                  class="relative aspect-video rounded-lg overflow-hidden cursor-pointer group"
-                  @click="openLightbox('backdrops', index)"
-                >
-                  <img
-                    :src="image.getBackdropUrl(imgItem.file_path, 'medium')"
-                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    loading="lazy"
-                  />
-                  <div
-                    class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"
-                  />
-                </div>
+              <div v-if="activeMediaTab === 'backdrops'">
+                <MediaGallery
+                  :images="
+                    (images.data.value?.backdrops?.slice(0, 6) || []) as any
+                  "
+                  image-type="backdrops"
+                  image-size="large"
+                  :image-alt="
+                    detail.data.value?.title || detail.data.value?.name
+                  "
+                  :enable-photo-swipe="true"
+                  :cols="{ sm: 2, md: 3 }"
+                />
               </div>
 
-              <div
-                v-if="activeMediaTab === 'posters'"
-                class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
-              >
-                <div
-                  v-for="(imgItem, index) in images.data.value.posters?.slice(
-                    0,
-                    12
-                  )"
-                  :key="index"
-                  class="relative aspect-[2/3] rounded-lg overflow-hidden cursor-pointer group"
-                  @click="openLightbox('posters', index)"
-                >
-                  <img
-                    :src="image.getPosterUrl(imgItem.file_path, 'medium')"
-                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    loading="lazy"
-                  />
-                  <div
-                    class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"
-                  />
-                </div>
+              <div v-if="activeMediaTab === 'posters'">
+                <MediaGallery
+                  :images="
+                    (images.data.value?.posters?.slice(0, 12) || []) as any
+                  "
+                  image-type="posters"
+                  image-size="medium"
+                  :image-alt="
+                    detail.data.value?.title || detail.data.value?.name
+                  "
+                  :enable-photo-swipe="true"
+                  :cols="{ sm: 3, md: 4, lg: 6 }"
+                />
               </div>
 
               <div v-if="activeMediaTab === 'videos'">
@@ -813,12 +795,6 @@
         }
     }
   })
-
-  // 打开灯箱功能
-  const openLightbox = (type: string, index: number): void => {
-    // TODO: 实现灯箱功能
-    console.log('Open lightbox', type, index)
-  }
 
   // 切换媒体标签页
   const switchMediaTab = (tabId: 'backdrops' | 'posters' | 'videos'): void => {

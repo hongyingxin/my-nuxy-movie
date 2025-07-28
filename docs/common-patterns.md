@@ -343,3 +343,187 @@ useHead(() => ({
 ## 多语言（i18n）相关最佳实践
 
 - 所有语言切换都必须通过 Pinia store 的 `switchLanguage` 方法进行，不允许在组件或页面中直接操作 `$i18n`。这样可以保证 store 状态和 Nuxt i18n 状态始终同步，避免出现语言状态不一致的问题。
+
+## 🎨 **组件设计最佳实践**
+
+### **1. 组件职责分离**
+
+#### **✅ 推荐：组件专注于单一职责**
+
+```vue
+<!-- Gallery 组件只负责图片展示 -->
+<template>
+  <div class="gallery-container">
+    <!-- 图片网格 -->
+    <div v-if="images.length > 0" class="grid gap-4">
+      <!-- 图片内容 -->
+    </div>
+  </div>
+</template>
+```
+
+#### **❌ 不推荐：组件处理多种状态**
+
+```vue
+<!-- 组件不应该处理加载、错误等状态 -->
+<template>
+  <div>
+    <div v-if="loading">加载中...</div>
+    <div v-else-if="error">错误状态</div>
+    <div v-else>正常内容</div>
+  </div>
+</template>
+```
+
+#### **正确的使用方式**
+
+```vue
+<!-- 在页面中处理各种状态 -->
+<template>
+  <div>
+    <!-- 加载状态 -->
+    <SkeletonGallery v-if="isLoading" />
+
+    <!-- 错误状态 -->
+    <div v-else-if="error" class="error-state">
+      <p>{{ error.message }}</p>
+      <button @click="retry">重试</button>
+    </div>
+
+    <!-- 空状态 -->
+    <div v-else-if="images.length === 0" class="empty-state">
+      <p>暂无图片</p>
+    </div>
+
+    <!-- 正常内容 -->
+    <MediaGallery v-else :images="images" :image-type="imageType" />
+  </div>
+</template>
+```
+
+### **2. 组件 Props 设计原则**
+
+#### **✅ 推荐：只传递必要的 props**
+
+```vue
+<!-- Gallery 组件只需要图片相关的 props -->
+<MediaGallery
+  :images="images"
+  :image-type="imageType"
+  :image-size="imageSize"
+  :enable-photo-swipe="true"
+/>
+```
+
+#### **❌ 不推荐：传递状态相关的 props**
+
+```vue
+<!-- 组件不应该接收加载、错误等状态 props -->
+<MediaGallery
+  :images="images"
+  :loading="isLoading"
+  :error="error"
+  :error-text="errorText"
+  @retry="handleRetry"
+/>
+```
+
+### **3. 组件 Emits 设计原则**
+
+#### **✅ 推荐：只发出业务相关的事件**
+
+```vue
+<!-- 只发出图片点击等业务事件 -->
+const emit = defineEmits<{ 'image-click': [image: GalleryImage, index: number]
+}>()
+```
+
+#### **❌ 不推荐：发出状态相关的事件**
+
+```vue
+<!-- 组件不应该发出重试等状态事件 -->
+const emit = defineEmits<{ 'image-click': [image: GalleryImage, index: number]
+retry: [] error: [error: Error] }>()
+```
+
+---
+
+## 🎨 **加载状态处理最佳实践**
+
+### **推荐模式：独立骨架屏组件**
+
+项目采用**独立骨架屏组件**模式，而不是在业务组件内部处理加载状态。
+
+#### **优势**
+
+1. **关注点分离**：业务组件专注于数据展示，骨架屏组件专注于加载体验
+2. **高度可复用**：骨架屏组件可以在任何地方使用
+3. **易于维护**：加载状态样式集中管理
+4. **更好的用户体验**：骨架屏比简单加载动画更友好
+
+#### **使用方式**
+
+```vue
+<!-- ✅ 推荐：使用独立的骨架屏组件 -->
+<template>
+  <div>
+    <!-- 加载状态 -->
+    <SkeletonGallery
+      v-if="isLoading && images.length === 0"
+      :count="12"
+      :image-type="imageType"
+      :cols="{ sm: 2, md: 3, lg: 4, xl: 5 }"
+    />
+
+    <!-- 正常内容 -->
+    <MediaGallery
+      v-else
+      :images="images"
+      :image-type="imageType"
+      :enable-photo-swipe="true"
+    />
+  </div>
+</template>
+```
+
+#### **❌ 不推荐：在组件内部处理加载状态**
+
+```vue
+<!-- ❌ 不推荐：组件内部处理加载状态 -->
+<template>
+  <div>
+    <div v-if="loading" class="loading-spinner">
+      <!-- 加载动画 -->
+    </div>
+    <div v-else>
+      <!-- 正常内容 -->
+    </div>
+  </div>
+</template>
+```
+
+#### **可用的骨架屏组件**
+
+- **SkeletonGrid**：网格布局骨架屏
+- **SkeletonList**：列表布局骨架屏
+- **SkeletonCard**：卡片骨架屏
+- **SkeletonGallery**：画廊骨架屏
+- **SkeletonLoadingState**：简单加载状态
+
+#### **骨架屏组件使用示例**
+
+```vue
+<!-- 电影列表骨架屏 -->
+<SkeletonGrid
+  v-if="movies.pending.value"
+  :count="12"
+  variant="movie"
+  :cols="{ sm: 2, md: 4, lg: 6 }"
+/>
+
+<!-- 演员列表骨架屏 -->
+<SkeletonList v-if="actors.pending.value" :count="20" variant="actor" />
+
+<!-- 详情页加载状态 -->
+<SkeletonLoadingState v-if="detail.pending.value" message="加载详情中..." />
+```

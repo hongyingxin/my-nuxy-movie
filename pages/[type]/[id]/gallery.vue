@@ -15,17 +15,15 @@
         :back-to="`/${mediaType}/${mediaId}`"
       />
 
-      <!-- 加载状态 -->
-      <div v-if="images.pending.value" class="text-center py-12">
-        <div
-          class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"
-        />
-        <p class="text-gray-600 dark:text-gray-300">
-          {{ $t('detail.loadingDetails', { type: $t(`detail.${activeTab}`) }) }}
-        </p>
-      </div>
-
-      <div v-else-if="images.data.value" class="space-y-8">
+      <div
+        v-if="
+          images.data.value ||
+          videos.data.value ||
+          images.pending.value ||
+          videos.pending.value
+        "
+        class="space-y-8"
+      >
         <!-- 分类标签页 -->
         <div class="border-b border-gray-200 dark:border-gray-700">
           <nav class="flex space-x-8" aria-label="Tabs">
@@ -49,72 +47,45 @@
                     : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400',
                 ]"
               >
-                {{ getMediaCount(tab.id) }}
+                {{
+                  images.pending.value || videos.pending.value
+                    ? '...'
+                    : getMediaCount(tab.id)
+                }}
               </span>
             </button>
           </nav>
         </div>
 
         <!-- 图片展示 -->
-        <div
-          v-if="activeTab !== 'videos'"
-          class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pswp-gallery"
-        >
-          <a
-            v-for="(image, index) in currentImages"
-            :key="index"
-            class="relative group cursor-zoom-in"
-            :href="getFullImageUrl(image.file_path, 'original', activeTab)"
-            :data-pswp-width="activeTab === 'posters' ? 2000 : 1920"
-            :data-pswp-height="activeTab === 'posters' ? 3000 : 1080"
-          >
-            <!-- 图片 -->
-            <div
-              :class="[
-                'overflow-hidden bg-gray-100 dark:bg-gray-800 rounded-lg',
-                activeTab === 'posters' ? 'aspect-[2/3]' : 'aspect-[16/9]',
-              ]"
-            >
-              <img
-                :src="
-                  getFullImageUrl(
-                    image.file_path,
-                    activeTab === 'posters' ? 'medium' : 'large',
-                    activeTab
-                  )
-                "
-                :alt="detail.data.value?.title || detail.data.value?.name"
-                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                loading="lazy"
-              />
-            </div>
+        <div v-if="activeTab !== 'videos'">
+          <!-- 加载状态 - 使用骨架屏 -->
+          <SkeletonGallery
+            v-if="images.pending.value"
+            :count="12"
+            :image-type="activeTab"
+            :cols="{ sm: 2, md: 3, lg: 4, xl: 5 }"
+          />
 
-            <!-- 悬停遮罩 -->
-            <div
-              class="absolute inset-0 bg-black/60 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
-            >
-              <div class="text-white">
-                <svg
-                  class="w-8 h-8"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
-                  />
-                </svg>
-              </div>
-            </div>
-          </a>
+          <!-- 图片画廊 -->
+          <MediaGallery
+            v-else
+            :images="currentImages as any"
+            :image-type="activeTab"
+            :image-size="activeTab === 'posters' ? 'medium' : 'large'"
+            :image-alt="detail.data.value?.title || detail.data.value?.name"
+            :enable-photo-swipe="true"
+          />
         </div>
 
         <!-- 视频展示 -->
         <div v-if="activeTab === 'videos'">
+          <!-- 加载状态 - 使用视频骨架屏 -->
+          <SkeletonVideoGrid v-if="videos.pending.value" :count="12" />
+
+          <!-- 视频网格 -->
           <MediaVideoGrid
+            v-else
             :videos="currentVideos"
             :max-count="0"
             :show-modal="true"
@@ -140,7 +111,7 @@
         </div>
 
         <!-- 已加载完所有媒体 -->
-        <div v-else class="text-center py-8">
+        <div v-if="!hasMore" class="text-center py-8">
           <div class="text-gray-500 dark:text-gray-400 text-sm">
             🎉 {{ $t('detail.allLoaded', { type: $t(`detail.${activeTab}`) }) }}
           </div>
@@ -148,7 +119,10 @@
       </div>
 
       <!-- 错误状态 -->
-      <div v-else-if="images.error.value" class="text-center py-12">
+      <div
+        v-else-if="images.error.value || videos.error.value"
+        class="text-center py-12"
+      >
         <div class="text-red-600 text-6xl mb-4">😞</div>
         <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">
           {{ $t('detail.loadingFailed') }}
@@ -158,7 +132,15 @@
         </p>
         <button
           class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
-          @click="() => images.refresh()"
+          @click="
+            () => {
+              if (activeTab === 'videos') {
+                videos.refresh()
+              } else {
+                images.refresh()
+              }
+            }
+          "
         >
           {{ $t('detail.reload') }}
         </button>
@@ -168,9 +150,6 @@
 </template>
 
 <script setup lang="ts">
-  // ==================== 第三方库导入 ====================
-  import PhotoSwipeLightbox from 'photoswipe/lightbox'
-
   // ==================== API 导入 ====================
   import { getDetail, getImages, getVideos } from '~/api/detail'
   import type { MediaType } from '~/types/pages/details'
@@ -225,14 +204,7 @@
         // 模拟加载延迟，让用户看到加载状态
         await new Promise(resolve => setTimeout(resolve, 300))
 
-        // 重新初始化 PhotoSwipe 以包含新加载的图片
-        nextTick(() => {
-          if (lightbox.value) {
-            lightbox.value.destroy()
-            lightbox.value = null
-          }
-          initPhotoSwipe()
-        })
+        // 数据已加载完成，无需额外处理
       },
       // 计算当前标签页的媒体总数
       computed(() => {
@@ -247,7 +219,7 @@
         )
       }),
       {
-        pageSize: 20,
+        pageSize: 12, // 减少每页数量，提升加载体验
         rootMargin: () => {
           // 根据设备类型和网络状况动态调整 rootMargin
           const isMobile = window.innerWidth <= 768
@@ -285,7 +257,7 @@
         },
         loadDelay: 0, // 已经在回调中处理延迟
         debounceDelay: 50, // 快速响应的防抖延迟
-        enableScrollListener: true, // 启用滚动监听作为备用
+        enableScrollListener: true, // 为所有标签页启用滚动监听
         scrollThreshold: 150, // 距离底部 150px 时触发
         threshold: [0, 0.1, 0.3, 0.5, 1.0], // 更敏感的阈值设置
       }
@@ -297,13 +269,14 @@
     if (activeTab.value === 'videos') return []
     const allImages =
       (images.data.value?.[activeTab.value] as Image[] | undefined) || []
-    return allImages.slice(0, currentPage.value * 20)
+    return allImages.slice(0, currentPage.value * 12)
   })
 
   // 计算当前显示的视频
   const currentVideos = computed(() => {
     if (activeTab.value !== 'videos') return []
-    return (videos.data.value?.results as Video[] | undefined) || []
+    const allVideos = (videos.data.value?.results as Video[] | undefined) || []
+    return allVideos.slice(0, currentPage.value * 12)
   })
 
   // ==================== 工具函数 ====================
@@ -318,101 +291,6 @@
   // 监听标签切换，重置分页
   watch(activeTab, () => {
     reset() // 重置无限滚动
-    nextTick(() => {
-      if (lightbox.value) {
-        lightbox.value.destroy()
-        lightbox.value = null
-      }
-      initPhotoSwipe()
-    })
-  })
-
-  // 图片链接生成
-  const getFullImageUrl = (
-    path: string,
-    size: 'small' | 'medium' | 'large' | 'original',
-    type: 'backdrops' | 'posters'
-  ): string => {
-    return type === 'posters'
-      ? image.getPosterUrl(path, size)
-      : image.getBackdropUrl(path, size)
-  }
-
-  // ==================== PhotoSwipe 灯箱功能 ====================
-  // PhotoSwipe 实例
-  const lightbox = ref<PhotoSwipeLightbox | null>(null)
-
-  // 组件挂载时初始化灯箱
-  onMounted(() => {
-    initPhotoSwipe()
-  })
-
-  // 初始化 PhotoSwipe 灯箱
-  const initPhotoSwipe = () => {
-    // 确保先清理之前的实例
-    if (lightbox.value) {
-      lightbox.value.destroy()
-      lightbox.value = null
-    }
-
-    // 创建新的 PhotoSwipe 实例
-    lightbox.value = new PhotoSwipeLightbox({
-      gallery: '.pswp-gallery',
-      children: 'a[href]', // 只选择有 href 属性的 a 标签
-      pswpModule: () => import('photoswipe'),
-      showHideAnimationType: 'fade',
-      showAnimationDuration: 300,
-      hideAnimationDuration: 300,
-      bgOpacity: 0.9,
-      paddingFn: () => {
-        return {
-          top: 30,
-          bottom: 30,
-          left: 30,
-          right: 30,
-        }
-      },
-    })
-
-    // 灯箱打开前隐藏页面滚动
-    lightbox.value.on('beforeOpen', () => {
-      document.body.style.overflow = 'hidden'
-    })
-
-    // 灯箱关闭后恢复页面滚动
-    lightbox.value.on('close', () => {
-      document.body.style.overflow = ''
-    })
-
-    // 初始化灯箱
-    lightbox.value.init()
-  }
-
-  // ==================== 生命周期清理 ====================
-  // 页面卸载时清理灯箱
-  onBeforeUnmount(() => {
-    if (lightbox.value) {
-      lightbox.value.destroy()
-      lightbox.value = null
-    }
-  })
-
-  // 路由变化时清理
-  onBeforeRouteLeave(() => {
-    if (lightbox.value) {
-      lightbox.value.destroy()
-      lightbox.value = null
-    }
-
-    // 额外的清理：移除可能残留的 PhotoSwipe 元素
-    const pswpElements = document.querySelectorAll('.pswp')
-    pswpElements.forEach(el => el.remove())
-
-    // 恢复 body 样式
-    document.body.style.overflow = ''
-    // 移除可能残留的事件监听器
-    // 不再传 null，避免类型报错
-    // document.removeEventListener('keydown', null)
   })
 
   // ==================== SEO 配置 ====================
