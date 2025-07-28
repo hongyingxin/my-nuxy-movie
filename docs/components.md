@@ -28,10 +28,7 @@ components/
 
 可在整个应用程序中使用的可复用用户界面组件。
 
-- **MovieRating.vue** - 带百分比的圆形评分显示 (未来)
-- **Button.vue** - 可复用按钮组件 (未来)
-- **Modal.vue** - 模态框/对话框组件 (未来)
-- **Loading.vue** - 加载旋转器组件 (未来)
+_目前暂无 UI 组件_
 
 ### 🎬 媒体组件 (`Media/`)
 
@@ -39,12 +36,12 @@ components/
 
 - **Card.vue** - 电影/电视剧卡片，包含海报、标题和评分
 - **ListItem.vue** - 媒体列表项，用于列表视图显示
+- **PersonCard.vue** - 演员卡片，包含头像、姓名和代表作
+- **PersonListItem.vue** - 演员列表项，用于演员列表视图显示
 - **Rating.vue** - 媒体评分组件
 - **PageHeader.vue** - 媒体页面头部组件
+- **VideoGrid.vue** - 视频网格组件，用于展示视频列表
 - **VideoModal.vue** - 视频播放模态框组件，支持YouTube视频播放
-- **Grid.vue** - 媒体卡片网格布局 (未来)
-- **Player.vue** - 视频播放器组件 (未来)
-- **Gallery.vue** - 图片画廊组件 (未来)
 
 ### 🔍 搜索组件 (`Search/`)
 
@@ -68,9 +65,10 @@ components/
 不属于其他类别的共享组件。
 
 - **Pagination.vue** - 分页组件，支持多种功能和移动端适配
-- **Icon.vue** - 图标组件 (未来)
-- **Tooltip.vue** - 工具提示组件 (未来)
-- **Breadcrumb.vue** - 面包屑导航组件 (未来)
+- **LanguageSwitcher.vue** - 语言切换器组件，支持多语言切换
+- **ThemeSwitcher.vue** - 主题切换器组件，支持明暗主题切换
+- **ThemeToggle.vue** - 主题切换按钮组件，简洁的主题切换控件
+  _暂无其他通用组件_
 
 ## 命名约定
 
@@ -85,11 +83,10 @@ components/
 
 - 子目录中的组件会自动导入，目录名作为前缀
 - `components/Layout/Header.vue` → `<LayoutHeader />`
-- `components/ui/MovieRating.vue` → `<UiMovieRating />`
 - `components/Media/Card.vue` → `<MediaCard />` (媒体目录无前缀)
 - `components/Search/SearchBox.vue` → `<SearchBox />` (搜索目录无前缀)
 - `components/Skeleton/Card.vue` → `<SkeletonCard />` (骨架屏目录无前缀)
-- `components/Common/Icon.vue` → `<CommonIcon />`
+- `components/Common/Pagination.vue` → `<CommonPagination />`
 
 ## 组件设计模式
 
@@ -232,17 +229,21 @@ components/
 <LayoutFooter />
 
 <!-- UI 组件 -->
-<UiMovieRating :score="8.5" />
+<!-- 暂无 UI 组件 -->
 
 <!-- 媒体组件 -->
 <MediaCard :item="movie" :is-movie="true" />
 <MediaListItem :item="movie" :is-movie="true" />
+<MediaPersonCard :person="actor" />
+<MediaPersonListItem :person="actor" />
 <MediaPageHeader
   :backdrop_path="movie.backdrop_path"
   :title="movie.title"
   :back-to="'/movies'"
 />
 <MediaRating :score="movie.vote_average" />
+<VideoGrid :videos="videos" @play-video="handlePlayVideo" />
+<VideoModal :show="showVideo" :video="currentVideo" @close="closeVideo" />
 
 <!-- 搜索组件 -->
 <SearchBox
@@ -280,6 +281,9 @@ components/
   :show-quick-jump="true"
   @page-change="handlePageChange"
 />
+<CommonLanguageSwitcher />
+<CommonThemeSwitcher />
+<CommonThemeToggle />
 ```
 
 ## 最佳实践
@@ -615,6 +619,138 @@ interface Video {
 }
 ```
 
+### VideoGrid 视频网格组件
+
+用于展示视频列表的网格组件，支持视频缩略图和播放功能。
+
+#### 基础使用
+
+```vue
+<VideoGrid :videos="videos" @play-video="handlePlayVideo" />
+```
+
+#### Props
+
+| 属性     | 类型     | 默认值 | 说明         |
+| -------- | -------- | ------ | ------------ |
+| `videos` | `Array`  | `[]`   | 视频数据数组 |
+| `title`  | `String` | -      | 网格标题     |
+
+#### Events
+
+| 事件名       | 参数             | 说明         |
+| ------------ | ---------------- | ------------ |
+| `play-video` | `(video: Video)` | 播放视频事件 |
+
+#### 功能特性
+
+- **响应式布局**: 支持不同屏幕尺寸的网格布局
+- **视频缩略图**: 显示视频缩略图和基本信息
+- **播放按钮**: 每个视频都有播放按钮
+- **平台标识**: 显示视频来源平台
+- **加载状态**: 支持骨架屏加载状态
+
+### MediaPersonCard 演员卡片组件
+
+用于展示演员信息的卡片组件，包含头像、姓名和代表作。
+
+#### 基础使用
+
+```vue
+<MediaPersonCard :person="actor" />
+```
+
+#### Props
+
+| 属性     | 类型     | 默认值 | 说明         |
+| -------- | -------- | ------ | ------------ |
+| `person` | `Object` | -      | 演员数据对象 |
+
+#### 演员数据结构
+
+```typescript
+interface Person {
+  id: number
+  name: string
+  profile_path?: string
+  known_for_department?: string
+  popularity: number
+  known_for?: Array<{
+    id: number
+    title?: string
+    name?: string
+    media_type: 'movie' | 'tv'
+  }>
+}
+```
+
+### MediaPersonListItem 演员列表项组件
+
+用于演员列表视图的列表项组件，包含头像、姓名和基本信息。
+
+#### 基础使用
+
+```vue
+<MediaPersonListItem :person="actor" />
+```
+
+#### Props
+
+| 属性     | 类型     | 默认值 | 说明         |
+| -------- | -------- | ------ | ------------ |
+| `person` | `Object` | -      | 演员数据对象 |
+
+### CommonLanguageSwitcher 语言切换器组件
+
+支持多语言切换的组件，提供语言选择下拉菜单。
+
+#### 基础使用
+
+```vue
+<CommonLanguageSwitcher />
+```
+
+#### 功能特性
+
+- **多语言支持**: 支持中文、英文、日文、韩文、阿拉伯文
+- **状态同步**: 与 Pinia store 状态同步
+- **响应式设计**: 适配移动端和桌面端
+- **无障碍**: 包含适当的 aria-label 属性
+
+### CommonThemeSwitcher 主题切换器组件
+
+支持明暗主题切换的组件，提供主题选择功能。
+
+#### 基础使用
+
+```vue
+<CommonThemeSwitcher />
+```
+
+#### 功能特性
+
+- **主题切换**: 支持明暗主题切换
+- **状态同步**: 与 Pinia store 状态同步
+- **本地存储**: 主题选择保存到本地存储
+- **系统主题**: 支持跟随系统主题设置
+
+### CommonThemeToggle 主题切换按钮组件
+
+简洁的主题切换按钮组件，提供快速主题切换功能。
+
+#### 基础使用
+
+```vue
+<CommonThemeToggle />
+```
+
+#### 功能特性
+
+- **简洁设计**: 简洁的切换按钮设计
+- **图标切换**: 根据当前主题显示不同图标
+- **动画效果**: 平滑的切换动画
+- **状态同步**: 与 Pinia store 状态同步
+
 ### SearchBox 搜索框组件
 
 统一的搜索输入框组件，支持头部和搜索页面使用，包含实时搜索建议功能。
@@ -741,6 +877,8 @@ interface SearchSuggestion {
 - **CommonPagination** - 在演员列表页、发现页等分页场景使用
 - **LayoutHeader/LayoutFooter** - 全局布局组件
 - **SearchBox** - 在头部导航和搜索页面使用
+- **CommonLanguageSwitcher** - 在头部导航中使用
+- **CommonThemeSwitcher** - 在头部导航中使用
 
 ### 中频使用组件
 
@@ -749,11 +887,16 @@ interface SearchSuggestion {
 - **SkeletonLoadingState** - 在详情页和演员详情页使用
 - **MediaListItem** - 在发现页列表视图使用
 - **SearchSuggestions** - 在搜索框下方显示建议
+- **MediaPersonCard** - 在演员列表页使用
+- **MediaPersonListItem** - 在演员列表页使用
+- **VideoGrid** - 在详情页视频标签中使用
+- **VideoModal** - 在视频播放时使用
 
 ### 低频使用组件
 
 - **MediaRating** - 在 MediaCard 内部使用
 - **SkeletonListItem** - 在发现页列表视图加载时使用
+- **CommonThemeToggle** - 在特定页面中使用
 
 ## 组件开发规范
 
@@ -829,3 +972,6 @@ interface SearchSuggestion {
 - 优化组件的性能表现
 - 增强组件的可访问性
 - 完善组件的文档说明
+- 优化组件的响应式设计
+- 增强组件的国际化支持
+- 改进组件的错误处理机制
