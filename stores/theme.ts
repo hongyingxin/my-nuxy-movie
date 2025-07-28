@@ -22,7 +22,6 @@ export const useThemeStore = defineStore('theme', {
     /** 实际应用的主题（根据系统偏好计算得出） */
     current: 'light' as 'light' | 'dark',
     /** 是否已初始化 */
-    initialized: false,
   }),
 
   getters: {
@@ -31,9 +30,6 @@ export const useThemeStore = defineStore('theme', {
 
     /** 获取实际应用的主题 */
     getCurrent: state => state.current,
-
-    /** 是否已初始化 */
-    isInitialized: state => state.initialized,
 
     /** 是否为暗黑模式 */
     isDark: state => state.current === 'dark',
@@ -50,12 +46,6 @@ export const useThemeStore = defineStore('theme', {
      * 初始化主题
      */
     initialize() {
-      // 整个store的state
-      console.clear()
-      console.log('initialize-------', this.$state)
-      console.log('initialize-------', this.initialized)
-      // if (this.initialized) return
-
       // 计算实际应用的主题
       this.updateCurrentTheme()
 
@@ -66,8 +56,6 @@ export const useThemeStore = defineStore('theme', {
       if (this.mode === 'system') {
         this.watchSystemTheme()
       }
-
-      this.initialized = true
     },
 
     /**
