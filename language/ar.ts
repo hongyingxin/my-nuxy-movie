@@ -268,6 +268,19 @@ export default {
     viewPhotos: 'عرض ملصقات وصور {title}',
     movieType: 'فيلم',
     tvType: 'مسلسل',
+    // أنواع الأقسام
+    Production: 'الإنتاج',
+    Directing: 'الإخراج',
+    Writing: 'الكتابة',
+    Sound: 'الصوت',
+    Camera: 'التصوير',
+    Editing: 'المونتاج',
+    Art: 'الفن',
+    CostumeMakeUp: 'الأزياء والمكياج',
+    VisualEffects: 'المؤثرات البصرية',
+    Lighting: 'الإضاءة',
+    Creator: 'المنشئ',
+    Actors: 'الممثلون',
   },
 
   // 视频相关

@@ -266,6 +266,19 @@ export default {
     viewPhotos: '查看 {title} 的海报和剧照',
     movieType: '电影',
     tvType: '电视剧',
+    // 部门类型
+    Production: '制作',
+    Directing: '导演',
+    Writing: '编剧',
+    Sound: '音效',
+    Camera: '摄影',
+    Editing: '剪辑',
+    Art: '美术',
+    CostumeMakeUp: '服装化妆',
+    VisualEffects: '视觉效果',
+    Lighting: '灯光',
+    Creator: '创作者',
+    Actors: '演员',
   },
 
   // 视频相关

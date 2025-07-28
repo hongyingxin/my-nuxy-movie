@@ -278,6 +278,19 @@ export default {
     viewPhotos: 'View posters and stills for {title}',
     movieType: 'Movie',
     tvType: 'TV Show',
+    // Department types
+    Production: 'Production',
+    Directing: 'Directing',
+    Writing: 'Writing',
+    Sound: 'Sound',
+    Camera: 'Camera',
+    Editing: 'Editing',
+    Art: 'Art',
+    CostumeMakeUp: 'Costume & Make-Up',
+    VisualEffects: 'Visual Effects',
+    Lighting: 'Lighting',
+    Creator: 'Creator',
+    Actors: 'Actors',
   },
 
   // 视频相关

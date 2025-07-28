@@ -263,6 +263,19 @@ export default {
     viewPhotos: '{title}のポスターとスチル写真を見る',
     movieType: '映画',
     tvType: 'テレビ番組',
+    // 部門タイプ
+    Production: '制作',
+    Directing: '監督',
+    Writing: '脚本',
+    Sound: '音響',
+    Camera: '撮影',
+    Editing: '編集',
+    Art: '美術',
+    CostumeMakeUp: '衣装・メイク',
+    VisualEffects: '視覚効果',
+    Lighting: '照明',
+    Creator: 'クリエイター',
+    Actors: '俳優',
   },
 
   // 视频相关

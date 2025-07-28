@@ -270,6 +270,19 @@ export default {
     viewPhotos: '{title}의 포스터와 스틸 사진 보기',
     movieType: '영화',
     tvType: 'TV 프로그램',
+    // 부서 유형
+    Production: '제작',
+    Directing: '감독',
+    Writing: '각본',
+    Sound: '음향',
+    Camera: '촬영',
+    Editing: '편집',
+    Art: '미술',
+    CostumeMakeUp: '의상·메이크업',
+    VisualEffects: '시각효과',
+    Lighting: '조명',
+    Creator: '크리에이터',
+    Actors: '배우',
   },
 
   // 视频相关

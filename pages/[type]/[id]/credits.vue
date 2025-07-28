@@ -226,18 +226,18 @@
   // 翻译部门名称（多语言支持）
   const translateDepartment = (department: string) => {
     const departmentMap: Record<string, string> = {
-      Production: t('department.Production'),
-      Directing: t('department.Directing'),
-      Writing: t('department.Writing'),
-      Sound: t('department.Sound'),
-      Camera: t('department.Camera'),
-      Editing: t('department.Editing'),
-      Art: t('department.Art'),
-      'Costume & Make-Up': t('department.CostumeMakeUp'),
-      'Visual Effects': t('department.VisualEffects'),
-      Lighting: t('department.Lighting'),
-      Creator: t('department.Creator'),
-      Actors: t('department.Actors'),
+      Production: t('detail.Production'),
+      Directing: t('detail.Directing'),
+      Writing: t('detail.Writing'),
+      Sound: t('detail.Sound'),
+      Camera: t('detail.Camera'),
+      Editing: t('detail.Editing'),
+      Art: t('detail.Art'),
+      'Costume & Make-Up': t('detail.CostumeMakeUp'),
+      'Visual Effects': t('detail.VisualEffects'),
+      Lighting: t('detail.Lighting'),
+      Creator: t('detail.Creator'),
+      Actors: t('detail.Actors'),
     }
     // 返回翻译后的部门名称，如果没有翻译则返回原名称
     return departmentMap[department] || department
